@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import NextPage from '../Components/NextPage';
 import CourseCheckbox from '../Components/CourseCheckbox';
+import { Link } from 'react-router-dom';
 
 
 
@@ -70,10 +70,12 @@ const Student = () => {
               </div>
             )
         })}
-      </form>
+        </form>
       <button onClick={addFields}>Add Student</button>
       <br/>
-      <button onClick={submit}>Next Page</button>
+      <Link to="/course">
+        <button>Next Page</button>
+      </Link>
     </div>
   );
 }
