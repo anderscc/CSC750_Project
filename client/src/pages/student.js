@@ -5,10 +5,17 @@ import { Link } from 'react-router-dom';
 
 
 const Student = () => {
+
+  let newfield = {
+      studentName: '',
+      classTimes:'',
+      hoursAvail:0,
+      coursePref:'',
+      facultyPref:'',
+      officeHours: 0
+    }
   //Creates state formFields and setFormfields variable and method
-  const [formFields, setFormFields] = useState([
-    {firstname: '', lastname: '', courses:'', hoursAvail:'', coursePref:'', facultyPref:''}
-  ])
+  const [formFields, setFormFields] = useState([newfield])
 
   //method to allow us to input data
   const handleFormChange = (index, event) => {
@@ -26,9 +33,6 @@ const Student = () => {
 
   //method to add Fields to form
   const addFields = () => {
-    let newfield = {
-      firstname: '', lastname: '', courses:'', hoursAvail:'', coursePref:'', facultyPref:''
-    }
     setFormFields([...formFields, newfield])
   }
 
@@ -40,33 +44,97 @@ const Student = () => {
   }
 
   return (
-    <div className='studentForm'>
+    <div className='studentForm container'>
       <form onSubmit={submit}>
         {formFields.map((form, index) => {
           return(
             <div key={index}>
-                <input //First Name Input
-                    name='fname'
-                    placeholder='First Name'
-                    onChange={event => handleFormChange(index, event)}
-                    value={form.fname}
-                />
+              <div className="mb-3">
+                <label htmlFor="studentName" className="form-label">Student Name</label>
                 <input
-                    name='lname'
-                    placeholder='Last Name'
+                    type="text"
+                    className="form-control"
+                    id="studentName"
+                    placeholder="John Doe"
                     onChange={event => handleFormChange(index, event)}
-                    value={form.lname}
+                    value={form.studentName}
                 />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="hoursAvail" className="form-label">GA Hours</label>
                 <input
                     name='hoursAvail'
-                    placeholder='Position'
+                    type={"number"}
+                    className="form-control"
+                    id="hoursAvail"
+                    placeholder="E.g 10"
                     onChange={event => handleFormChange(index, event)}
-                    value={form.status}
+                    value={form.hoursAvail}
                 />
+              </div>
+                <div className="mb-3">
+                <label htmlFor="coursePref" className="form-label">Course Preference</label>
+                <input
+                    name='coursePref'
+                    type={"text"}
+                    className="form-control"
+                    id="coursePref"
+                    placeholder=""
+                    onChange={event => handleFormChange(index, event)}
+                    value={form.coursePref}
+                />
+              </div>
+                <div className="mb-3">
+                <label htmlFor="facultyPref" className="form-label">Faculty Preference</label>
+                <input
+                    name='coursePref'
+                    type={"text"}
+                    className="form-control"
+                    id="facultyPref"
+                    placeholder=""
+                    onChange={event => handleFormChange(index, event)}
+                    value={form.facultyPref}
+                />
+              </div>
+                                <div className="mb-3">
+                <label htmlFor="officeHours" className="form-label">Office Hours Duration</label>
+                <input
+                    name='officeHours'
+                    type={"text"}
+                    className="form-control"
+                    id="officeHours"
+                    placeholder="1"
+                    onChange={event => handleFormChange(index, event)}
+                    value={form.officeHours}
+                />
+              </div>
+
+                <div className="mb-3">
+                    <label htmlFor="officeHours" className="form-label">Class Times (Enter in this Format MW: 1:00PM - 2:00PM) Separate multiple classes with comma</label>
+                    <input
+                        name='classTimes'
+                        type={"text"}
+                        className="form-control"
+                        id="classTimes"
+                        placeholder="MW: 1:00PM - 2:00PM, TH: 1:00PM - 2:00PM"
+                        onChange={event => handleFormChange(index, event)}
+                        value={form.officeHours}
+                    />
+              </div>
                   <CourseCheckbox
                   onChange = {event => handleFormChange(index, event)}
                   />
-                <button onClick={() => removeFields(index)}>Remove</button>
+                <div className={"row"}>
+                    <div className={"col"}>
+                         <button onClick={addFields}>Add Student</button>
+                    </div>
+                    <div className={"col"}>
+                        <button onClick={() => removeFields(index)}>Remove</button>
+                    </div>
+                    <div className={"col"}>
+                        <button onClick={submit}>Next Page</button>
+                    </div>
+                </div>
               </div>
             )
         })}
