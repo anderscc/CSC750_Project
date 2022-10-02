@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import NextPage from '../Components/NextPage';
+import CourseCheckbox from '../Components/CourseCheckbox';
+
+
 
 const Student = () => {
+  //Creates state formFields and setFormfields variable and method
   const [formFields, setFormFields] = useState([
-    {firstname: '', lastname: '', courses:'', status:''}
+    {firstname: '', lastname: '', courses:'', hoursAvail:'', coursePref:'', facultyPref:''}
   ])
 
   //method to allow us to input data
@@ -19,25 +24,28 @@ const Student = () => {
     console.log(formFields)
   }
 
+  //method to add Fields to form
   const addFields = () => {
     let newfield = {
-      firstname: '', lastname: '', courses:'', status:''
+      firstname: '', lastname: '', courses:'', hoursAvail:'', coursePref:'', facultyPref:''
     }
     setFormFields([...formFields, newfield])
   }
 
+  //Function to remove a student row
   const removeFields = (index) => {
     let data = [...formFields];
     data.splice(index, 1)
     setFormFields(data)
   }
+
   return (
     <div className='studentForm'>
       <form onSubmit={submit}>
         {formFields.map((form, index) => {
           return(
             <div key={index}>
-                <input
+                <input //First Name Input
                     name='fname'
                     placeholder='First Name'
                     onChange={event => handleFormChange(index, event)}
@@ -50,25 +58,22 @@ const Student = () => {
                     value={form.lname}
                 />
                 <input
-                    name='courses'
-                    placeholder='Enrolled Courses'
-                    onChange={event => handleFormChange(index, event)}
-                    value={form.courses}
-                />
-                <input
-                    name='status'
+                    name='hoursAvail'
                     placeholder='Position'
                     onChange={event => handleFormChange(index, event)}
                     value={form.status}
                 />
-              <button onClick={() => removeFields(index)}>Remove</button>
-            </div>
-          )
+                  <CourseCheckbox
+                  onChange = {event => handleFormChange(index, event)}
+                  />
+                <button onClick={() => removeFields(index)}>Remove</button>
+              </div>
+            )
         })}
       </form>
       <button onClick={addFields}>Add Student</button>
       <br/>
-      <button onClick={submit}>Submit</button>
+      <button onClick={submit}>Next Page</button>
     </div>
   );
 }
