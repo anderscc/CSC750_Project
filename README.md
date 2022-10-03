@@ -1,5 +1,9 @@
 # CSC750_Project
 
+## Objective
+    -The goal of this project is to solve the needs of Professors attempting to schedule Graduate and Teaching Assistant Schedules. This software aims to generate schedules that do not have scheduling conflicts and fill the requirements outlined by the instructor.
+    -These requirements include: assigning Graduate and Teaching Assignments to classes as needed = Some classes have labs, grading acitivities, and GA/TA's that must be present during class times; ensuring that schedules do not interfere with GA/TA enrolled class times.
+
 This project has two folders
 
 - Client: Holds the [React](https://reactjs.org/docs/getting-started.html) Project
@@ -8,6 +12,7 @@ This project has two folders
 ## Pre-requisites
 - You need to have [Nodejs and NPM](https://nodejs.org/en/download/) installed
 - You need to have [Python](https://www.digitalocean.com/community/tutorials/install-python-windows-10) installed
+- You need to have a host for a SQl Database - for this project we chose to download XAMPP and install MySql through XAMPP.
 
 ## Getting Started with Create React App
 
