@@ -1,20 +1,28 @@
-import React from "react";
+import React, { Component } from "react";
 import Checkbox from "./Checkbox";
 
 
-const CourseCheckbox = ({value, onChange }) => {
-    return (
-        <div> Choose the Classes you are currently enrolled in:
-            <Checkbox
-                label = "CSC 001"
-                onChange = {onChange}
-            />
-            <Checkbox
-                label = "CSC 002"
-                onChange = {onChange}
-            />
-        </div>
-    );
-  };
+class CourseCheckbox extends Component {
+    constructor(args) {
+        super(args);
+        this.state = {
+        }
+    }
+
+    render(){
+        return (
+            <div> Choose the Classes you are currently enrolled in:
+                <Checkbox
+                    label = "CSC 001"
+                    value = {this.props.Checkbox}
+                />
+                <Checkbox
+                    label = "CSC 002"
+                    value = {this.props.Checkbox}
+                />
+            </div>
+        );
+    };
+}
 
   export default CourseCheckbox;
