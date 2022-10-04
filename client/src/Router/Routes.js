@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route}
     from 'react-router-dom';
-import Home from '../pages/Home';
-import Student from '../pages/Student';
-import Course from '../pages/Course';
-import ViewSchedule from '../pages/ViewSchedule';
-import Navbar from '../Components/Navbar';
+import Home from '../pages/home';
+import Student from '../pages/student';
+import Course from '../pages/course';
+import ViewSchedule from '../pages/viewSchedule';
+import Navbar from '../Components/navbar';
 import Confirmation from '../pages/Confirmation';
 
 function RouterCustom() {
