@@ -4,16 +4,27 @@ import React, { Component } from "react";
 class Confirmation extends Component {
     render(){
         return(
-            <div>
+            <div className={'container'}>
                 <h2> Confirmation Page</h2>
-                <h3>Student: </h3>
+                <div className= "confirmation-page mb-3">
+                    <h3>Student: </h3>
+                        <li>Student Name: {this.props.values.studentName}</li>
+                        <li>GA Hours: {this.props.values.hoursAvail} </li>
+                        <li>Course Preference: {this.props.values.coursePref}</li>
+                        <li>Faculty Preference: {this.props.values.facultyPref}</li>
+                        <li>Office Hours: {this.props.values.officeHours}</li>
+                        <li>Class Times: {this.props.values.classTimes} </li>
+                </div>
                 <div>
-                    <li>Student Name: {this.props.values.studentName}</li>
-                    <li>GA Hours: {this.props.values.hoursAvail} </li>
-                    <li>Course Preference: {this.props.values.coursePref}</li>
-                    <li>Faculty Preference: {this.props.values.facultyPref}</li>
-                    <li>Office Hours: {this.props.values.officeHours}</li>
-                    <li>Class Times: {this.props.values.classTimes} </li>
+                    <h3>Courses: </h3>
+                        <li>Course Code: {this.props.values.courseCode}</li>
+                        <li>Course Name: {this.props.values.courseName} </li>
+                        <li>Course Section: {this.props.values.courseSection}</li>
+                        <li>Course Meet Times: {this.props.values.courseMeetTimes}</li>
+                        <li>Course Faculty: {this.props.values.courseFaculty}</li>
+                        <li>Course Activities: {this.props.values.courseActivities} </li>
+                        <li>Activity Times: {this.props.values.activityTimes} </li>
+                        <li>GA Preference: {this.props.values.gaPreference} </li>
                 </div>
                 <div className={"row"}>
                     <div className={"col"}>

@@ -16,7 +16,15 @@ class Main extends Component  {
                 hoursAvail:0,
                 coursePref:'',
                 facultyPref:'',
-                officeHours: 0
+                officeHours: 0,
+                courseCode: '0',
+                courseName: '',
+                courseSection:'0',
+                courseMeetTimes:'0',
+                courseFaculty:'',
+                courseActivities:'0',
+                acitivityTimes:'0',
+                gaPreference:''
           },
           step: 0
         }
