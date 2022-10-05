@@ -1,12 +1,14 @@
 
-import React from 'react';
+import React, { Component } from 'react';
   
-const ViewSchedule = () => {
-  return (
-    <div className={'container-fluid'}>
-      <h1> This is the view schedule page</h1>
-    </div>
-  )
+class ViewSchedule extends Component {
+  render(){
+    return (
+      <div className={'container-fluid'}>
+        <h1> This is the view schedule page</h1>
+      </div>
+    )
+  }
 }
   
 export default ViewSchedule;
