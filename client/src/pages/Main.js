@@ -10,6 +10,7 @@ class Main extends Component  {
     constructor(args){
         super(args);
         this.state = {
+          //fields for all forms
           values: {
                 studentName: '',
                 classTimes:'',
@@ -22,24 +23,28 @@ class Main extends Component  {
         }
     }
     
+    //function to save values of child components to parent component (Main)
       saveValues(values) {
         this.setState({
           values: Object.assign({}, this.state.values, values)
         })
       }
     
+      //function to increment switch - go to next Page
       nextStep() {
         this.setState({
           step: this.state.step +1
         })
       }
     
+      //function to decrement switch - go to previous Page
       previousStep() {
         this.setState({
           step: this.state.step -1
         })
       }
 
+      // switch function to flip between pages and render component based on page
     stepDisplay = () => {
         switch (this.state.step) {
             case 0:
@@ -59,6 +64,8 @@ class Main extends Component  {
                                     saveValues = {this.saveValues.bind(this)} 
                                     nextStep = {this.nextStep.bind(this)} 
                                     previousStep = {this.previousStep.bind(this)} />;
+            case 4:
+              return <ViewSchedule/>
             default:
             return <Home />;
         }

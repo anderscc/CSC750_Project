@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+//Confirmation page that summarizes previous pages contents
 class Confirmation extends Component {
 
     render(){
@@ -27,12 +28,13 @@ class Confirmation extends Component {
         )
     }
 
-
+//function to submit form - INCOMPLETE
     submit(e) {
         e.preventDefault()
         this.props.nextStep();
     } 
 
+    //function to go back to previous page - INCOMPLETE
   previousStep(e) {
     this.props.previousStep();
   }

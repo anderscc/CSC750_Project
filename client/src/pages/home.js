@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Main from "./Main";
 
 class Home extends Component {
 
@@ -28,6 +27,8 @@ class Home extends Component {
             </div>
         )
     }
+    
+    //function to advance to the next page
     nextStep() {
         this.props.nextStep();
       }

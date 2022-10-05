@@ -22,10 +22,12 @@ class Course extends Component {
   )
 }
 
+//function to advance to next page
   nextStep(e) {
     this.props.nextStep();
   }
 
+  //function to go back to previous page
   previousStep(e) {
     this.props.previousStep();
   }

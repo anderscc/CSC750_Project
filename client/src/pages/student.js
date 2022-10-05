@@ -96,7 +96,7 @@ class Student extends Component{
     )
   }
     
-
+//function to save values to parent and then advance to next page
   nextStep(e) {
     e.preventDefault()
     var data = {
@@ -112,6 +112,7 @@ class Student extends Component{
     this.props.nextStep();
   }
 
+  //function to save values to parent and then go back to previous page
   previousStep(e) {
     var data = {
       studentName: this.studentName.value,
