@@ -2,9 +2,7 @@ import React, { Component } from "react";
 
 //Confirmation page that summarizes previous pages contents
 class Confirmation extends Component {
-
     render(){
-        console.log(this.props)
         return(
             <div>
                 <h2> Confirmation Page</h2>
@@ -30,7 +28,7 @@ class Confirmation extends Component {
 
 //function to submit form - INCOMPLETE
     submit(e) {
-        e.preventDefault()
+        e.preventDefault();
         this.props.nextStep();
     } 
 
@@ -40,5 +38,5 @@ class Confirmation extends Component {
   }
 }
 
-export default Confirmation
+export default Confirmation;
 

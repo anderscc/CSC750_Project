@@ -1,8 +1,4 @@
 import React, { Component, useState } from 'react';
-import CourseCheckbox from '../Components/CourseCheckbox';
-import { Link } from 'react-router-dom';
-
-
 
 class Student extends Component{
   constructor(args) {
@@ -98,35 +94,33 @@ class Student extends Component{
     
 //function to save values to parent and then advance to next page
   nextStep(e) {
-    e.preventDefault()
     var data = {
-      studentName: this.studentName.value,
-      classTimes: this.classTimes.value,
-      hoursAvail: this.hoursAvail.value,
-      coursePref:this.coursePref.value,
-      facultyPref:this.facultyPref.value,
-      officeHours: this.officeHours.value
+      studentName: this.refs.studentName.value,
+      classTimes: this.refs.classTimes.value,
+      hoursAvail: this.refs.hoursAvail.value,
+      coursePref:this.refs.coursePref.value,
+      facultyPref:this.refs.facultyPref.value,
+      officeHours: this.refs.officeHours.value,
     }
 
     this.props.saveValues(data);
-    this.props.nextStep();
+    this.props.nextStep(data);
   }
 
   //function to save values to parent and then go back to previous page
   previousStep(e) {
     var data = {
-      studentName: this.studentName.value,
-      classTimes: this.classTimes.value,
-      hoursAvail: this.hoursAvail.value,
-      coursePref:this.coursePref.value,
-      facultyPref:this.facultyPref.value,
-      officeHours: this.officeHours.value
+      studentName: this.refs.studentName.value,
+      classTimes: this.refs.classTimes.value,
+      hoursAvail: this.refs.hoursAvail.value,
+      coursePref:this.refs.coursePref.value,
+      facultyPref:this.refs.facultyPref.value,
+      officeHours: this.refs.officeHours.value,
     }
 
     this.props.saveValues(data);
-    this.props.previousStep();
+    this.props.previousStep(data);
   }
 
-  }
-
+}
   export default Student;

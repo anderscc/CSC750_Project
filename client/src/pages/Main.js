@@ -10,7 +10,6 @@ class Main extends Component  {
     constructor(args){
         super(args);
         this.state = {
-          //fields for all forms
           values: {
                 studentName: '',
                 classTimes:'',
@@ -73,7 +72,6 @@ class Main extends Component  {
     render() {
         return(
             <div>
-                <span>Step {this.state.step}</span>
                 {this.stepDisplay()}
         </div>
         )
