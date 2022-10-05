@@ -8,7 +8,6 @@ class Home extends Component {
       }
 
     render(){
-        console.log(this.props)
         return(
             <div className={'container-fluid'}>
                 <section className="home" id="home">

@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react';
 
+//Student class which allows user to input details about GA's and TA's
 class Student extends Component{
   constructor(args) {
     super(args);
@@ -9,11 +10,10 @@ class Student extends Component{
   }
 
   render(){
-    console.log(this.props)
     return (
-      <div>Testing page
+      <div className={'container-fluid'}>
         <form>
-          <div className='studentForm container'>
+          <div className='student-form container'>
             <div className="mb-3">
               <label htmlFor="studentName" className="form-label">Student Name</label>
               <input
@@ -79,21 +79,21 @@ class Student extends Component{
                     defaultValue={this.props.values.officeHours}
                 />
             </div>
-            <div className={"row"}>
-                <div className={"col"}>
-                    <button onClick ={this.previousStep.bind(this)}>Previous Page</button>
-                    <button onClick={this.nextStep.bind(this)}>Next Page</button>
-                </div>
-            </div>
-
           </div>
-      </form>
-    </div>
+        </form>
+        <div className={"row"}>
+          <div className={"col"}>
+            <button onClick ={this.previousStep.bind(this)}>Previous Page</button>
+            <button onClick={this.nextStep.bind(this)}>Next Page</button>
+          </div>
+        </div>
+      </div>
     )
   }
     
 //function to save values to parent and then advance to next page
   nextStep(e) {
+    e.preventDefault()
     var data = {
       studentName: this.refs.studentName.value,
       classTimes: this.refs.classTimes.value,
