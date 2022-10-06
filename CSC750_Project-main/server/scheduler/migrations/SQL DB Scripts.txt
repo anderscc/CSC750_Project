@@ -1,0 +1,27 @@
+BEGIN;
+--
+-- Create model Assignment
+--
+CREATE TABLE "scheduler_assignment" ("scheduleNum" integer NOT NULL PRIMARY KEY, "uidAsn" smallint unsigned NOT NULL CHECK ("uidAsn" >= 0), "coursesAsn" varchar(255) NOT NULL, "hoursAsn" smallint unsigned NOT NULL CHECK ("hoursAsn" >= 0));
+--
+-- Create model Courses
+--
+CREATE TABLE "scheduler_courses" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "courseCode" smallint unsigned NOT NULL CHECK ("courseCode" >= 0), "courseName" varchar(255) NOT NULL, "courseSection" smallint unsigned NOT NULL CHECK ("courseSection" >= 0), "courseMeetTimes" varchar(100) NOT NULL, "courseFaculty" varchar(255) NOT NULL, "courseActivities" varchar(255) NOT NULL, "activityTimes" varchar(255) NOT NULL, "GAPref" varchar(255) NOT NULL);
+--
+-- Create model Labs
+--
+CREATE TABLE "scheduler_labs" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "labCode" smallint unsigned NOT NULL CHECK ("labCode" >= 0), "labName" varchar(255) NOT NULL, "labFaculty" varchar(255) NOT NULL, "labSection" smallint unsigned NOT NULL CHECK ("labSection" >= 0), "labMeetTimes" varchar(100) NOT NULL, "activityTimes" varchar(255) NOT NULL, "GAPref" varchar(255) NOT NULL);
+--
+-- Create model Schedules
+--
+CREATE TABLE "scheduler_schedules" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "conflicts" smallint unsigned NOT NULL CHECK ("conflicts" >= 0), "scheduleNum_id" 
+integer NOT NULL REFERENCES "scheduler_assignment" ("scheduleNum") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Create model GATA
+--
+CREATE TABLE "scheduler_gata" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "studentName" varchar(100) NOT NULL, "hoursAvailable" smallint unsigned NOT NULL CHECK 
+("hoursAvailable" >= 0), "coursePref" varchar(255) NOT NULL, "facultyPref" varchar(255) NOT NULL, "officeHours" smallint unsigned NOT NULL CHECK ("officeHours" >= 0), 
+"classTimes" varchar(255) NOT NULL, "uidAsn_id" integer NOT NULL REFERENCES "scheduler_assignment" ("scheduleNum") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "scheduler_schedules_scheduleNum_id_022da73a" ON "scheduler_schedules" ("scheduleNum_id");
+CREATE INDEX "scheduler_gata_uidAsn_id_69a1a241" ON "scheduler_gata" ("uidAsn_id");
+COMMIT;
