@@ -16,7 +16,15 @@ class Main extends Component  {
                 hoursAvail:0,
                 coursePref:'',
                 facultyPref:'',
-                officeHours: 0
+                officeHours: 0,
+                courseCode: '0',
+                courseName: '',
+                courseSection:'0',
+                courseMeetTimes:'0',
+                courseFaculty:'',
+                courseActivities:'0',
+                acitivityTimes:'0',
+                gaPreference:''
           },
           step: 0
         }
@@ -43,6 +51,13 @@ class Main extends Component  {
         })
       }
 
+      //function to reset step to 0 (return to home page) after generating schedule
+      resetStep(){
+        this.setState({
+          step: 0
+        })
+      }
+
       // switch function to flip between pages and render component based on page
     stepDisplay = () => {
         switch (this.state.step) {
@@ -64,7 +79,10 @@ class Main extends Component  {
                                     nextStep = {this.nextStep.bind(this)} 
                                     previousStep = {this.previousStep.bind(this)} />;
             case 4:
-              return <ViewSchedule/>
+              return <ViewSchedule resetStep = {this.resetStep.bind(this)}
+                                    previousStep = {this.previousStep.bind(this)}
+                                    
+              />
             default:
             return <Home />;
         }
