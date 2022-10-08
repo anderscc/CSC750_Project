@@ -29,4 +29,5 @@ router.register(r'labs', views.LabsView, 'Labs')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('Scheduler/', include(router.urls)),
 ]

@@ -2,19 +2,19 @@ from django.contrib import admin
 from .models import GATA, Courses, Labs, Assignment, Schedules
 
 class GATAAdmin(admin.ModelAdmin):
-    list_display = ( 'studentName', 'hoursAvailable', 'coursePref','facultyPref', 'officeHours', 'classTimes' )
+    list_display = ('studentName', 'GAID', 'semYr','hoursAvailable', 'coursePref','facultyPref', 'officeHours', 'classTimes' )
 
 class CoursesAdmin(admin.ModelAdmin):
-    list_display = ('courseCode', 'courseName', 'courseSection', 'courseMeetTimes','courseFaculty', 'courseActivities', 'activityTimes', 'GAPref' )
+    list_display = ('semYr','courseCode', 'courseName', 'courseSection', 'courseMeetTimes','courseFaculty', 'courseActivities', 'activityTimes', 'GAPref' )
 
 class LabsAdmin(admin.ModelAdmin):
-    list_display = ('labCode', 'labName', 'labFaculty', 'labSection','labMeetTimes', 'activityTimes', 'GAPref' )
+    list_display = ('semYr','labCode', 'labName', 'labFaculty', 'labSection','labMeetTimes', 'activityTimes', 'GAPref' )
 
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ('scheduleNum', 'uidAsn', 'coursesAsn', 'hoursAsn')
+    list_display = ('semYr','scheduleNum', 'id', 'coursesAsn', 'hoursAsn')
 
 class SchedulesAdmin(admin.ModelAdmin):
-    list_display = ('scheduleNum', 'conflicts')
+    list_display = ('semYr','scheduleNum', 'conflicts')
 
 
 # Register your models here.
