@@ -1,20 +1,30 @@
-
 import React, { Component } from 'react';
-
+import { useState } from 'react';
 class Course extends Component {
   constructor(args) {
     super(args);
     this.state = {
+        type:"course",
+        courseName:"",
+        classTime:"",
+        courseSection:"",
+        instructor:"",
+        courseActivity:"",
+        GAPref:"",
+        courseCode:"",
     }
     // for radio button 
     this.onValueChange = this.onValueChange.bind(this);
+
+
     this.formSubmit = this.formSubmit.bind(this);
   }
 
-  onValueChange(event) {
+  onValueChange(event,state_var) {
     this.setState({
-      selectedOption: event.target.value
+      state_var: event.target.value
     });
+    alert(this.state.state_var)
   }
 
   formSubmit(event) {
@@ -32,15 +42,15 @@ class Course extends Component {
             <div className='courseForm container'>
             <div className="mb-3">
               <label>
-                <input name="courseType" type="radio" value="course" 
-                checked={this.state.selectedOption === "course"}
-                onChange={this.onValueChange}/>
+                <input defaultChecked="true" name="courseType" type="radio" value="course" 
+                checked={this.state.type = this.value}
+                onChange={this.onValueChange("type")}/>
                 Course
               </label>
               {"    "}
               <label>
                 <input name="courseType" type="radio" value="lab"
-                checked={this.state.selectedOption === "lab"}
+                checked={this.state.selectedOption = this.value}
                 onChange={this.onValueChange} />
                 Lab
               </label>
@@ -52,7 +62,7 @@ class Course extends Component {
                     className="form-control"
                     ref="courseCode"
                     placeholder="CSC750"
-                    defaultValue={this.props.values.courseCode}
+                    defaultValue={this.props.values.courseName}
                 />
             </div>
             <div className="mb-3">
@@ -65,17 +75,17 @@ class Course extends Component {
                     defaultValue={this.props.values.courseSection}
                 />
               </div>
-              <div className="mb-3">
+            <div className="mb-3">
               <label htmlFor="courseTime" className="form-label">Class Time: </label>
-                <input
-                    type={"number"}
-                    className="form-control"
-                    ref="courseSection"
-                    placeholder="001"
-                    defaultValue={this.props.values.courseMeetTimes}
+              <input
+                type={"yexy"}
+                className="form-control"
+                ref="classTime"
+                placeholder="eg. MWF 5:00pm - 5:45pm"
+                defaultValue={this.props.values.classTime}
                 />
-              </div>
-              <div className="mb-3">
+            </div>
+            <div className="mb-3">
                 <label htmlFor="instructor" className="form-label">Instructor</label>
                 <input
                     name='instructor'
@@ -85,7 +95,7 @@ class Course extends Component {
                     placeholder="Dr. Iqbal"
                     defaultValue={this.props.values.instructor}
                 />
-              </div>
+            </div>
             
               <div className="mb-3">
                 <label htmlFor="courseActivicty" className="form-label">Course Activity: </label>
@@ -131,12 +141,38 @@ class Course extends Component {
 
 //function to advance to next page
   nextStep(e) {
-    this.props.nextStep();
-  }
+    var data = {
+        courseCode: this.refs.courseCode.value,
+        courseName: this.refs.courseName.value,
+        courseSection: this.refs.courseSection.value,
+        courseMeetTimes:this.refs.courseMeetTimes.value,
+        courseFaculty:this.refs.courseFaculty.value,
+        courseActivities: this.refs.courseActivities.value,
+        activityTimes: this.refs.activityTimes.value,
+        gaPreference: this.refs.gaPreference.value,
+      }
+  
+      this.props.saveValues(data);
+      this.props.nextStep();
+    }
+  
 
   //function to go back to previous page
   previousStep(e) {
-    this.props.previousStep();
-  }
+    var data = {
+        courseCode: this.refs.courseCode.value,
+        courseName: this.refs.courseName.value,
+        courseSection: this.refs.courseSection.value,
+        courseMeetTimes:this.refs.courseMeetTimes.value,
+        courseFaculty:this.refs.courseFaculty.value,
+        courseActivities: this.refs.courseActivities.value,
+        activityTimes: this.refs.activityTimes.value,
+        gaPreference: this.refs.gaPreference.value,
+    }
+  
+      this.props.saveValues(data);
+      this.props.previousStep();
+}
 }
 export default Course;
+
