@@ -2,38 +2,52 @@ import React, { Component } from "react";
 
 //Confirmation page that summarizes previous pages contents
 class Confirmation extends Component {
+    constructor(args){
+        super(args);
+        this.state = {
+            formValues : [{
+            }]
+        }
+    }
+
     render(){
+        console.log(this.props.students)
         return(
             <div className={'container'}>
                 <h2> Confirmation Page</h2>
-                <div className= "confirmation-page mb-3">
-                    <h3>Student: </h3>
-                        <li>Student Name: {this.props.values.studentName}</li>
-                        <li>GA Hours: {this.props.values.hoursAvail} </li>
-                        <li>Course Preference: {this.props.values.coursePref}</li>
-                        <li>Faculty Preference: {this.props.values.facultyPref}</li>
-                        <li>Office Hours: {this.props.values.officeHours}</li>
-                        <li>Class Times: {this.props.values.classTimes} </li>
-                </div>
+                <h3>Student:</h3>
                 <div>
-                    <h3>Courses: </h3>
-                        <li>Course Code: {this.props.values.courseCode}</li>
-                        <li>Course Name: {this.props.values.courseName} </li>
-                        <li>Course Section: {this.props.values.courseSection}</li>
-                        <li>Course Meet Times: {this.props.values.courseMeetTimes}</li>
-                        <li>Course Faculty: {this.props.values.courseFaculty}</li>
-                        <li>Course Activities: {this.props.values.courseActivities} </li>
-                        <li>Activity Times: {this.props.values.activityTimes} </li>
-                        <li>GA Preference: {this.props.values.gaPreference} </li>
+                {this.props.students.map((element, index) => (
+                <div className="form-inline" key={index}>
+                    <li>Student Name: {element.studentName}</li>
+                    <li>Class Times: {element.classTimes}</li>
+                    <li>Hours Avail: {element.hoursAvail}</li>
+                    <li>Course Pref: {element.coursePref}</li>
+                    <li>Faculty Pref: {element.facultyPref}</li><br></br>
                 </div>
-                <div className={"row"}>
-                    <div className={"col"}>
-                        <button onClick ={this.previousStep.bind(this)}>Previous Page</button>
-                        <button onClick={this.submit.bind(this)}>Submit</button>
+                ))}
+                <h3>Courses:</h3>
+                {this.props.courses.map((element, index) => (
+                <div className="form-inline" key={index}>
+                    <li>Course Code: {element.courseCode}</li>
+                    <li>Course Name: {element.courseName}</li>
+                    <li>Course Section: {element.courseSection}</li>
+                    <li>Course Meet Times: {element.courseMeetTimes}</li>
+                    <li>Course Activities: {element.courseActivities}</li>
+                    <li>Activity Times: {element.activityTimes}</li>
+                    <li>GA Preference: {element.gaPreference}</li>
+                    <li>Class Type: {element.classType}</li>
+                    <br></br>
+                </div>
+                ))}
+                </div>
+                    <div className={"row"}>
+                        <div className={"col"}>
+                            <button onClick ={this.previousStep.bind(this)}>Previous Page</button>
+                            <button onClick={this.submit.bind(this)}>Submit</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
         )
     }
 
@@ -46,6 +60,10 @@ class Confirmation extends Component {
     //function to go back to previous page - INCOMPLETE
   previousStep(e) {
     this.props.previousStep();
+  }
+
+  addFormFields(students){
+console.log(" ")
   }
 }
 
