@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { useState } from 'react';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 class Course extends Component {
   constructor(args) {
     super(args);
@@ -32,7 +33,7 @@ class Course extends Component {
     console.log(this.state.selectedOption)
   }
 
-  
+
 
   render(){
   return (
@@ -42,7 +43,7 @@ class Course extends Component {
         <form>
           <div className='course-form container'>
             <div className="mb-3">
-              <label htmlFor="studentName" className="form-label">Course Code</label>
+              <label htmlFor="courseCode" className="form-label">Course Code</label>
               <input
                 type={"number"}
                 className="form-control"
@@ -52,7 +53,7 @@ class Course extends Component {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="hoursAvail" className="form-label">Course Name</label>
+              <label htmlFor="courseName" className="form-label">Course Name</label>
               <input
                 name='hoursAvail'
                 type="text"
@@ -63,7 +64,7 @@ class Course extends Component {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="studentName" className="form-label">Course Section</label>
+              <label htmlFor="courseSection" className="form-label">Course Section</label>
               <input
                 type={"number"}
                 className="form-control"
@@ -73,7 +74,7 @@ class Course extends Component {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="studentName" className="form-label">Course Meet Times</label>
+              <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times</label>
               <input
                 type="text"
                 className="form-control"
@@ -83,7 +84,7 @@ class Course extends Component {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="studentName" className="form-label">Course Faculty</label>
+              <label htmlFor="courseFaculty" className="form-label">Course Faculty</label>
               <input
                 type="text"
                 className="form-control"
@@ -93,17 +94,17 @@ class Course extends Component {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="studentName" className="form-label">Course Activities</label>
+              <label htmlFor="courseActivities" className="form-label">Course Activities</label>
               <input
                 type="text"
                 className="form-control"
                 ref="courseActivities"
-                placeholder="3 Quizzes, 4 Exams, 1 Mid-Term"
+                placeholder="Grading, preparation"
                 defaultValue={this.props.values.courseActivities}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="studentName" className="form-label">Activity Times</label>
+              <label htmlFor="activityTimes" className="form-label">Total Activity Times</label>
               <input
                 type="text"
                 className="form-control"
@@ -113,14 +114,12 @@ class Course extends Component {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="studentName" className="form-label">GA Preference</label>
-              <input
-                type="text"
-                className="form-control"
-                ref="gaPreference"
-                placeholder="John Doe"
-                defaultValue={this.props.values.gaPreference}
-              />
+              <label htmlFor="GAPref" className="form-label">GA Preference</label>
+              <Dropdown options={this.props.values.studentName} 
+                onChange={this._onSelect} 
+                value={this.props.values.studentName[0]} 
+                placeholder="Select an option" 
+                />
             </div>
           </div>
         </form>
