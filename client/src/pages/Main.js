@@ -24,7 +24,9 @@ class Main extends Component  {
                 courseFaculty:'',
                 courseActivities:'0',
                 acitivityTimes:'0',
-                gaPreference:''
+                gaPreference:'',
+                classType:'',
+                studentType:''
           },
           step: 0
         }
@@ -58,6 +60,12 @@ class Main extends Component  {
         })
       }
 
+      setStep(page){
+        this.setState({
+          step: page
+        })
+      }
+
       // switch function to flip between pages and render component based on page
     stepDisplay = () => {
         switch (this.state.step) {
@@ -67,7 +75,8 @@ class Main extends Component  {
             return <Student values = {this.state.values} 
                                 saveValues = {this.saveValues.bind(this)} 
                                 nextStep = {this.nextStep.bind(this)} 
-                                previousStep = {this.previousStep.bind(this)}/>;
+                                previousStep = {this.previousStep.bind(this)}
+                                setStep = {this.setStep.bind(this)}/>;
             case 2:
             return <Course values = {this.state.values} 
                             saveValues = {this.saveValues.bind(this)} 

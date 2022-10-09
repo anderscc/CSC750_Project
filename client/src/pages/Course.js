@@ -14,7 +14,24 @@ class Course extends Component {
       <h1>This Course Page</h1>
       <div>
         <form>
+
           <div className='course-form container'>
+
+            <div className="mb-3">
+                <label htmlFor="studentName" className="form-label">Is This Class a Course or a Lab:</label><br></br>
+                <input
+                  type="radio"
+                  ref="classType"
+                  value = "Lab"
+                  placeholder="John Doe"
+                /> Course
+                <input
+                  type="radio"
+                  ref="classType"
+                  value = "Course"
+                  placeholder="John Doe"
+                /> Lab
+              </div>
             <div className="mb-3">
               <label htmlFor="studentName" className="form-label">Course Code</label>
               <input
@@ -96,6 +113,7 @@ class Course extends Component {
                 defaultValue={this.props.values.gaPreference}
               />
             </div>
+
           </div>
         </form>
         <div className={"row"}>
@@ -121,6 +139,7 @@ class Course extends Component {
       courseActivities: this.refs.courseActivities.value,
       activityTimes: this.refs.activityTimes.value,
       gaPreference: this.refs.gaPreference.value,
+      classType: this.refs.classType.value,
     }
 
     this.props.saveValues(data);
@@ -138,6 +157,7 @@ class Course extends Component {
       courseActivities: this.refs.courseActivities.value,
       activityTimes: this.refs.activityTimes.value,
       gaPreference: this.refs.gaPreference.value,
+      classType: this.refs.classType.value,
     }
 
     this.props.saveValues(data);
