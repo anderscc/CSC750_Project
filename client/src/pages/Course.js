@@ -16,7 +16,6 @@ class Course extends Component {
         <form>
 
           <div className='course-form container'>
-
             <div className="mb-3">
                 <label htmlFor="studentName" className="form-label">Is This Class a Course or a Lab:</label><br></br>
                 <input

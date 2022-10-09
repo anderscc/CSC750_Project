@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 
-//True for GA; false for TA - fixBUG
-
 class StudentForm extends Component{
     constructor(args){
         super(args);
@@ -28,7 +26,10 @@ class StudentForm extends Component{
                     officeHours: '', 
                   }]
           }))
+        }
 
+        nextStep(event) {
+          this.props.nextStep();
         }
       
         removeFormFields(i) {
@@ -50,25 +51,26 @@ class StudentForm extends Component{
               officeHours: this.state.formValues[i].officeHours,
               gaClassAttendance: this.state.formValues[i].gaClassAttendance,
             }
-            this.props.handleData(data)
+            this.props.handleData(data);
           }
+            this.nextStep.bind(this);
         }
       
         render() {
       
           return (
-              <form>
-                {this.state.formValues.map((element, index) => (
-                <div className="form-inline" key={index}>
+              <form className="container">
                   <div className="mb-3">
-                    <label htmlFor="studentName" className="form-label">What Semester are These Courses For?</label>
-                      <select>
+                    <label htmlFor="semester" className="form-label">What Semester are These Courses For?</label>
+                      <select name ="semester" ref = "semester">
                         <option value="Fall 2022"> Fall 2022</option>
-                        <option value=""> Spring 2023</option>
-                        <option value=""> Summer 2023</option>
-                        <option value=""> Fall 2023</option>
+                        <option value="Spring 2023"> Spring 2023</option>
+                        <option value="Summer 2023"> Summer 2023</option>
+                        <option value="Fall 2023"> Fall 2023</option>
                       </select>
                   </div>
+                {this.state.formValues.map((element, index) => (
+                <div className="form-inline" key={index}>
                     <label htmlFor="studentName" className="form-label">Student Name</label>
                         <input
                           name = "studentName"
@@ -153,65 +155,11 @@ class StudentForm extends Component{
                 ))}
                 <div className="button-section">
                     <button className="button add" type="button" onClick={() => this.addFormFields()}>Add</button>
-                    <button className="button submit" type="submit" onClick={this.handleSubmit}>Submit</button>
+                    <button className="button submit" type="button" onClick={this.handleSubmit.bind(this)}
+                        >Submit</button>  
                 </div>
             </form>
           );
         }
 }
-
-
 export default StudentForm;
-/*
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
-  
-  handleChange(i, e) {
-    let formValues = this.state.formValues;
-    formValues[i][e.target.name] = e.target.value;
-    this.setState({ formValues });
-  }
-
-  addFormFields() {
-    this.setState(({
-      formValues: [...this.state.formValues, { name: "", email: "" }]
-    }))
-  }
-
-  removeFormFields(i) {
-    let formValues = this.state.formValues;
-    formValues.splice(i, 1);
-    this.setState({ formValues });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    alert(JSON.stringify(this.state.formValues));
-  }
-
-  render() {
-
-    return (
-        <form  onSubmit={this.handleSubmit}>
-          {this.state.formValues.map((element, index) => (
-            <div className="form-inline" key={index}>
-              <label>Name</label>
-              <input type="text" name="name" value={element.name || ""} onChange={e => this.handleChange(index, e)} />
-              <label>Email</label>
-              <input type="text" name="email" value={element.email || ""} onChange={e => this.handleChange(index, e)} />
-              {
-                index ? 
-                  <button type="button"  className="button remove" onClick={() => this.removeFormFields(index)}>Remove</button> 
-                : null
-              }
-            </div>
-          ))}
-          <div className="button-section">
-              <button className="button add" type="button" onClick={() => this.addFormFields()}>Add</button>
-              <button className="button submit" type="submit">Submit</button>
-          </div>
-      </form>
-    );
-  }
-}
-*/

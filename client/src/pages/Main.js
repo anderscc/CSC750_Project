@@ -11,6 +11,7 @@ class Main extends Component  {
         super(args);
         this.state = {
           values: {
+                semester:'',
                 studentName: '',
                 classTimes:'',
                 hoursAvail:0,
@@ -28,7 +29,7 @@ class Main extends Component  {
                 classType:'',
                 studentType:''
           },
-          step: 0
+          step: 0, students:[], courses:[]
         }
     }
     
@@ -76,7 +77,8 @@ class Main extends Component  {
                                 saveValues = {this.saveValues.bind(this)} 
                                 nextStep = {this.nextStep.bind(this)} 
                                 previousStep = {this.previousStep.bind(this)}
-                                setStep = {this.setStep.bind(this)}/>;
+                                setStep = {this.setStep.bind(this)}
+                                students = {this.state.students}/>;
             case 2:
             return <Course values = {this.state.values} 
                             saveValues = {this.saveValues.bind(this)} 
@@ -86,7 +88,9 @@ class Main extends Component  {
             return <Confirmation values = {this.state.values} 
                                     saveValues = {this.saveValues.bind(this)} 
                                     nextStep = {this.nextStep.bind(this)} 
-                                    previousStep = {this.previousStep.bind(this)} />;
+                                    previousStep = {this.previousStep.bind(this)} 
+                                    students = {this.state.students}
+                                    courses = {this.state.courses}/>;
             case 4:
               return <ViewSchedule resetStep = {this.resetStep.bind(this)}
                                     previousStep = {this.previousStep.bind(this)}
