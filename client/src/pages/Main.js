@@ -18,16 +18,17 @@ class Main extends Component  {
                 coursePref:'',
                 facultyPref:'',
                 officeHours: 0,
-                courseCode: '0',
+                studentType:''
+                /*courseCode: '0',
                 courseName: '',
                 courseSection:'0',
                 courseMeetTimes:'0',
                 courseFaculty:'',
-                courseActivities:'0',
+                courseActivities:'',
                 acitivityTimes:'0',
                 gaPreference:'',
                 classType:'',
-                studentType:''
+                studentType:''*/
           },
           step: 0, students:[], courses:[]
         }
