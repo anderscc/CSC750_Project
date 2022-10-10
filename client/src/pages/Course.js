@@ -26,6 +26,7 @@ class Course extends Component {
 
   onChangeValue(event) {
     console.log(event.target.value);
+    console.log(event.target.name)
     const name=event.target.name
     const value=event.target.value
     this.setState({course:{
@@ -35,7 +36,7 @@ class Course extends Component {
     console.log(event.target.value);
   }
   __onSelect (option) {
-    console.log('You selected ', option.value)
+    console.log('You selected ', option.target.value)
     const name=option.name
     const value=option.value
     this.setState({course:{
@@ -45,7 +46,7 @@ class Course extends Component {
   }
 
   changeHandler = e => {
-    const name=e.target.ref
+    const name=e.target.name
     const value=e.target.value
     this.setState({course:{
         ...this.state.course,
@@ -56,7 +57,7 @@ class Course extends Component {
         alert(JSON.stringify(this.state.course));
         }
   render(){
-  const option = [{value: 'John', label: 'John' },{ value: 'Jane', label: 'Jane'}] //retrieve student names from database
+  const option = [{value: 'John' },{ value: 'Jane'}] //retrieve student names from database
   
 
   
@@ -78,7 +79,7 @@ class Course extends Component {
               <input
                 type={"number"}
                 className="form-control"
-                ref="courseCode"
+                name="courseCode"
                 placeholder="0"
                 defaultValue={this.state.course.courseCode}
                 onChange={this.changeHandler}
@@ -87,10 +88,9 @@ class Course extends Component {
             <div className="mb-3">
               <label htmlFor="courseName" className="form-label">Course Name</label>
               <input
-                name='hoursAvail'
                 type="text"
                 className="form-control"
-                ref="courseName"
+                name="courseName"
                 placeholder="0"
                 defaultValue={this.state.course.courseName}
                 onChange={this.changeHandler}
@@ -101,7 +101,7 @@ class Course extends Component {
               <input
                 type={"number"}
                 className="form-control"
-                ref="courseSection"
+                name="courseSection"
                 placeholder="0"
                 defaultValue={this.state.course.courseSection}
                 onChange={this.changeHandler}
@@ -112,7 +112,7 @@ class Course extends Component {
               <input
                 type="text"
                 className="form-control"
-                ref="courseMeetTimes"
+                name="courseMeetTimes"
                 placeholder="MWF 12:00 PM - 1:30 PM"
                 defaultValue={this.state.course.courseMeetTimes}
                 onChange={this.changeHandler}
@@ -123,7 +123,7 @@ class Course extends Component {
               <input
                 type="text"
                 className="form-control"
-                ref="courseFaculty"
+                name="courseFaculty"
                 placeholder="John Doe"
                 defaultValue={this.state.course.courseFaculty}
                 onChange={this.changeHandler}
@@ -134,7 +134,7 @@ class Course extends Component {
               <input
                 type="text"
                 className="form-control"
-                ref="courseActivities"
+                name="courseActivities"
                 placeholder="Grading, preparation"
                 defaultValue={this.state.course.courseActivities}
                 onChange={this.changeHandler}
@@ -145,7 +145,7 @@ class Course extends Component {
               <input
                 type="float"
                 className="form-control"
-                ref="activityTimes"
+                name="activityTimes"
                 placeholder="30"
                 defaultValue={this.state.course.ActivityTimes}
                 onChange={this.changeHandler}
