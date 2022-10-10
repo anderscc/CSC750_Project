@@ -36,12 +36,11 @@ class Course extends Component {
     console.log(event.target.value);
   }
   __onSelect (option) {
-    console.log('You selected ', option.target.value)
-    const name=option.name
+    console.log('You selected ', option.value)
     const value=option.value
     this.setState({course:{
         ...this.state.course,
-        [name]:value
+        gaPreference:value
     }});
   }
 
