@@ -21,7 +21,6 @@ class CourseForm extends Component{
       addFormFields() {
         this.setState(({
           formValues: [...this.state.formValues, {
-            officeHours: '',
             courseCode: '',
             courseName: '',
             courseSection: '',
@@ -49,7 +48,6 @@ class CourseForm extends Component{
         //loop through form values for each course and save the values into an array
         for(var i=0; i<this.state.formValues.length; i++){
           var data = {
-            officeHours:this.state.formValues[i].officeHours,
             courseCode:this.state.formValues[i].courseCode,
             courseName:this.state.formValues[i].courseName,
             courseSection:this.state.formValues[i].courseSection,
