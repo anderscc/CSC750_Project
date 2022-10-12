@@ -12,6 +12,7 @@ class Confirmation extends Component {
 
     render(){
         console.log(this.props.students)
+        console.log(this.props.courses)
         return(
             <div className={'container'}>
                 <h2> Confirmation Page</h2>

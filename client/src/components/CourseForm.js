@@ -21,15 +21,15 @@ class CourseForm extends Component{
       addFormFields() {
         this.setState(({
           formValues: [...this.state.formValues, {
-            courseCode: '',
-            courseName: '',
-            courseSection: '',
-            courseMeetTimes: '',
-            courseFaculty: '',
-            courseActivities: '',
-            acitivityTimes: '',
-            gaPreference: '',
-            classType: '',
+            courseCode:'',
+            courseName:'',
+            courseSection:'',
+            courseMeetTimes:'',
+            courseFaculty:'',
+            courseActivities:'',
+            acitivityTimes:'',
+            gaPreference:'',
+            classType:'',
             }]
         }))
       }
@@ -77,18 +77,18 @@ class CourseForm extends Component{
                             <input
                                 type="radio"
                                 ref="classType"
-                                value = "Lab"
+                                value="Lab"
                             /> Course
                             <input
                                 type="radio"
                                 ref="classType"
-                                value = "Course"
+                                value="Course"
                             /> Lab
                             </div>
                         <div className="mb-3">
                             <label htmlFor="studentName" className="form-label">Course Code</label>
                             <input
-                                name = 'courseCode'
+                                name='courseCode'
                                 type={"number"}
                                 className="form-control"
                                 ref="courseCode"
@@ -100,90 +100,96 @@ class CourseForm extends Component{
                         <div className="mb-3">
                             <label htmlFor="hoursAvail" className="form-label">Course Name</label>
                             <input
-                                name='hoursAvail'
+                                name='courseName'
                                 type="text"
                                 className="form-control"
                                 ref="courseName"
                                 placeholder="0"
-                                value = {element.courseName}
+                                value={element.courseName}
                                 onChange={e => this.handleChange(index, e)}
                             />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="studentName" className="form-label">Course Section</label>
                             <input
+                                name='courseSection'
                                 type={"number"}
                                 className="form-control"
                                 ref="courseSection"
                                 placeholder="0"
-                                value = {element.courseSection}
+                                value={element.courseSection}
                                 onChange={e => this.handleChange(index, e)}
                             />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="studentName" className="form-label">Course Meet Times</label>
                             <input
+                                name='courseMeetTimes'
                                 type="text"
                                 className="form-control"
                                 ref="courseMeetTimes"
                                 placeholder="MWF 12:00 PM - 1:30 PM"
-                                value = {element.courseMeetTimes}
+                                value={element.courseMeetTimes}
                                 onChange={e => this.handleChange(index, e)}
                             />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="studentName" className="form-label">Course Faculty</label>
                             <input
+                                name='courseFaculty'
                                 type="text"
                                 className="form-control"
                                 ref="courseFaculty"
                                 placeholder="John Doe"
-                                value = {element.courseFaculty}
+                                value={element.courseFaculty}
                                 onChange={e => this.handleChange(index, e)}
                             />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="studentName" className="form-label">Course Activities</label>
                             <input
+                                name='courseActivities'
                                 type="text"
                                 className="form-control"
                                 ref="courseActivities"
                                 placeholder="3 Quizzes, 4 Exams, 1 Mid-Term"
-                                value = {element.courseActivities}
+                                value={element.courseActivities}
                                 onChange={e => this.handleChange(index, e)}
                             />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="studentName" className="form-label">Activity Times</label>
                             <input
-                            type="text"
-                            className="form-control"
-                            ref="activityTimes"
-                            placeholder="30 minutes"
-                            value = {element.activityTimes}
-                            onChange={e => this.handleChange(index, e)}
+                                name='activityTimes'
+                                type="text"
+                                className="form-control"
+                                ref="activityTimes"
+                                placeholder="30 minutes"
+                                value={element.activityTimes}
+                                onChange={e => this.handleChange(index, e)}
                             />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="studentName" className="form-label">GA Preference</label>
                             <input
-                            type="text"
-                            className="form-control"
-                            ref="gaPreference"
-                            placeholder="John Doe"
-                            value = {element.gaPreference}
-                            onChange={e => this.handleChange(index, e)}
+                                name='gaPreference'
+                                type="text"
+                                className="form-control"
+                                ref="gaPreference"
+                                placeholder="John Doe"
+                                value={element.gaPreference}
+                                onChange={e => this.handleChange(index, e)}
                             />
                         </div>
                         {
                       index ? 
-                        <button type="button"  className="button remove" onClick={() => this.removeFormFields(index)}>Remove</button> 
+                        <button className="button add-remove" type="button" onClick={() => this.removeFormFields(index)}>Remove</button> 
                       : null
                     }
                   </div>
                 ))}
                 <div className="button-section">
-                    <button className="button add" type="button" onClick={() => this.addFormFields()}>Add Course</button><br></br>
+                    <button className="button add-remove" type="button" onClick={() => this.addFormFields()}>Add Course</button><br></br>
                     <button className="button submit" type="button" onClick={this.previousPage.bind(this)}>Previous Page</button>  
                     <button className="button submit" type="button" onClick={this.nextPage.bind(this)}>Next Page</button> 
                   </div>
