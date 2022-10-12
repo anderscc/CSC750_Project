@@ -7,15 +7,17 @@ class StudentForm extends Component{
             formValues : [{
             }]
         }
-            this.handleSubmit = this.handleSubmit.bind(this)
+            this.nextPage = this.nextPage.bind(this)
     }
         
+    //function to save elements as it receives input
         handleChange(i, e) {
           let formValues = this.state.formValues;
           formValues[i][e.target.name] = e.target.value;
           this.setState({ formValues });
         }
       
+        //function to add additional fields as needed
         addFormFields() {
           this.setState(({
             formValues: [...this.state.formValues, { studentName: '',
@@ -26,48 +28,49 @@ class StudentForm extends Component{
                     officeHours: '', 
                   }]
           }))
-        }
-
-        nextStep(event) {
-          this.props.nextStep();
-        }
-      
+        }     
+        
+        //function to remove the last form field
         removeFormFields(i) {
           let formValues = this.state.formValues;
           formValues.splice(i, 1);
           this.setState({ formValues });
         }
 
-      
-        handleSubmit(event) {
+      // function to save each student and then go to the next page
+        nextPage(event) {
           event.preventDefault();
+          //loop through each student and save values into an array to be saved to parent
           for(var i=0; i<this.state.formValues.length; i++){
             var data = {
               studentName: this.state.formValues[i].studentName,
               classTimes: this.state.formValues[i].classTimes,
               hoursAvail: this.state.formValues[i].hoursAvail,
-              coursePref:this.state.formValues[i].coursePref,
-              facultyPref:this.state.formValues[i].facultyPref,
+              coursePref: this.state.formValues[i].coursePref,
+              facultyPref: this.state.formValues[i].facultyPref,
               officeHours: this.state.formValues[i].officeHours,
               gaClassAttendance: this.state.formValues[i].gaClassAttendance,
             }
             this.props.handleData(data);
           }
-            this.nextStep.bind(this);
+          this.props.nextStep()
         }
-      
+
+        //function to go back to previous page
+        previousPage(event) {
+            this.props.previousStep()
+        }
         render() {
-      
           return (
               <form className="container">
                   <div className="mb-3">
                     <label htmlFor="semester" className="form-label">What Semester are These Courses For?</label>
-                      <select name ="semester" ref = "semester">
-                        <option value="Fall 2022"> Fall 2022</option>
-                        <option value="Spring 2023"> Spring 2023</option>
-                        <option value="Summer 2023"> Summer 2023</option>
-                        <option value="Fall 2023"> Fall 2023</option>
-                      </select>
+                    <select>
+                      <option>Fall 2022</option>
+                      <option>Spring 2023</option>
+                      <option>Summer 2023</option>
+                      <option>Fall 2023</option>
+                    </select>
                   </div>
                 {this.state.formValues.map((element, index) => (
                 <div className="form-inline" key={index}>
@@ -86,14 +89,14 @@ class StudentForm extends Component{
                             name='studentType'
                             type="radio"
                             ref="studentType"
-                            value = {element.studentType}
+                            value = "GA"
                             onChange={e => this.handleChange(index, e)}
                         /> GA
                         <input
                             name='studentType'
                             type="radio"
                             ref="studentType"
-                            value = {element.studentType}
+                            value = "TA"
                             onChange={e => this.handleChange(index, e)}
                         /> TA
                     <br></br><label htmlFor="hoursAvail" className="form-label">GA Hours</label>
@@ -144,8 +147,7 @@ class StudentForm extends Component{
                                 ref="classTimes"
                                 placeholder="MW: 1:00PM - 2:00PM, TH: 1:00PM - 2:00PM"
                                 value = {element.classTimes}
-                                
-                            /><br></br>
+                              /><br></br>
                     {
                       index ? 
                         <button type="button"  className="button remove" onClick={() => this.removeFormFields(index)}>Remove</button> 
@@ -154,9 +156,9 @@ class StudentForm extends Component{
                   </div>
                 ))}
                 <div className="button-section">
-                    <button className="button add" type="button" onClick={() => this.addFormFields()}>Add</button>
-                    <button className="button submit" type="button" onClick={this.handleSubmit.bind(this)}
-                        >Submit</button>  
+                    <button className="button add" type="button" onClick={() => this.addFormFields()}>Add Student</button>
+                    <button className="button submit" type="button" onClick={this.previousPage.bind(this)}>Previous Page</button>
+                    <button className="button submit" type="button" onClick={this.nextPage.bind(this)}>Next Page</button>   
                 </div>
             </form>
           );

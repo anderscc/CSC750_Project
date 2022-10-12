@@ -1,15 +1,55 @@
 
 import React, { Component } from 'react';
+import CourseForm from '../components/CourseForm';
   
 class Course extends Component {
   constructor(args) {
     super(args);
     this.state = {
+      courseResult: []
     }
   }
 
   render(){
   return (
+          <CourseForm values = {this.state.values} 
+            nextStep = {this.nextStep.bind(this)}
+            previousStep = {this.previousStep.bind(this)}
+            saveValues = {this.state.saveValues}
+            setStep = {this.state.setStep}
+            handleData = {this.handleData.bind(this)}/>
+  )
+}
+
+//function to save values to parent and then advance to next page
+nextStep(e) {
+  this.props.nextStep();
+}
+
+//function to save values to parent and then go back to previous page
+previousStep(e) {
+  this.props.previousStep();
+}
+
+handleData(data){
+  var handledData = {
+    officeHours: data.studentName,
+    courseCode: data.classTimes,
+    courseName: data.hoursAvail,
+    courseSection:data.coursePref,
+    courseMeetTimes:data.facultyPref,
+    courseFaculty: data.officeHours,
+    courseActivities: data.officeHours,
+    activityTimes: data.officeHours,
+    gaPreference: data.officeHours,
+    classType: data.officeHours,
+  }
+  this.state.courseResult.length===0? this.props.courses.push(handledData) : this.props.saveValues(handledData)
+}
+}
+export default Course;
+
+/*
     <div className={'container-fluid'}>
       <h1>This Course Page</h1>
       <div>
@@ -123,44 +163,4 @@ class Course extends Component {
         </div>
       </div>
     </div>
-  )
-}
-
-//function to advance to next page
-  nextStep(e) {
-    e.preventDefault();
-    var data = {
-      courseCode: this.refs.courseCode.value,
-      courseName: this.refs.courseName.value,
-      courseSection: this.refs.courseSection.value,
-      courseMeetTimes:this.refs.courseMeetTimes.value,
-      courseFaculty:this.refs.courseFaculty.value,
-      courseActivities: this.refs.courseActivities.value,
-      activityTimes: this.refs.activityTimes.value,
-      gaPreference: this.refs.gaPreference.value,
-      classType: this.refs.classType.value,
-    }
-
-    this.props.saveValues(data);
-    this.props.nextStep();
-  }
-
-  //function to go back to previous page
-  previousStep(e) {
-    var data = {
-      courseCode: this.refs.courseCode.value,
-      courseName: this.refs.courseName.value,
-      courseSection: this.refs.courseSection.value,
-      courseMeetTimes:this.refs.courseMeetTimes.value,
-      courseFaculty:this.refs.courseFaculty.value,
-      courseActivities: this.refs.courseActivities.value,
-      activityTimes: this.refs.activityTimes.value,
-      gaPreference: this.refs.gaPreference.value,
-      classType: this.refs.classType.value,
-    }
-
-    this.props.saveValues(data);
-    this.props.previousStep();
-  }
-}
-export default Course;
+  */
