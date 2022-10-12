@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import GATA, Courses, Labs, Assignment, Schedules
+from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
 
 
 class GATASerializer(serializers.ModelSerializer):
     class Meta:
         model = GATA
-        fields = ('studentName', 'GAID','semYr','hoursAvailable', 'coursePref', 'facultyPref', 'officeHours', 'classTimes')
+        fields = ('studentName','semYr','hoursAvailable', 'coursePref', 'facultyPref', 'officeHours', 'classTimes')
 
 
 class CoursesSerializer(serializers.ModelSerializer):
@@ -31,3 +31,8 @@ class SchedulesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules
         fields = ('semYr','scheduleNum', 'conflicts')
+
+class SemesterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SemesterYear
+        fields = ('Semester', 'Year')

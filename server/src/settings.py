@@ -78,11 +78,15 @@ WSGI_APPLICATION = "src.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+# This is currently setup for MySQL. The service for MySQL must be started, the Database with name "Scheduler" must be created manually, and test user must exist in MySQL.
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "Scheduler",
+        "USER": "test",
+        "PASSWORD": "Secret_1234",
+        "HOST": "localhost",
+        "PORT": "3306"
     }
 }
 
