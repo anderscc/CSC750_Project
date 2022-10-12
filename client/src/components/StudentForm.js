@@ -20,7 +20,8 @@ class StudentForm extends Component{
         //function to add additional fields as needed
         addFormFields() {
           this.setState(({
-            formValues: [...this.state.formValues, { studentName: '',
+            formValues: [...this.state.formValues, { semester:'',
+                    studentName: '',
                     classTimes:'',
                     hoursAvail:'',
                     coursePref:'',
@@ -43,6 +44,7 @@ class StudentForm extends Component{
           //loop through each student and save values into an array to be saved to parent
           for(var i=0; i<this.state.formValues.length; i++){
             var data = {
+              semester: this.state.formValues[i].semester,
               studentName: this.state.formValues[i].studentName,
               classTimes: this.state.formValues[i].classTimes,
               hoursAvail: this.state.formValues[i].hoursAvail,
@@ -66,10 +68,10 @@ class StudentForm extends Component{
             <div className="mb-3">
               <label htmlFor="semester" className="form-label">What Semester are These Courses For?</label>
               <select>
-                <option>Fall 2022</option>
-                <option>Spring 2023</option>
-                <option>Summer 2023</option>
-                <option>Fall 2023</option>
+                <option value="Fall 2022" name="semster" ref="semester">Fall 2022</option>
+                <option value="Spring 2023" name="semster" ref="semester">Spring 2023</option>
+                <option value="Summer 2023" name="semster" ref="semester">Summer 2023</option>
+                <option value="Fall 2023" name="semster" ref="semester">Fall 2023</option>
               </select>
             </div>
           {this.state.formValues.map((element, index) => (
@@ -142,11 +144,12 @@ class StudentForm extends Component{
                   <label htmlFor="officeHours" className="form-label">Class Times (Enter in this Format MW: 1:00PM - 2:00PM) Separate multiple classes with comma</label>
                       <input
                           name='classTimes'
-                          type={"text"}
+                          type="text"
                           className="form-control"
                           ref="classTimes"
                           placeholder="MW: 1:00PM - 2:00PM, TH: 1:00PM - 2:00PM"
                           value={element.classTimes}
+                          onChange={e => this.handleChange(index, e)}
                         /><br></br>
               {
                 index ? 

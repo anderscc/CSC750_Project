@@ -54,7 +54,7 @@ class CourseForm extends Component{
             courseMeetTimes:this.state.formValues[i].courseMeetTimes,
             courseFaculty:this.state.formValues[i].courseFaculty,
             courseActivities:this.state.formValues[i].courseActivities,
-            acitivityTimes:this.state.formValues[i].acitivityTimes,
+            activityTimes:this.state.formValues[i].acitivityTimes,
             gaPreference:this.state.formValues[i].gaPreference,
             classType:this.state.formValues[i].classType,
           }
@@ -78,6 +78,7 @@ class CourseForm extends Component{
                                 type="radio"
                                 ref="classType"
                                 value="Lab"
+                                
                             /> Course
                             <input
                                 type="radio"

@@ -34,6 +34,7 @@ class Student extends Component{
 
   handleData(data){
     var handledData = {
+      semester: data.semester,
       studentName: data.studentName,
       classTimes: data.classTimes,
       hoursAvail: data.hoursAvail,
