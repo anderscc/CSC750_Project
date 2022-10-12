@@ -7,7 +7,7 @@
 This project has two folders
 
 - Client: Holds the [React](https://reactjs.org/docs/getting-started.html) Project
-- Server: Hols the [Django](https://docs.djangoproject.com/en/4.1/intro/tutorial01/) Project
+- Server: Holds the [Django](https://docs.djangoproject.com/en/4.1/intro/tutorial01/) Project
 
 ## Pre-requisites
 - You need to have [Nodejs and NPM](https://nodejs.org/en/download/) installed
