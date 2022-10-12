@@ -9,7 +9,6 @@ class Student extends Component{
       studentResult: []
     }
   }
-
   render(){
     return (
       <div>
@@ -43,7 +42,6 @@ class Student extends Component{
       officeHours: data.officeHours,
     }
     this.state.studentResult.length===0? this.props.students.push(handledData) : this.props.saveValues(handledData)
-    // this.props.nextStep.bind(this)
   }
 }
   export default Student;

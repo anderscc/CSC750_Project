@@ -9,16 +9,15 @@ class Course extends Component {
       courseResult: []
     }
   }
-
   render(){
-  return (
-          <CourseForm values = {this.state.values} 
-            nextStep = {this.nextStep.bind(this)}
-            previousStep = {this.previousStep.bind(this)}
-            saveValues = {this.state.saveValues}
-            setStep = {this.state.setStep}
-            handleData = {this.handleData.bind(this)}/>
-  )
+    return (
+      <CourseForm values = {this.state.values} 
+        nextStep = {this.nextStep.bind(this)}
+        previousStep = {this.previousStep.bind(this)}
+        saveValues = {this.state.saveValues}
+        setStep = {this.state.setStep}
+        handleData = {this.handleData.bind(this)}/>
+    )
 }
 
 //function to save values to parent and then advance to next page
