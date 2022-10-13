@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import StudentForm from '../components/StudentForm';
+import {getAllSemester} from "../services/semesterService";
+import { addStudent } from "../services/studentService";
 
 //Student class which allows user to input details about GA's and TA's
 class Student extends Component{
   constructor(args) {
     super(args);
     this.state = {
-      studentResult: []
+      studentResult: [],
+      semester: []
     }
   }
+  async componentDidMount(){
+    const semester = await getAllSemester();
+    this.setState({ ...this.state, semester})
+    }
   render(){
     return (
       <div>
@@ -17,7 +24,10 @@ class Student extends Component{
                         saveValues = {this.state.saveValues}
                         previousStep = {this.previousStep.bind(this)}
                         setStep = {this.state.setStep}
-                        handleData = {this.handleData.bind(this)}/>
+                        handleData = {this.handleData.bind(this)}
+                       semester = {this.state.semester}
+                       addStudent = {addStudent}
+          />
       </div>
     )
   }
@@ -40,7 +50,7 @@ class Student extends Component{
       hoursAvail: data.hoursAvail,
       coursePref:data.coursePref,
       facultyPref:data.facultyPref,
-      officeHours: data.officeHours,
+      officeHours: data.officeHours
     }
     this.state.studentResult.length===0? this.props.students.push(handledData) : this.props.saveValues(handledData)
   }
