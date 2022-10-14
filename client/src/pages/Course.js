@@ -62,7 +62,7 @@ class Course extends Component {
   }
   render() {
     const option = [{ value: 'John' }, { value: 'Jane' }] //retrieve student names from database
-\
+
     //console.log(defaultOption)
     return (
       <div className={'container-fluid'}>
