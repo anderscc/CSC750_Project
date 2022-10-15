@@ -11,15 +11,15 @@ class Main extends Component  {
         super(args);
         this.state = {
           values: {
-                semester:'',
-                studentName: '',
+                semester:'Fall 2020',
+                /*studentName: '',
                 classTimes:'',
                 hoursAvail:0,
                 coursePref:'',
                 facultyPref:'',
                 officeHours: 0,
                 studentType:''
-                /*courseCode: '0',
+                courseCode: '0',
                 courseName: '',
                 courseSection:'0',
                 courseMeetTimes:'0',

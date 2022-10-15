@@ -7,7 +7,8 @@ class Course extends Component {
     super(args);
     this.state = {
       course: {
-        semester: 'Fall 2022',
+        /*TODO: Set a global variable for the default semester*/
+        semester: "Fall 2022", 
         courseCode: '',
         courseName: '',
         courseSection: '',
@@ -42,6 +43,7 @@ class Course extends Component {
     this.setState({
       course: {
         ...this.state.course,
+        /* TODO:change the variable name to be the name of field for use in semester menu*/
         gaPreference: value
       }
     });
@@ -61,7 +63,10 @@ class Course extends Component {
     alert(JSON.stringify(this.state.course));
   }
   render() {
+    /*TODO: retrieve student names from database*/
     const option = [{ value: 'John' }, { value: 'Jane' }] //retrieve student names from database
+
+    /*TODO: retrieve semester from database and create dropdown menu*/
 
     //console.log(defaultOption)
     return (
@@ -148,7 +153,7 @@ class Course extends Component {
                   className="form-control"
                   name="activityTimes"
                   placeholder="30"
-                  defaultValue={this.state.course.ActivityTimes}
+                  defaultValue={this.state.course.activityTimes}
                   onChange={this.changeHandler}
                 />
               </div>
@@ -167,8 +172,8 @@ class Course extends Component {
           </form>
           <div className={"row"}>
             <div className={"col"}>
-              <button onClick={this.previousStep.bind(this)}>Previous Page</button>
-              <button onClick={this.nextStep.bind(this)}>Next Page</button>
+              {/* <button onClick={this.previousStep.bind(this)}>Previous Page</button>
+              <button onClick={this.nextStep.bind(this)}>Next Page</button> */}
               <button onClick={this.onSubmit}>Submit</button>
             </div>
           </div>
@@ -177,7 +182,7 @@ class Course extends Component {
     )
   }
 
-  //function to advance to next page
+  /*function to advance to next page
   nextStep(e) {
     e.preventDefault();
     var data = {
@@ -214,6 +219,6 @@ class Course extends Component {
 
     this.props.saveValues(data);
     this.props.previousStep();
-  }
+  }*/
 }
 export default Course;

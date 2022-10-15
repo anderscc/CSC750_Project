@@ -2,7 +2,6 @@ import React, { Component, useState } from 'react';
 //import StudentForm from '../components/StudentForm';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import { Navigate, useNavigate } from 'react-router-dom';
 
 //Student class which allows user to input details about GA's and TA's
 class Student extends Component {
@@ -10,10 +9,11 @@ class Student extends Component {
     super(args);
     this.state = {
       student: {
-        semester: '',
+        /*TODO: Set a global variable for the default semester*/
+        semester: 'Fall 2022',
         studentName: '',
         classTimes: '',
-        hoursAvail: 0,
+        hoursAvail: 20,
         coursePref: '',
         facultyPref: '',
         officeHours: 0,
@@ -64,7 +64,8 @@ class Student extends Component {
 
 
   render() {
-    const option = [{ value: 'Fall 2022' }, { value: 'Spring 2022' }, { value: 'Fall 2021' }] //retrieve student names from database
+    /* TODO:retrieve semester from database*/
+    const option = [{ value: 'Fall 2022' }, { value: 'Spring 2022' }, { value: 'Fall 2021' }] 
 
     return (
       <div className={'container-fluid'}>

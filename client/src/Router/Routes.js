@@ -13,7 +13,7 @@ function RouterCustom() {
     return (
         <>
             <Routes>
-                <Route path='/home' exact element={<Home />} />
+                <Route path='/' exact element={<Home />} />
                 <Route path='/student' exact element={<Student />} />
                 <Route path='/course' exact element={<Course />} />
                 <Route path='/viewSchedule' exact element={<ViewSchedule />} />

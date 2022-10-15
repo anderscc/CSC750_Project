@@ -96,6 +96,7 @@ const EditableCell = ({
     children,
     ...restProps
 }) => {
+    /*Input Validation*/
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
     return (
         <td {...restProps}>
@@ -334,8 +335,8 @@ const App = () => {
             ...col,
             onCell: (record) => ({
                 record,
-                /*INput validation*/
-                inputType: col.dataIndex === 'age' ? 'number' : 'text',
+                /*Input type validation*/
+                inputType: col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvail"||col.dataIndex === 'activityTimes'||col.dataIndex ==='officeHours'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
