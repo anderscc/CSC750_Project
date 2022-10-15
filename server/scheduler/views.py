@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import GATASerializer,CoursesSerializer, SchedulesSerializer, AssignmentSerializer, LabsSerializer
-from .models import GATA, Courses, Labs, Assignment, Schedules
+from .serializers import GATASerializer,CoursesSerializer, SchedulesSerializer, AssignmentSerializer, LabsSerializer, SemesterSerializer
+from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
 
 
 # Create your views here.
@@ -26,3 +26,7 @@ class AssignmentView(viewsets.ModelViewSet):
 class SchedulesView(viewsets.ModelViewSet):
     serializer_class = SchedulesSerializer
     queryset = Schedules.objects.all()
+
+class SemesterView(viewsets.ModelViewSet):
+    serializer_class = SemesterSerializer
+    queryset = SemesterYear.objects.all()

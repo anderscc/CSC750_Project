@@ -12,9 +12,11 @@ class Confirmation extends Component {
 
     render(){
         console.log(this.props.students)
+        console.log(this.props.courses)
         return(
             <div className={'container'}>
                 <h2> Confirmation Page</h2>
+                <h3>Semester: {this.props.students.semester}</h3>
                 <h3>Student:</h3>
                 <div>
                 {this.props.students.map((element, index) => (

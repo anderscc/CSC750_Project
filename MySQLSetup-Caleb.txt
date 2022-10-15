@@ -1,0 +1,43 @@
+Hello all, hope this message finds you well.
+
+I'm going to walk you step by step on how to get MySQL setup on your machines.
+Assumptions: 
+1. You already have MySQL Server installed either through XAMP or other means.
+2. You know which port your MySQL server is listening on.
+3. You have created a database in MySQL Server with the name "Scheduler" (Case-Sensitive).
+4. You have created a user that has full permissions to the database. Keep the username and password handy.
+
+Steps Below for Setup.|
+----------------------
+1. Use pip to install mysqlclient
+2. Locate the settings.py file (CSC750_Project\server\src\settings.py) and open it.
+3. Scroll down in the settings.py file and locate the Databases Section. Should look like this:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME' : 'db.sqlite3',
+    }
+}
+4. Change this section to include the following, 
+    you will need to input your username and password to login to the database,
+    you will need to input the port your MySQL server is listening on,
+    you will need to input the ip address of the computer that is hosting the MySQL server (if local, use localhost)
+    
+    Example:
+    DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "Scheduler",
+        "USER": "<Input Username Here>",
+        "PASSWORD": "<Input Password Here>",
+        "HOST": "<Input IP Address Here or localhost if local>",
+        "PORT": "<Input Port Number Here>"
+        }
+    }
+5. At the terminal cd into the server folder of the CSC750_Project. 
+6. Run the following command: "python manage.py makemigrations"
+7. Run the following command: "python manage.py migrate scheduler"
+8. Run the following command: "python manage.py runserver"
+9. Confirm in MySQL that 7 tables were created.
+10. Confirm at http://127.0.0.1:8000/api that you can successfully post information to the database.
+
