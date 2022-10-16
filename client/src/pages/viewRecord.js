@@ -1,33 +1,36 @@
-import React, { Component } from "react";
+import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import 'antd/dist/antd.css';
 
 import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import {getAllStudent} from "../services/studentService";
+import {getAllCourse} from "../services/courseService";
 
 const studentField = {
-
-    Semester: '',
-    name: '',
-    classTimes: '',
-    hoursAvail: '',
-    coursePref: '',
-    facultyPref: '',
-    officeHours: '',
-    studentType: '',
+    id: '',
+        semYr: '',
+        studentName: '',
+        classTimes: '',
+        hoursAvail: '',
+        coursePref: '',
+        facultyPref: '',
+        officeHours: '',
+        studentType: ''
 }
 
 const courseFields =
 {
-    Semester: '',
-    courseCode: '',
-    name: '',
-    courseSection: '',
-    courseMeetTimes: '',
-    courseFaculty: '',
-    courseActivities: '',
-    activityTimes: '',
-    gaPreference: '',
-    classType: '',
+        id: '',
+        semYr: "",
+        courseCode: '',
+        courseName: '',
+        courseSection: '',
+        courseMeetTimes: '',
+        courseFaculty: '',
+        courseActivities: '',
+        activityTimes: '',
+        GAPref: '',
+        classType: '',
 
 }
 
@@ -125,20 +128,31 @@ const EditableCell = ({
 const App = () => {
     const [viewStudent, setViewStudent] = useState(true);
 
+    const [students, setStudents] = useState([])
+    const [courses, setCourses] = useState([])
 
+    useEffect(() => {
+        const getData = async () => {
+            const studentsData = await getAllStudent()
+            setStudents(studentsData)
+            const coursesData = await getAllCourse()
+            setCourses(coursesData)
+        }
+        getData()
+    },[])
 
     const [form] = Form.useForm();
-    const [data, setData] = useState(studentItems);
+    const [data, setData] = useState(students);
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.id === editingKey;
 
     const displayStudents = () => {
         setViewStudent(true)
-        setData(studentItems)
+        setData(students)
     }
     const displayCourses = () => {
         setViewStudent(false)
-        setData(courseItems)
+        setData(courses)
     }
 
 

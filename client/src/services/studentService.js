@@ -18,7 +18,7 @@ export const getStudent = async (id)=>{
     return student.data
 }
 
-export const getAllStudent = async (id)=>{
+export const getAllStudent = async ()=>{
      const students = await axios.get(BASEURL)
         .catch(error => {
             alert(" an error occurred")

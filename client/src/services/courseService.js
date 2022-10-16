@@ -18,7 +18,7 @@ export const getCourse = async (id)=>{
     return Course.data
 }
 
-export const getAllCourse = async (id)=>{
+export const getAllCourse = async ()=>{
      const Courses = await axios.get(BASEURL)
         .catch(error => {
             alert(" an error occurred")
