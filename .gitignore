@@ -139,3 +139,4 @@ GitHub.sublime-settings
 # Pycharm
  ../.DS_Store
  .DS_Store
+server/db.sqlite3
