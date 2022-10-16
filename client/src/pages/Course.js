@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import {addStudent, getAllStudent} from "../services/studentService";
+import {toast, ToastContainer} from "react-toastify";
+import {addCourse} from "../services/courseService";
 
 class Course extends Component {
   constructor(args) {
     super(args);
     this.state = {
       course: {
-        /*TODO: Set a global variable for the default semester*/
-        semester: "Fall 2022", 
+        semYr: "",
         courseCode: '',
         courseName: '',
         courseSection: '',
@@ -16,12 +18,18 @@ class Course extends Component {
         courseFaculty: '',
         courseActivities: 'Grading, preparation',
         activityTimes: '',
-        gaPreference: '',
+        GAPref: '',
         classType: 'course',
-      }
+      },
+      students: []
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
+  }
+
+  async componentDidMount() {
+    let students = await getAllStudent()
+    this.setState({course: {...this.state.course}, students: [...students]})
   }
 
   onChangeValue(event) {
@@ -38,7 +46,7 @@ class Course extends Component {
     console.log(event.target.value);
   }
   __onSelect(option) {
-    console.log('You selected ', option.value)
+    console.log('You selected ', option)
     const value = option.value
     this.setState({
       course: {
@@ -59,8 +67,31 @@ class Course extends Component {
       }
     });
   }
-  onSubmit = () => {
-    alert(JSON.stringify(this.state.course));
+  onSubmit = async () => {
+         try{
+        await addCourse(this.state.course);
+              toast.success('Course record added', {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+              })
+     } catch (e){
+        toast.error('An error occurred', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+       });
+     }
   }
   render() {
     /*TODO: retrieve student names from database*/
@@ -75,6 +106,16 @@ class Course extends Component {
         <div>
           <form>
             <div className='course-form container'>
+              <div className="mb-3">
+                <label htmlFor="semYr" className="form-label">Semester</label>
+                <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
+                    <option>select</option>
+                  {this.props.semesters.map((item, index) => (
+
+                      <option value={item.id} key={index}>{item.Semester}</option>
+                  ))}
+                </select>
+              </div>
               <div className="mb-3" onChange={this.onChangeValue}>
                 Select Class Type:
                 <input type="radio" name="classType" value="course" defaultChecked="true" /> Course
@@ -159,13 +200,13 @@ class Course extends Component {
               </div>
               <div className="mb-3">
                 <label htmlFor="gaPreference" className="form-label">GA Preference</label>
-                <Dropdown
-                  options={option}
-                  name="gaPreference"
-                  value={this.state.course.gaPreference}
-                  onChange={this.__onSelect}
-                  placeholder="Select an option"
-                />
+               <select className="form-control" id="exampleFormControlSelect1" name={"GAPref"} onChange={this.onChangeValue}>
+                    <option>select</option>
+                  {this.state.students.map((item, index) => (
+
+                      <option value={item.id} key={index}>{item.studentName}</option>
+                  ))}
+                </select>
               </div>
 
             </div>
@@ -178,47 +219,22 @@ class Course extends Component {
             </div>
           </div>
         </div>
+                  <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+          />
+          {/* Same as */}
+          <ToastContainer/>
       </div>
     )
   }
-
-  /*function to advance to next page
-  nextStep(e) {
-    e.preventDefault();
-    var data = {
-      courseCode: this.refs.courseCode.value,
-      courseName: this.refs.courseName.value,
-      courseSection: this.refs.courseSection.value,
-      courseMeetTimes: this.refs.courseMeetTimes.value,
-      courseFaculty: this.refs.courseFaculty.value,
-      courseActivities: this.refs.courseActivities.value,
-      activityTimes: this.refs.activityTimes.value,
-      gaPreference: this.refs.gaPreference.value,
-      classType: this.refs.classType.value,
-    }
-
-    this.props.saveValues(data);
-    this.props.nextStep();
-  }
-
-  //function to go back to previous page
-  previousStep(e) {
-    console.log(this.refs.gaPreference)
-    console.log(this.refs.courseCode)
-    var data = {
-      courseCode: this.refs.courseCode.value,
-      courseName: this.refs.courseName.value,
-      courseSection: this.refs.courseSection.value,
-      courseMeetTimes: this.refs.courseMeetTimes.value,
-      courseFaculty: this.refs.courseFaculty.value,
-      courseActivities: this.refs.courseActivities.value,
-      activityTimes: this.refs.activityTimes.value,
-      gaPreference: this.refs.gaPreference.value,
-      classType: this.refs.classType.value,
-    }
-
-    this.props.saveValues(data);
-    this.props.previousStep();
-  }*/
 }
 export default Course;

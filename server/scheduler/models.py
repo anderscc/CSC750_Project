@@ -12,6 +12,7 @@ class GATA(models.Model):
     facultyPref = models.CharField(max_length = 255)
     officeHours = models.PositiveSmallIntegerField(default = 1)
     classTimes = models.CharField(max_length = 255)
+    studentType = models.CharField(max_length = 255, default="GA")
 # Courses Table
 class Courses(models.Model):
     id = models.AutoField(primary_key = True, editable = False, unique = True)

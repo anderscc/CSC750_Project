@@ -22,6 +22,7 @@ DATABASES = {
     you will need to input your username and password to login to the database,
     you will need to input the port your MySQL server is listening on,
     you will need to input the ip address of the computer that is hosting the MySQL server (if local, use localhost)
+    Make a copy of the .env-example file and rename it to .env. Then change the database credentials to your own
     
     Example:
     DATABASES = {

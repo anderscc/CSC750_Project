@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+dotenv_path = "../.env"
+load_dotenv(dotenv_path)
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,9 +89,9 @@ WSGI_APPLICATION = "src.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "Scheduler",
-        "USER": "test",
-        "PASSWORD": "Secret_1234",
+        "NAME": str(os.getenv('DATABASE')),
+        "USER": str(os.getenv('DB_USER')),
+        "PASSWORD": str(os.getenv('DB_PASSWORD')),
         "HOST": "localhost",
         "PORT": "3306"
     }

@@ -6,7 +6,7 @@ import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography 
 
 const studentField = {
 
-    semester: '',
+    Semester: '',
     name: '',
     classTimes: '',
     hoursAvail: '',
@@ -18,7 +18,7 @@ const studentField = {
 
 const courseFields =
 {
-    semester: '',
+    Semester: '',
     courseCode: '',
     name: '',
     courseSection: '',

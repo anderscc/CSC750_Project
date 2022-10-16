@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {addStudent} from "../services/studentService";
 
 class StudentForm extends Component{
     constructor(args){
@@ -8,6 +9,7 @@ class StudentForm extends Component{
             }]
         }
             this.nextPage = this.nextPage.bind(this)
+            this.addNewStudent = this.addNewStudent.bind(this)
     }
         
     //function to save elements as it receives input
@@ -16,17 +18,24 @@ class StudentForm extends Component{
           formValues[i][e.target.name] = e.target.value;
           this.setState({ formValues });
         }
+
+        async addNewStudent(){
+            const currentFormIndex = this.state.formValues.length - 1;
+            const currentForm = {...this.state.formValues[currentFormIndex]};
+            await addStudent(currentForm);
+        }
       
         //function to add additional fields as needed
-        addFormFields() {
+        async addFormFields() {
+        await this.addNewStudent();
           this.setState(({
-            formValues: [...this.state.formValues, { semester:'',
+            formValues: [...this.state.formValues, { semYr_id:'',
                     studentName: '',
                     classTimes:'',
                     hoursAvail:'',
                     coursePref:'',
                     facultyPref:'',
-                    officeHours: '', 
+                    officeHours: '',
                   }]
           }))
         }     
@@ -39,7 +48,7 @@ class StudentForm extends Component{
         }
 
       // function to save each student and then go to the next page
-        nextPage(event) {
+        async nextPage(event) {
           event.preventDefault();
           //loop through each student and save values into an array to be saved to parent
           for(var i=0; i<this.state.formValues.length; i++){
@@ -65,17 +74,19 @@ class StudentForm extends Component{
   render(){
     return(
         <form className="container">
-            <div className="mb-3">
-              <label htmlFor="semester" className="form-label">What Semester are These Courses For?</label>
-              <select>
-                <option value="Fall 2022" name="semster" ref="semester">Fall 2022</option>
-                <option value="Spring 2023" name="semster" ref="semester">Spring 2023</option>
-                <option value="Summer 2023" name="semster" ref="semester">Summer 2023</option>
-                <option value="Fall 2023" name="semster" ref="semester">Fall 2023</option>
-              </select>
-            </div>
           {this.state.formValues.map((element, index) => (
           <div className="form-inline" key={index}>
+              <label htmlFor="semYr" className="form-label">What Semester are These Courses For?</label>
+              <select onChange={e => this.handleChange(index, e)} name="semYr" ref="semYr">
+                  <option>Select an option</option>
+                  {
+
+                      this.props.semester.map((item, index) => (
+
+                          <option value={item.id} key={index}>{item.Semester}</option>
+                      ))
+                  }
+              </select>
               <label htmlFor="studentName" className="form-label">Student Name</label>
                   <input
                     name="studentName"
