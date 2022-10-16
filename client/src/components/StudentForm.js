@@ -49,7 +49,6 @@ class StudentForm extends Component{
 
       // function to save each student and then go to the next page
         async nextPage(event) {
-        await addNewStudent()
           event.preventDefault();
           //loop through each student and save values into an array to be saved to parent
           for(var i=0; i<this.state.formValues.length; i++){

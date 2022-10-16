@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const BASEURL = 'http://127.0.0.1:8000/api/gata/'
+const BASEURL = 'http://127.0.0.1:8000/api/courses/'
 
-export const addStudent = async (data)=>{
+export const addCourse = async (data)=>{
 
     return await axios.post(BASEURL, {...data})
         .catch(error => {
@@ -10,24 +10,24 @@ export const addStudent = async (data)=>{
         })
 }
 
-export const getStudent = async (id)=>{
-     const student = await axios.get(BASEURL + `${id}/`)
+export const getCourse = async (id)=>{
+     const Course = await axios.get(BASEURL + `${id}/`)
         .catch(error => {
             alert(" an error occurred")
         })
-    return student.data
+    return Course.data
 }
 
-export const getAllStudent = async (id)=>{
-     const students = await axios.get(BASEURL)
+export const getAllCourse = async (id)=>{
+     const Courses = await axios.get(BASEURL)
         .catch(error => {
             alert(" an error occurred")
         })
-    return students.data
+    return Courses.data
 }
 
 
-export const updateStudent = async (id, data)=>{
+export const updateCourse = async (id, data)=>{
 
     return await axios.put(BASEURL + `${id}/`, {...data})
         .catch(error => {
