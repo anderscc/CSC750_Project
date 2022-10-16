@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import Home from "./Home";
 import Student from "./Student";
 import Course from "./Course";
@@ -11,23 +11,24 @@ class Main extends Component  {
         super(args);
         this.state = {
           values: {
-                semester:'',
-                studentName:'',
+                semester:'Fall 2020',
+                /*studentName: '',
                 classTimes:'',
-                hoursAvail:'0',
+                hoursAvail:0,
                 coursePref:'',
                 facultyPref:'',
-                officeHours:'',
-                courseCode:'0',
-                courseName:'',
-                courseSection:'',
-                courseMeetTimes:'',
+                officeHours: 0,
+                studentType:''
+                courseCode: '0',
+                courseName: '',
+                courseSection:'0',
+                courseMeetTimes:'0',
                 courseFaculty:'',
                 courseActivities:'',
-                acitivityTimes:'',
+                acitivityTimes:'0',
                 gaPreference:'',
                 classType:'',
-                studentType:''
+                studentType:''*/
           },
           step: 0, students:[], courses:[]
         }
@@ -61,6 +62,12 @@ class Main extends Component  {
         })
       }
 
+      setStep(page){
+        this.setState({
+          step: page
+        })
+      }
+
       // switch function to flip between pages and render component based on page
     stepDisplay = () => {
         switch (this.state.step) {
@@ -71,13 +78,13 @@ class Main extends Component  {
                                 saveValues = {this.saveValues.bind(this)} 
                                 nextStep = {this.nextStep.bind(this)} 
                                 previousStep = {this.previousStep.bind(this)}
+                                setStep = {this.setStep.bind(this)}
                                 students = {this.state.students}/>;
             case 2:
             return <Course values = {this.state.values} 
                             saveValues = {this.saveValues.bind(this)} 
                             nextStep = {this.nextStep.bind(this)} 
-                            previousStep = {this.previousStep.bind(this)}
-                            courses = {this.state.courses}/>;
+                            previousStep = {this.previousStep.bind(this)}/>;
             case 3:
             return <Confirmation values = {this.state.values} 
                                     saveValues = {this.saveValues.bind(this)} 
