@@ -1,33 +1,36 @@
-import React, { Component } from "react";
+import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import 'antd/dist/antd.css';
 
 import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import {getAllStudent} from "../services/studentService";
+import {getAllCourse} from "../services/courseService";
 
 const studentField = {
-
-    Semester: '',
-    name: '',
-    classTimes: '',
-    hoursAvail: '',
-    coursePref: '',
-    facultyPref: '',
-    officeHours: '',
-    studentType: '',
+    id: '',
+        semYr: '',
+        studentName: '',
+        classTimes: '',
+        hoursAvail: '',
+        coursePref: '',
+        facultyPref: '',
+        officeHours: '',
+        studentType: ''
 }
 
 const courseFields =
 {
-    Semester: '',
-    courseCode: '',
-    name: '',
-    courseSection: '',
-    courseMeetTimes: '',
-    courseFaculty: '',
-    courseActivities: '',
-    activityTimes: '',
-    gaPreference: '',
-    classType: '',
+        id: '',
+        semYr: "",
+        courseCode: '',
+        courseName: '',
+        courseSection: '',
+        courseMeetTimes: '',
+        courseFaculty: '',
+        courseActivities: '',
+        activityTimes: '',
+        GAPref: '',
+        classType: '',
 
 }
 
@@ -125,20 +128,33 @@ const EditableCell = ({
 const App = () => {
     const [viewStudent, setViewStudent] = useState(true);
 
+    const [students, setStudents] = useState([])
+    const [courses, setCourses] = useState([])
+        const [data, setData] = useState(students);
 
+    useEffect(() => {
+        const getData = async () => {
+            const studentsData = await getAllStudent()
+            setStudents(studentsData)
+            setData(studentsData)
+            const coursesData = await getAllCourse()
+            setCourses(coursesData)
+        }
+        getData()
+    },[])
 
     const [form] = Form.useForm();
-    const [data, setData] = useState(studentItems);
+
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.id === editingKey;
 
     const displayStudents = () => {
         setViewStudent(true)
-        setData(studentItems)
+        setData(students)
     }
     const displayCourses = () => {
         setViewStudent(false)
-        setData(courseItems)
+        setData(courses)
     }
 
 
@@ -185,8 +201,8 @@ const App = () => {
     const studentColumns = [
         {
             title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'studentName',
+            key: 'studentName',
             render: (text) => <a>{text}</a>,
             editable: true
         },
@@ -197,8 +213,8 @@ const App = () => {
         },
         {
             title: 'Hours Available',
-            dataIndex: 'hoursAvail',
-            key: 'hoursAvail', editable: true
+            dataIndex: 'hoursAvailable',
+            key: 'hoursAvailable', editable: true
         },
         {
             title: 'Course Preference',
@@ -267,8 +283,8 @@ const App = () => {
         },
         {
             title: 'Course Name',
-            dataIndex: 'name',
-            key: 'name', editable: true
+            dataIndex: 'courseName',
+            key: 'courseName', editable: true
         },
         {
             title: 'Meet Times',
@@ -287,8 +303,8 @@ const App = () => {
         },
         {
             title: 'GA Preference',
-            dataIndex: 'gaPreference',
-            key: 'gaPreference', editable: true
+            dataIndex: 'GAPref',
+            key: 'GAPref', editable: true
         },
         {
             title: 'class Type',
