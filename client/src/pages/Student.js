@@ -26,7 +26,7 @@ class Student extends Component {
     }
     this.validator = new SimpleReactValidator();
     this.onChangeValue = this.onChangeValue.bind(this)
-    this._onSelect = this._onSelect.bind(this)
+    this.__onSelect = this.__onSelect.bind(this)
   }
 
   onChangeValue(event) {
@@ -155,7 +155,7 @@ class Student extends Component {
                       value={this.state.student.hoursAvail}
                       onChange={this.changeHandler}
                   />
-                  {this.validator.message('hoursAvail', this.state.student.hoursAvail, 'required|min:10|max:20')}
+                  {this.validator.message('hoursAvail', this.state.student.hoursAvail, 'required|integer|min:10|max:20')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="coursePref" className="form-label">Course Preference</label>
