@@ -130,11 +130,13 @@ const App = () => {
 
     const [students, setStudents] = useState([])
     const [courses, setCourses] = useState([])
+        const [data, setData] = useState(students);
 
     useEffect(() => {
         const getData = async () => {
             const studentsData = await getAllStudent()
             setStudents(studentsData)
+            setData(studentsData)
             const coursesData = await getAllCourse()
             setCourses(coursesData)
         }
@@ -142,7 +144,7 @@ const App = () => {
     },[])
 
     const [form] = Form.useForm();
-    const [data, setData] = useState(students);
+
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.id === editingKey;
 
@@ -199,8 +201,8 @@ const App = () => {
     const studentColumns = [
         {
             title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'studentName',
+            key: 'studentName',
             render: (text) => <a>{text}</a>,
             editable: true
         },
@@ -211,8 +213,8 @@ const App = () => {
         },
         {
             title: 'Hours Available',
-            dataIndex: 'hoursAvail',
-            key: 'hoursAvail', editable: true
+            dataIndex: 'hoursAvailable',
+            key: 'hoursAvailable', editable: true
         },
         {
             title: 'Course Preference',
@@ -281,8 +283,8 @@ const App = () => {
         },
         {
             title: 'Course Name',
-            dataIndex: 'name',
-            key: 'name', editable: true
+            dataIndex: 'courseName',
+            key: 'courseName', editable: true
         },
         {
             title: 'Meet Times',
@@ -301,8 +303,8 @@ const App = () => {
         },
         {
             title: 'GA Preference',
-            dataIndex: 'gaPreference',
-            key: 'gaPreference', editable: true
+            dataIndex: 'GAPref',
+            key: 'GAPref', editable: true
         },
         {
             title: 'class Type',
