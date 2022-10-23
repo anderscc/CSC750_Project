@@ -19,7 +19,6 @@ class Course extends Component {
         courseActivities: 'Grading, preparation',
         activityTimes: '',
         GAPref: '',
-        classType: 'course',
       },
       students: []
     }
@@ -68,30 +67,35 @@ class Course extends Component {
     });
   }
   onSubmit = async () => {
-         try{
-        await addCourse(this.state.course);
-              toast.success('Course record added', {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-              })
-     } catch (e){
-        toast.error('An error occurred', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
+
+        const response =  await addCourse(this.state.course).catch(() => {
+          toast.error('An error occurred', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+              return "error"
        });
-     }
+
+      if(response != 'error'){
+      toast.success('Course record added', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+}
+
+
   }
   render() {
     /*TODO: retrieve student names from database*/
@@ -115,11 +119,6 @@ class Course extends Component {
                       <option value={item.id} key={index}>{item.Semester}</option>
                   ))}
                 </select>
-              </div>
-              <div className="mb-3" onChange={this.onChangeValue}>
-                Select Class Type:
-                <input type="radio" name="classType" value="course" defaultChecked="true" /> Course
-                <input type="radio" name="classType" value="lab" /> Lab
               </div>
               <div className="mb-3">
                 <label htmlFor="courseCode" className="form-label">Course Code</label>
