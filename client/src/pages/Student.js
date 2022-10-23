@@ -4,6 +4,7 @@ import { addStudent } from "../services/studentService";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { ToastContainer, toast } from 'react-toastify';
+import {addLab} from "../services/labService";
 
 //Student class which allows user to input details about GA's and TA's
 class Student extends Component {
@@ -63,30 +64,32 @@ class Student extends Component {
   }
   onSubmit = async (event) => {
     event.preventDefault()
-    try {
-      await addStudent(this.state.student);
+        const response = await addStudent(this.state.student).catch(error => {
+                  toast.error('An error occurred', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+       });
+            return "error"
+
+        });
+    if(response != "error"){
       toast.success('Student record added', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      })
-    } catch (e) {
-      toast.error('An error occurred', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+              })
+        }
 
   }
 
