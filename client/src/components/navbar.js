@@ -16,7 +16,7 @@ const Navbar = () => {
           <NavLink to="/course" activeStyle>
             Courses
           </NavLink>
-          <NavLink to="/record" activeStyle>
+          <NavLink to="/Confirmation" activeStyle>
             Confirmation
           </NavLink>
           <NavLink to="/viewSchedule" activeStyle>

@@ -11,7 +11,7 @@ class Home extends Component {
         return(
             <div className={'container-fluid'}>
                 <div>
-                    <h1> Welcome to the Graduate Assistant Systems Scheduler (GASS)!</h1>
+                    <h1> Welcome to the Graduate Assistant Scheduler (GAS)!</h1>
                     <p> Here we aim to solve your problems of scheduling conflicts between
                         busy schedules of Graduate Assistants and Teaching Assistants as well
                         as meeting the needs of faculty and course requirements. This software also
