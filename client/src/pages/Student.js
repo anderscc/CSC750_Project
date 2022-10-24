@@ -4,7 +4,7 @@ import { addStudent } from "../services/studentService";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { ToastContainer, toast } from 'react-toastify';
-import {addLab} from "../services/labService";
+import SimpleReactValidator from 'simple-react-validator';
 
 //Student class which allows user to input details about GA's and TA's
 class Student extends Component {
@@ -26,6 +26,7 @@ class Student extends Component {
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
+    this.validator = new SimpleReactValidator();
   }
 
   onChangeValue(event) {
@@ -64,7 +65,8 @@ class Student extends Component {
   }
   onSubmit = async (event) => {
     event.preventDefault()
-        const response = await addStudent(this.state.student).catch(error => {
+    if (this.validator.allValid()) {
+              const response = await addStudent(this.state.student).catch(error => {
                   toast.error('An error occurred', {
           position: "top-right",
           autoClose: 5000,
@@ -90,6 +92,13 @@ class Student extends Component {
                   theme: "light",
               })
         }
+    }else {
+    this.validator.showMessages();
+    // rerender to show messages for the first time
+    // you can use the autoForceUpdate option to do this automatically`
+    this.forceUpdate();
+  }
+
 
   }
 
@@ -116,6 +125,7 @@ class Student extends Component {
                       onChange={this.__onSelect}
                       placeholder="Fall 2022"
                   />
+                   {this.validator.message('semester', this.state.student.semYr, 'required|numeric')}
                 </div>
                 <div className="mb-3" onChange={this.onChangeValue}>
                   Select Student Type:
@@ -132,6 +142,7 @@ class Student extends Component {
                       value={this.state.student.studentName}
                       onChange={this.changeHandler}
                   />
+                    {this.validator.message('studentName', this.state.student.studentName, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="hoursAvail" className="form-label">GA Hours</label>
@@ -144,6 +155,7 @@ class Student extends Component {
                       value={this.state.student.hoursAvail}
                       onChange={this.changeHandler}
                   />
+                    {this.validator.message('hoursAvail', this.state.student.hoursAvail, 'required|integer|min:10|max:20')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="coursePref" className="form-label">Course Preference</label>
@@ -156,11 +168,12 @@ class Student extends Component {
                       value={this.state.student.coursePref}
                       onChange={this.changeHandler}
                   />
+                    {this.validator.message('coursePref', this.state.student.coursePref, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="facultyPref" className="form-label">Faculty Preference</label>
                   <input
-                      name='coursePref'
+                      name='facultyPref'
                       type={"text"}
                       className="form-control"
                       placeholder=""
@@ -168,6 +181,7 @@ class Student extends Component {
                       value={this.state.student.facultyPref}
                       onChange={this.changeHandler}
                   />
+                    {this.validator.message('coursePref', this.state.student.coursePref, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="officeHours" className="form-label">Office Hours Duration</label>
@@ -179,6 +193,7 @@ class Student extends Component {
                       defaultValue={this.state.student.officeHours}
                       onChange={this.changeHandler}
                   />
+                    {this.validator.message('officeHours', this.state.student.officeHours, 'required|numeric')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="officeHours" className="form-label">Class Times (Enter in this Format MW: 1:00PM -
@@ -191,6 +206,7 @@ class Student extends Component {
                       defaultValue={this.state.student.officeHours}
                       onChange={this.changeHandler}
                   />
+                     {this.validator.message('classTimes', this.state.student.classTimes, 'required|string')}
                 </div>
 
               </div>
@@ -201,6 +217,7 @@ class Student extends Component {
             <div className={"col"}>
               {/* <button onClick={useNavigate('course')}>Next Page </button> */}
               <button onClick={this.onSubmit}>Add Student</button>
+
             </div>
           </div>
           <ToastContainer
