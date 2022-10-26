@@ -165,7 +165,7 @@ class Schedule:
             days = [*list_of_each_time[0]]  # ["M","W","F]"
             start_t = datetime.datetime.strptime(list_of_each_time[1], '%H:%M')
             end_t = datetime.datetime.strptime(list_of_each_time[3], '%H:%M')
-            result.append({'day': days, 'start_time': start_t, 'end_time': end_t})
+            result.append({'day': days, 'start_time': start_t, 'end_time': end_t}) #{'day': ["M","W","F], 'start_time': 09:00, 'end_time': 10:00}
 
         return result
 
@@ -249,7 +249,7 @@ class Schedule:
                 gata_class_times = self.parse_times(cur_assigned_gata.get_classTimes())
                 gata_hours_time.update(
                     {cur_assigned_gata_name: {"remaining_hours": cur_assigned_gata.get_hoursAvailable(),
-                                              "unavail_time": gata_hours_time}})
+                                              "unavail_time": gata_class_times}})
                 name_keys.append(cur_assigned_gata_name)
 
             #  Conflict 1. Compare the gata's unavailable times with class meet time
