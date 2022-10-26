@@ -274,6 +274,15 @@ class Schedule:
 
 
 class Population: pass
+    # Defining variables for Population of schedules.
+    def __init__(self, size):
+        self._size = size
+        self._data = data
+        self._schedules = []
+        for i in range(0, size): self._schedules.append(Schedule().initialize())
+
+    # Getting the schedules.
+    def get_schedules(self): return self._schedules
 
 
 # TODO: Calvin
@@ -340,3 +349,7 @@ class CourseAssignment:
 
 # TODO: Tobi
 class Data: pass
+
+
+# Creating object for hard coded data.
+data = Data()
