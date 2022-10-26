@@ -273,7 +273,7 @@ class Schedule:
             gata_hours_time[cur_assigned_gata_name]["unavail_time"].append({cur_class_time})
 
 
-class Population: pass
+class Population:
     # Defining variables for Population of schedules.
     def __init__(self, size):
         self._size = size
