@@ -294,7 +294,74 @@ class DisplayMgr: pass
 
 # Leave for Last, this class defines our genetic algorithm.
 # TODO: Caleb but also all of us.
-class GeneticAlgorithm: pass
+class GeneticAlgorithm:
+# Evolve function calls mutate population which calls crossover population.
+    def evolve(self, population): return self._mutate_population(self._crossover_population(population))
+    # Crossover population
+    def _crossover_population(self, pop):
+        # Initialize population
+        crossover_pop = Population(0)
+        # Iterate through number of elite schedules we allow, currently 1.
+        for i in range(NUMB_OF_ELITE_SCHEDULES):
+            # Get schedules of population and append
+            crossover_pop.get_schedules().append(pop.get_schedules()[i])
+        i = NUMB_OF_ELITE_SCHEDULES
+        # While i or number of elite schedules, is less than the population size, 9
+        while i < POPULATION_SIZE:
+            # Choose 2 populations utilizing tournament selection and get the schedule at index 0 for both.
+            schedule1 = self._select_tournament_population(pop).get_schedules()[0]
+            schedule2 = self._select_tournament_population(pop).get_schedules()[0]
+            # Append schedule 1 and 2 to crossover_pop
+            crossover_pop.get_schedules().append(self._crossover_schedule(schedule1, schedule2))
+            # Continue iterating until i is no longer less than population size.
+            i += 1
+        # Return the crossover population.
+        return crossover_pop
+    # Mutate the population.
+    def _mutate_population(self, population):
+        # Iterate from number of elite schedules, 1, and population size, 9.
+        for i in range(NUMB_OF_ELITE_SCHEDULES, POPULATION_SIZE):
+            # Mutate each schedule in population.
+            self._mutate_schedule(population.get_schedules()[i])
+        # Return the population.
+        return population
+    # Crossover Schedule where we take 2 parent schedules and generate children schedules.
+    def _crossover_schedule(self, schedule1, schedule2):
+        # Initialize crossover schedule
+        crossoverSchedule = Schedule().initialize()
+        # Iterate from 0 to length of classes in crossoverSchedule
+        for i in range(0, len(crossoverSchedule.get_assignments())):
+            # Given a random value check if greater than .5, if so we set classes of schedule 1 to crossover schedule.
+            if (rnd.random() > 0.5): crossoverSchedule.get_assignments()[i] = schedule1.get_assignments()[i]
+            # If not we set classes of schedule 2 to crossover schedule.
+            else: crossoverSchedule.get_assignments()[i] = schedule2.get_assignments()[i]
+        # Return crossoverSchedule.
+        return crossoverSchedule
+    # Mutate schedule function.
+    def _mutate_schedule(self, mutateSchedule):
+        # Initialize a schedule.
+        schedule = Schedule().initialize()
+        # Iterate from 0 to number of classes in mutateSchedule
+        for i in range(0, len(mutateSchedule.get_assignments())):
+            # If the mutation rate, 0.1, is greater than the random value, we assign classes from the initialized schedule to mutateSchedule
+            if(MUTATION_RATE > rnd.random()): mutateSchedule.get_assignments()[i] = schedule.get_assignments()[i]
+        # Return the mutated schedule.
+        return mutateSchedule
+    # Tournament selection function.
+    def _select_tournament_population(self, pop):
+        # Initalize tournament population.
+        tournament_pop = Population(0)
+        i = 0
+        # While i is less than the tournament selection size, 3.
+        while i < TOURNAMENT_SELECTION_SIZE:
+            # Get the schedules of the tournament pop, and append schedules in a random range from 0 to population size. (Random Selection.)
+            tournament_pop.get_schedules().append(pop.get_schedules()[rnd.randrange(0, POPULATION_SIZE)])
+            # Iterate until i is no longer less than tournament selection size.
+            i += 1
+        # reverse sort the schedules in tournament population based on fitness
+        tournament_pop.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
+        # Return tournament population.
+        return tournament_pop
 # This class defines a courseAssignment 
 # it requires the id or scheduleNumber, the GATA that it references,
 # the course that is assigned, the meeting time, the semester/year, 
@@ -339,3 +406,25 @@ class Data: pass
 
 # Creating object for hard coded data.
 data = Data()
+# Creating object for output
+displayMgr = DisplayMgr()
+# Printing all available data.
+displayMgr.print_available_data()
+generationNumber = 0
+print("\n> Generation # "+str(generationNumber))
+population = Population(POPULATION_SIZE)
+population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
+displayMgr.print_generation(population)
+displayMgr.print_schedule_as_table(population.get_schedules()[0])
+geneticAlgorithm = GeneticAlgorithm()
+# Here we determine how long we want the algorithm to run. 
+# Currently set to find a single schedule with 0 conflicts.
+# This can be changed by implementing a count variable to get many schedules with 0 conflicts.
+while (population.get_schedules()[0].get_fitness() != 1.0):
+    generationNumber += 1
+    print("\n> Generation # " + str(generationNumber))
+    population = geneticAlgorithm.evolve(population)
+    population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
+    displayMgr.print_generation(population)
+    displayMgr.print_schedule_as_table(population.get_schedules()[0])
+print("\n\n")
