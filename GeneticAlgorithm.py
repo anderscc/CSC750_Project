@@ -295,14 +295,12 @@ class DisplayMgr: pass
 # Leave for Last, this class defines our genetic algorithm.
 # TODO: Caleb but also all of us.
 class GeneticAlgorithm: pass
-
-
-# This class defines a courseAssignment
+# This class defines a courseAssignment 
 # it requires the id or scheduleNumber, the GATA that it references,
 # the course that is assigned, the meeting time, the semester/year, 
 # hours available to be scheduled on this specific GA, 
 # and how many hours this course takes up each week.
-class CourseAssignment:
+class CourseAssignment: 
     # Defining a CourseAssignment
     def __init__(self, id, gata):
         self._id = id
@@ -319,31 +317,19 @@ class CourseAssignment:
         # Ex: A course requires 2 hours of work per week of a GA
         # this value would be 2.
         self._hoursUsed = None
-
     # Getters
     def get_id(self): return self._id
-
     def get_gata(self): return self._gata
-
     def get_course(self): return self._course
-
     def get_meetingTime(self): return self._meetingTime
-
     def get_semYr(self): return self._semYr
-
     def get_hoursAvail(self): return self._hoursAvail
-
     def get_hoursUsed(self): return self._hoursAvail
-
     # Setters
     def set_hoursUsed(self, hoursUsed): self._hoursUsed = hoursUsed
-
     def set_hoursAvail(self, hoursAvail): self._hoursAvail = hoursAvail
-
     def set_semYr(self, semYr): self._semYr = semYr
-
     def set_course(self, course): self._course = course
-
     def set_meetingTime(self, meetingTime): self._meetingTime = meetingTime
 
 
