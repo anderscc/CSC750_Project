@@ -12,7 +12,8 @@ export const createSemester = async (Year, Semester) =>{
 export const getAllSemester = async ()=>{
      const semester = await axios.get(BASEURL)
         .catch(error => {
-            alert(" an error occurred")
+            alert(" an error occurred", error)
+            return {}
         })
     return semester.data;
 }
