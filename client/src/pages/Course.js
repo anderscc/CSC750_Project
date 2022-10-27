@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'react-dropdown/style.css';
 import {toast, ToastContainer} from "react-toastify";
 import {addCourse} from "../services/courseService";
+import {addStudent, getAllStudent} from "../services/studentService";
 import SimpleReactValidator from 'simple-react-validator';
 
 class Course extends Component {
