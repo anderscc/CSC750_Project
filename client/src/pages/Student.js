@@ -3,6 +3,7 @@ import {getAllSemester} from "../services/semesterService";
 import { addStudent } from "../services/studentService";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import {addStudent, getAllStudent} from "../services/studentService";
 import { ToastContainer, toast } from 'react-toastify';
 import SimpleReactValidator from 'simple-react-validator';
 
