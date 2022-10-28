@@ -55,15 +55,13 @@ class GATA:
 
 
 class Course:
-    def __init__(self, semYr, courseCode, courseName, courseSection, courseMeetTimes, courseFaculty, courseActivities,
-                 activityTimes, GAPref):
+    def __init__(self, semYr, courseCode, courseName, courseSection, courseMeetTimes, courseFaculty, activityTimes, GAPref):
         self._semYr = semYr
         self._courseCode = courseCode
         self._courseName = courseName
         self._courseSection = courseSection
         self._courseMeetTimes = courseMeetTimes
         self._courseFaculty = courseFaculty
-        self._courseActivities = courseActivities
         self._activityTimes = activityTimes
         self._GAPref = GAPref
 
@@ -82,8 +80,6 @@ class Course:
 
     def get_courseFaculty(self): return self._courseFaculty
 
-    def get_courseActivities(self): return self._courseActivities
-
     def get_activityTimes(self): return self._activityTimes
 
     def get_GAPref(self): return self._GAPref
@@ -92,17 +88,17 @@ class Course:
 
 
 class Lab:
-    def __init__(self, semYr, labCode, labName, labSection, labMeetTimes, labFaculty, labActivities, activityTimes,
-                 GAPref):
+    def __init__(self, semYr, labCode, labName, labSection, labMeetTimes, labFaculty, activityTimes,
+                 GAPref, facultyTaught):
         self._semYr = semYr
         self._labCode = labCode
         self._labName = labName
         self._labSection = labSection
         self._labMeetTimes = labMeetTimes
         self._labFaculty = labFaculty
-        self._labActivities = labActivities
         self._activityTimes = activityTimes
         self._GAPref = GAPref
+        self._facultyTaught = facultyTaught
 
     # Getters.
     def get_semYr(self): return self._semYr
@@ -119,11 +115,11 @@ class Lab:
 
     def get_labFaculty(self): return self._labFaculty
 
-    def get_labActivities(self): return self._labActivities
-
     def get_activityTimes(self): return self._activityTimes
 
     def get_GAPref(self): return self._GAPref
+
+    def get_facultyTaught(self): return self._facultyTaught
 
 
 # TODO: Wenyu

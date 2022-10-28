@@ -22,7 +22,6 @@ class Courses(models.Model):
     courseSection = models.PositiveSmallIntegerField(default = 1)
     courseMeetTimes = models.CharField(max_length = 100)
     courseFaculty = models.CharField(max_length = 255)
-    courseActivities = models.CharField(max_length = 255)
     activityTimes = models.CharField(max_length = 255)
     GAPref = models.ForeignKey('GATA', on_delete=models.CASCADE) # This needs to reference id of GATA and datatype must be changed to integer.
 # Labs Table
@@ -36,6 +35,7 @@ class Labs(models.Model):
     labMeetTimes = models.CharField(max_length = 100)
     activityTimes = models.CharField(max_length = 255)
     GAPref = models.ForeignKey('GATA', on_delete=models.CASCADE) # This needs to reference id of GATA and datatype must be changed to integer.
+    facultyTaught = models.BooleanField(default = True)
 # Assignment Table
 class Assignment(models.Model):
     scheduleNum = models.AutoField(primary_key = True, editable = False, unique = True)
