@@ -133,6 +133,7 @@ class Schedule:
         self._fitness = -1
         self._classNumb = 0  # id of assignment
         self._isFitnessChanged = True
+        self._rewardScore = -1
 
     # Getting assignments, re-setting fitness changed to True.
     def get_assignments(self):
@@ -150,6 +151,9 @@ class Schedule:
             self._isFitnessChanged = False
         return self._fitness
 
+    def get_rewardScore(self):
+        return self._rewardScore
+
     # Function to parse meeting time string, RETURNS a list of dict
     def parse_times(self, times_string):
         # 1. Parse gata's class meeting time String eg. "MWF 09:00 - 10:00; MWF 10:00 - 11:00; W 15:00 - 17:00"
@@ -161,7 +165,8 @@ class Schedule:
             days = [*list_of_each_time[0]]  # ["M","W","F]"
             start_t = datetime.datetime.strptime(list_of_each_time[1], '%H:%M')
             end_t = datetime.datetime.strptime(list_of_each_time[3], '%H:%M')
-            result.append({'day': days, 'start_time': start_t, 'end_time': end_t}) #{'day': ["M","W","F], 'start_time': 09:00, 'end_time': 10:00}
+            result.append({'day': days, 'start_time': start_t,
+                           'end_time': end_t})  # {'day': ["M","W","F], 'start_time': 09:00, 'end_time': 10:00}
 
         return result
 
@@ -195,6 +200,7 @@ class Schedule:
         # Iterate through all courses to assign a random TAGA
         for cur_course in courses:
             # Assign a random gata
+
             random_gata = gatas[rnd.randrange(0, len_gata)]
             newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
             self._classNumb += 1
@@ -208,6 +214,9 @@ class Schedule:
 
         # Iterate through all courses
         for cur_lab in labs:
+            # TODO: If this lab requires a TA, run the algorithm in the list of TA to assign a teaching TA
+            #  then assign an assisting GA in the entire GATA list
+
             # Assign a random gata
             random_gata = gatas[rnd.randrange(0, len(gatas))]
             newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
@@ -259,14 +268,18 @@ class Schedule:
                     # end for loop
                     break
 
-            # Conflict 2. This gata's available hours less than class activity times
+            # Conflict 2. This gata's available hours is 0 or less; or is less than class activity times
+            # can be optimized by comparing the remaining hours with 0 before getting the activicity times?
             if gata_hours_time[cur_assigned_gata_name]["remaining_hours"] < cur_course.get_activityTimes():
                 self._numbOfConflicts += 1
+
 
             # Record status of this gata to gata_hours_time, to check if later assignments
             # will conflict with this assignment
             gata_hours_time[cur_assigned_gata_name]["remaining_hours"] -= cur_course.get_activityTimes()
             gata_hours_time[cur_assigned_gata_name]["unavail_time"].append({cur_class_time})
+
+            # TODO: Calculate the rewards score for each assignments for rank of final results.
 
 
 class Population:
