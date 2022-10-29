@@ -23,6 +23,10 @@ class Data:
                    ["I2", "Mr. Mike Brown"],
                    ["I3", "Dr Steve Day"],
                    ["I4", "Mrs Jane Doe"]]
+
+
+
+
     # Initialize the data.
     def __init__(self):
         # Room data (Probably won't use), meeting times, instructors being initiallized.
@@ -53,6 +57,8 @@ class Data:
             self._numberOfClasses += len(self._depts[i].get_courses())
     # Getter functions.
     def get_rooms(self): return self._rooms
+    def get_GATA(self): return self._GATA
+    def get_LAB(self): return self._LAB
     def get_instructors(self): return self._instructors
     def get_courses(self): return self._courses
     def get_depts(self): return self._depts

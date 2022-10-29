@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import {addStudent, getAllStudent} from "../services/studentService";
 import {toast, ToastContainer} from "react-toastify";
 import {addCourse} from "../services/courseService";
+import {addStudent, getAllStudent} from "../services/studentService";
+import SimpleReactValidator from 'simple-react-validator';
 
 class Course extends Component {
   constructor(args) {
@@ -24,6 +24,7 @@ class Course extends Component {
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
+    this.validator = new SimpleReactValidator();
   }
 
   async componentDidMount() {
@@ -67,7 +68,7 @@ class Course extends Component {
     });
   }
   onSubmit = async () => {
-
+       if (this.validator.allValid()) {
         const response =  await addCourse(this.state.course).catch(() => {
           toast.error('An error occurred', {
             position: "top-right",
@@ -82,18 +83,24 @@ class Course extends Component {
               return "error"
        });
 
-      if(response != 'error'){
-      toast.success('Course record added', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      })
-}
+      if(response != 'error') {
+        toast.success('Course record added', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      }
+}else {
+    this.validator.showMessages();
+    // rerender to show messages for the first time
+    // you can use the autoForceUpdate option to do this automatically`
+    this.forceUpdate();
+  }
 
 
   }
@@ -130,6 +137,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseCode}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('courseCode', this.state.student.courseCode, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseName" className="form-label">Course Name</label>
@@ -141,6 +149,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseName}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('courseName', this.state.student.courseName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseSection" className="form-label">Course Section</label>
@@ -152,6 +161,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseSection}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('courseSection', this.state.student.courseSection, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times</label>
@@ -163,6 +173,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseMeetTimes}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('courseMeetTimes', this.state.student.courseMeetTimes, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseFaculty" className="form-label">Course Faculty</label>
@@ -174,6 +185,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseFaculty}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('courseFaculty', this.state.student.courseFaculty, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseActivities" className="form-label">Course Activities</label>
@@ -185,6 +197,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseActivities}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('courseActivities', this.state.student.courseActivities, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="activityTimes" className="form-label">Activity Times in minutes</label>
@@ -196,6 +209,7 @@ class Course extends Component {
                   defaultValue={this.state.course.activityTimes}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('activityTimes', this.state.student.activityTimes, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="gaPreference" className="form-label">GA Preference</label>
