@@ -442,7 +442,7 @@ class Data:
   def __init__(self):
           self._Courses = []; self._GATA = []; self._Lab = []
           for i in range(0, len(self.Courses)):
-              self._Courses.append(Courses(self.Courses[i][0], self.Courses[i][1], self.Courses[i][2], self.Courses[i][3],self._Courses[i][4], self.Courses[i][5],))
+              self._Courses.append(Courses(self.Courses[i][0], self.Courses[i][1], self.Courses[i][2], self.Courses[i][3],self._Courses[i][4], self.Courses[i][5], self.Courses[i][6], self.Courses[i][7]))
           for i in range(0, len(self.GATA)):
               self._GATA.append(GATA(self.GATA[i][0], self.GATA[i][1], self.GATA[i][2], self.GATA[i][3], self.GATA[i][4], self.GATA[i][5],))
           for i in range(0, len(self._LAB)):
