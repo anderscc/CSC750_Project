@@ -126,7 +126,6 @@ Methods:
         get_facultyTaught
     Setters:
 '''
-
 class Lab:
     def __init__(self, semYr, labCode, labName, labSection, labMeetTimes, labFaculty, activityTimes,
                  GAPref, facultyTaught):
