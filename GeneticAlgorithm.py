@@ -533,6 +533,7 @@ generationNumber = 0
 print("\n> Generation # " + str(generationNumber))
 population = Population(POPULATION_SIZE)
 cur_schedules = population.get_schedules()
+cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
 displayMgr.print_generation(population)
 displayMgr.print_schedule_as_table(population.get_schedules()[0])
 geneticAlgorithm = GeneticAlgorithm()
