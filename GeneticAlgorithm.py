@@ -468,7 +468,7 @@ class CourseAssignment:
 
     def get_hoursAvail(self): return self._hoursAvail
 
-    def get_hoursUsed(self): return self._hoursAvail
+    def get_hoursUsed(self): return self._hoursUsed
 
     # Setters
     def set_hoursUsed(self, hoursUsed): self._hoursUsed = hoursUsed
@@ -545,8 +545,8 @@ class Data:
            ]
 
     def __init__(self):
-        self._Courses = [];
-        self._GATA = [];
+        self._Courses = []
+        self._GATA = []
         self._Lab = []
         for i in range(0, len(self.Courses)):
             new_course = Course(self.Courses[i][0], self.Courses[i][1], self.Courses[i][2], self.Courses[i][3],
@@ -556,27 +556,23 @@ class Data:
             self._GATA.append(GATA(self.GATA[i][0], self.GATA[i][1], self.GATA[i][2], self.GATA[i][3], self.GATA[i][4],
                                    self.GATA[i][5], self.GATA[i][6], self.GATA[i][7]))
         for i in range(0, len(self._Lab)):
-            self._Lab.append(
-                Lab(self.Lab[i][0], self.Lab[i][1], self.Lab[i][2], self.Lab[i][3], self.Lab[i][4], self.Lab[i][5],
+            self._Lab.append(Lab(self.Lab[i][0], self.Lab[i][1], self.Lab[i][2], self.Lab[i][3], self.Lab[i][4], self.Lab[i][5],
                     self.Lab[i][6], ))
 
     # Getter functions
-    def get_gata(self):
-        return self._GATA
+    def get_gata(self): return self._GATA
 
-    def get_courses(self):
-        return self._Courses
+    def get_courses(self): return self._Courses
 
-    def get_labs(self):
-        return self._Lab
+    def get_labs(self): return self._Lab
 
 
 # Creating object for hard coded data.
 data = Data()
 # Creating object for output
-# displayMgr = DisplayMgr()
+displayMgr = DisplayMgr()
 # Printing all available data.
-# displayMgr.print_available_data()
+displayMgr.print_available_data()
 generationNumber = 0
 print("\n> Generation # " + str(generationNumber))
 population = Population(POPULATION_SIZE)
