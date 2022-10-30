@@ -54,6 +54,7 @@ class GATA:
     def __str__(self): return self._name
 
 
+
 class Course:
     def __init__(self, semYr, courseCode, courseName, courseSection, courseMeetTimes, courseFaculty, activityTimes,
                  GAPref):
@@ -86,6 +87,7 @@ class Course:
     def get_GAPref(self): return self._GAPref
 
     def __str__(self): return self._name
+
 
 
 class Lab:
@@ -124,6 +126,24 @@ class Lab:
 
 
 # TODO: Wenyu
+
+#####################################
+#Getter methods:
+# Get assignments
+# Get number of conflicts
+# Get fitness
+# Get reward score
+# Parse Times                                   #
+#
+#
+#
+#
+#
+#
+#
+#
+#####################################
+
 class Schedule:
     # Define a Schedule
     def __init__(self):
@@ -149,7 +169,7 @@ class Schedule:
         if self._isFitnessChanged == True:
             # Recalculate fitness for each schedule
             self._fitness = self.calculate_fitness()
-            print("Number of conflicts for current schedule:",self._fitness)
+            # print("Number of conflicts for current schedule:",self._fitness)
             self._isFitnessChanged = False
         return self._fitness
 
@@ -213,6 +233,7 @@ class Schedule:
             newCourseAssignment.set_semYr(cur_course.get_semYr())
 
             self._assignments.append(newCourseAssignment)
+
 
         # Iterate through all courses
         for cur_lab in labs:
@@ -282,9 +303,16 @@ class Schedule:
 
             # TODO: Calculate the rewards score for each assignments for rank of final results.
 
-        return self._numbOfConflicts
+        return 1 / ((1.0*self._numbOfConflicts + 1))
 
 
+#####################################
+
+#
+#
+#
+#
+#####################################
 class Population:
     # Defining variables for Population of schedules.
     def __init__(self, size):
@@ -296,61 +324,36 @@ class Population:
     # Getting the schedules.
     def get_schedules(self): return self._schedules
 
-
-# TODO: Calvin
 class MeetingTime:
     def __init__(self, id, time):
         self._id = id
         self._time = time
     def get_id(self): return self._id
     def get_time(self): return self._time
+
 class DisplayMgr:
-    def print_available_data(self):
-        print("> All Available Data")
-        self.print_course()
-        self.print_student()
-        self.print_meeting_times()
-    def print_course(self):
-        availableCoursesTable = prettytable.PrettyTable(['id', 'course #', 'Activity Hours', 'students'])
-        courses = data.get_courses()
-        for i in range(0, len(courses)):
-            students = courses[i].get_students()
-            tempStr = ""
-            for j in range(0, len(students) - 1):
-                tempStr += students[j].__str__() + ", "
-            tempStr += students[len(students) - 1].__str__()
-            availableCoursesTable.add_row(
-                [courses[i].get_number(), courses[i].get_name(), str(courses[i].get_activityHours()), tempStr])
-        print(availableCoursesTable)
-    def print_student(self):
-        availableStudentsTable = prettytable.PrettyTable(['id', 'student'])
-        students = data.get_students()
-        for i in range(0, len(students)):
-            availableStudentsTable.add_row([students[i].get_id(), students[i].get_name()])
-        print(availableStudentsTable)
-    def print_meeting_times(self):
-        availableMeetingTimeTable = prettytable.PrettyTable(['id', 'Meeting Time'])
-        meetingTimes = data.get_meetingTimes()
-        for i in range(0, len(meetingTimes)):
-            availableMeetingTimeTable.add_row([meetingTimes[i].get_id(), meetingTimes[i].get_time()])
-        print(availableMeetingTimeTable)
     def print_generation(self, population):
         table1 = prettytable.PrettyTable(['schedule #', 'fitness', '# of conflicts', 'classes [dept,class,room,student,meeting-time]'])
         schedules = population.get_schedules()
         for i in range(0, len(schedules)):
             table1.add_row([str(i), round(schedules[i].get_fitness(),3), schedules[i].get_numbOfConflicts(), schedules[i].__str__()])
         print(table1)
-    def print_schedule_as_table(self, schedule):
-        classes = schedule.get_classes()
-        table = prettytable.PrettyTable(['Class #', 'Course (number, Activity Hours)','Student (Id)',  'Meeting Time (Id)'])
-        for i in range(0, len(classes)):
-            table.add_row([str(i), classes[i].get_course().get_name() + " (" +
-                           classes[i].get_course().get_number() + ", " +
-                           str(classes[i].get_course().get_activityHours()) +")",
-                           classes[i].get_student().get_name() +" (" + str(classes[i].get_student().get_id()) +")",
-                           classes[i].get_meetingTime().get_time() +" (" + str(classes[i].get_meetingTime().get_id()) +")"])
-        print(table)
 
+    def print_schedule_as_table(self, population):
+        scheduleData = population.get_assignments()
+        fitness =population.get_fitness()
+        table = prettytable.PrettyTable(['Schedule #','Fitness','ID','Course','GA','Meeting Times','Semester Year','GA Hours Remaining','GA Hours Used'])
+        for i in range(0, len(scheduleData)):
+            table.add_row([str(i), 
+                            fitness,
+                            scheduleData[i].get_id(),
+                            scheduleData[i].get_course().get_courseName(),
+                            scheduleData[i].get_gata().get_studentName(),
+                            scheduleData[i].get_meetingTime(),
+                            scheduleData[i].get_semYr(),
+                            scheduleData[i].get_hoursAvail(),
+                            scheduleData[i].get_hoursUsed()])
+        print(table)
 
 # Leave for Last, this class defines our genetic algorithm.
 # TODO: Caleb but also all of us.
@@ -574,7 +577,7 @@ class Data:
 # Creating object for hard coded data.
 data = Data()
 # Creating object for output
-# displayMgr = DisplayMgr()
+displayMgr = DisplayMgr()
 # Printing all available data.
 # displayMgr.print_available_data()
 generationNumber = 0
