@@ -11,7 +11,7 @@ class GATASerializer(serializers.ModelSerializer):
 class CoursesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
-        fields = ('id', 'id', 'semYr', 'courseCode', 'courseName', 'courseSection', 'courseMeetTimes', 'courseFaculty', 'courseActivities',
+        fields = ('id', 'semYr', 'courseCode', 'courseName', 'courseSection', 'courseMeetTimes', 'courseFaculty', 'courseActivities',
                   'activityTimes', 'GAPref')
 
 

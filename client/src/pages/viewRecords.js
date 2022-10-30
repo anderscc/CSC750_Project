@@ -34,60 +34,6 @@ const courseFields =
 
 }
 
-const studentItems = [
-    {
-        id: 1,
-        semester: 'Fall 2022',
-        name: 'John Doe',
-        classTimes: 'MW 3:45pm - 5:00 pm',
-        hoursAvail: 10,
-        coursePref: 'CSC 630',
-        facultyPref: 'Dr.Wang',
-        officeHours: 1,
-        studentType: 'GA'
-    },
-    {
-        id: 2,
-        semester: 'Fall 2022',
-        name: 'Jane Smith',
-        classTimes: 'MW 3:45pm - 5:00 pm',
-        hoursAvail: 10,
-        coursePref: 'CSC 630',
-        facultyPref: 'Dr.Wang',
-        officeHours: 1,
-        studentType: 'GA'
-    },
-]
-const courseItems = [
-    {
-        id: 1,
-        semester: 'Fall 2022',
-        courseCode: 'CSC750',
-        name: 'Adv. Software Engineering',
-        courseSection: '001',
-        courseMeetTimes: 'M 5:00pm-7:30pm',
-        courseFaculty: 'Dr.Iqbal',
-        courseActivities: 'Grading, preparation',
-        activityTimes: '60',
-        gaPreference: 'John',
-        classType: 'course',
-
-    },
-    {
-        id: 2,
-        semester: 'Fall 2022',
-        courseCode: 'CSC450',
-        name: 'Software Development',
-        courseSection: '001',
-        courseMeetTimes: 'W 5:00pm-7:30pm',
-        courseFaculty: 'Dr.Iqbal',
-        courseActivities: 'Grading, preparation',
-        activityTimes: '60',
-        gaPreference: 'John',
-        classType: 'course',
-
-    },
-]
 
 const EditableCell = ({
     editing,
@@ -125,7 +71,7 @@ const EditableCell = ({
     );
 };
 
-const App = () => {
+const ViewRecords = () => {
     const [viewStudent, setViewStudent] = useState(true);
 
     const [students, setStudents] = useState([])
@@ -386,4 +332,4 @@ const App = () => {
             </Form> ;
         </>)
 }
-export default App;
+export default ViewRecords;
