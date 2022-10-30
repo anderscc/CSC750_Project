@@ -52,8 +52,6 @@ class GATA:
     def get_studentType(self): return self._studentType
 
     def __str__(self): return self._name
-
-
 class Course:
     def __init__(self, semYr, courseCode, courseName, courseSection, courseMeetTimes, courseFaculty, activityTimes, GAPref):
         self._semYr = semYr
@@ -85,8 +83,6 @@ class Course:
     def get_GAPref(self): return self._GAPref
 
     def __str__(self): return self._name
-
-
 class Lab:
     def __init__(self, semYr, labCode, labName, labSection, labMeetTimes, labFaculty, activityTimes,
                  GAPref, facultyTaught):
@@ -114,14 +110,12 @@ class Lab:
     def get_meetTimes(self): return self._labMeetTimes
 
     def get_labFaculty(self): return self._labFaculty
-
+    
     def get_activityTimes(self): return self._activityTimes
 
     def get_GAPref(self): return self._GAPref
-
+    
     def get_facultyTaught(self): return self._facultyTaught
-
-
 # TODO: Wenyu
 class Schedule:
     # Define a Schedule
@@ -280,8 +274,6 @@ class Schedule:
             gata_hours_time[cur_assigned_gata_name]["unavail_time"].append({cur_class_time})
 
             # TODO: Calculate the rewards score for each assignments for rank of final results.
-
-
 class Population:
     # Defining variables for Population of schedules.
     def __init__(self, size):
@@ -292,8 +284,6 @@ class Population:
 
     # Getting the schedules.
     def get_schedules(self): return self._schedules
-
-
 # TODO: Calvin
 class MeetingTime: pass
 
@@ -408,11 +398,47 @@ class CourseAssignment:
     def set_course(self, course): self._course = course
     def set_meetingTime(self, meetingTime): self._meetingTime = meetingTime
 
-
 # TODO: Tobi
-class Data: pass
+class Data: 
 
+  Courses = [["Fall 2022", "CSC 799", "Thesis", "001", "M 11:00 - 12:00", "DR RAZIB IQBAL", "4", "Caleb B.", ],
+             ["Fall 2022", "CSC 790", "Graduate Topics in Computer Science", "001", "TW 11:00 - 12:00", "DR AJAY KATANGUR", "4", ],
+             ["Fall 2022", "CSC 765", "Ubiquitous Computing and Internet of Things", "001", "F 1:00 - 2:30", "DR MUKULIKA GHOSH", "4"],
+             ["Fall 2022", "CSC 755", "Software Testing and Quality Assurance", "001", "M 1:00 - 3:00", "DR LLOYD SMITH", "4",
+              "Calvin A"],
+             ["Fall 2022", "CSC 750", "Advanced Topics in Software Engineering", "001", "M 5:00 - 7:30", "DR RAZIB IQBAL", "4",
+              "Caleb B."],
+             ["Fall 2022", "CSC 747", "Multimedia Communications", "001", "R 10:00 - 12:00", "DR AJAY KATANGUR", "4", "Godwin E."],
+             ["Fall 2022", "CSC 746", "Human Computer Interaction", "001", "T 4:00 - 5:15", "DR ALAA SHETA", "4"],
+             ["Fall 2022", "CSC 745", "Advanced Multimedia Programming", "001", "W 9:00 - 10:15", "DR LLOYD SMITH", "4"],
+             ["Fall 2022", "CSC 742", "Evolutionary Computing", "001", "TR 3:30 - 4:45", "DR ALAA SHETA", "4"],
+             ["Fall 2022", "CSC 737", "Deep Learning", "001", "T 9:00 - 10:00", "DR MUKULIKA GHOSH", "4"],
+             ["Fall 2022", "CSC 736", "Machine Learning", "001", "F 09:00 - 11:00", "DR AJAY KATANGUR", "4"]]
 
+  GATA = [
+      ["Fall 2022", "CALVIN A.", "20", "DR RAZIB IQBAL", "CSC 750", "WR 9:00 - 10:00", "MT 5:30 - 7:30"],
+      ["Fall 2022", "CALEB B.", "20", "DR ALAA SHETA", "CSC 742", "MF 9:00 - 10:00", "TR 3:30 - 4:45"],
+      ["Fall 2022", "WENYU Z.", "20", "DR MUKULIKA GHOSH", "CSC 737", "R 9:00 - 10:00", "T 8:00 - 10:00"],
+      ["Fall 2022", "GODWIN E.", "20", "DR AJAY KATANGUR", "CSC 736", "T 9:00 - 10:00", "F 9:00 - 11:00"],
+      ["Fall 2022", "OLUWATOBI A.", "20", "DR LLOYD SMITH", "CSC 745", "M 9:00 - 10:00", "W 9:00 - 10:15"],
+
+  ]
+
+  Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming", "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", "4", ""],
+         ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "001", "T 1:00 - 2:30", "DR AJAY KATANGUR", "4", ""],
+         ["Fall 2022", "CSC 226", "Special Languages", "001", "W 4:00 - 500", "DR LLOYD SMITH", "4", ""],
+         ["Fall 2022", "CSC 121", "Introduction to BASIC Programming", "001", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", "4", ""],
+         ]
+
+  def __init__(self):
+          self._Courses = []; self._GATA = []; self._Lab = []
+          for i in range(0, len(self.Courses)):
+              self._Courses.append(Course(self.Courses[i][0], self.Courses[i][1], self.Courses[i][2], self.Courses[i][3],self._Courses[i][4], self.Courses[i][5], self.Courses[i][6], self.Courses[i][7]))
+          for i in range(0, len(self.GATA)):
+              self._GATA.append(GATA(self.GATA[i][0], self.GATA[i][1], self.GATA[i][2], self.GATA[i][3], self.GATA[i][4], self.GATA[i][5],))
+          for i in range(0, len(self._Lab)):
+              self._Lab.append(Lab(self.Lab[i][0], self.Lab[i][1], self.Lab[i][2], self.Lab[i][3], self.Lab[i][4], self.Lab[i][5], self.Lab[i][6],))
+            
 # Creating object for hard coded data.
 data = Data()
 # Creating object for output

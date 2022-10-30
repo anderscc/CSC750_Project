@@ -3,6 +3,7 @@ import 'react-dropdown/style.css';
 import { getAllStudent} from "../services/studentService";
 import {toast, ToastContainer} from "react-toastify";
 import {addLab} from "../services/labService";
+import SimpleReactValidator from "simple-react-validator";
 
 class lab extends Component {
   constructor(args) {
@@ -23,6 +24,7 @@ class lab extends Component {
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
+    this.validator = new SimpleReactValidator();
   }
 
   async componentDidMount() {
@@ -66,32 +68,39 @@ class lab extends Component {
     });
   }
   onSubmit = async () => {
-    const response = await addLab(this.state.lab).catch(error => {
-                  toast.error('An error occurred', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-       });
-            return "error"
+           if (this.validator.allValid()) {
+             const response = await addLab(this.state.lab).catch(error => {
+               toast.error('An error occurred', {
+                 position: "top-right",
+                 autoClose: 5000,
+                 hideProgressBar: false,
+                 closeOnClick: true,
+                 pauseOnHover: true,
+                 draggable: true,
+                 progress: undefined,
+                 theme: "light",
+               });
+               return "error"
 
-        });
-    if(response != "error"){
-      toast.success('Lab record added', {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-              })
-        }
+             });
+             if (response != "error") {
+               toast.success('Lab record added', {
+                 position: "top-right",
+                 autoClose: 5000,
+                 hideProgressBar: false,
+                 closeOnClick: true,
+                 pauseOnHover: true,
+                 draggable: true,
+                 progress: undefined,
+                 theme: "light",
+               })
+             }
+           }else {
+    this.validator.showMessages();
+    // rerender to show messages for the first time
+    // you can use the autoForceUpdate option to do this automatically`
+    this.forceUpdate();
+  }
   }
   render() {
     /*TODO: retrieve student names from database*/
@@ -126,6 +135,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labCode}
                   onChange={this.changeHandler}
                 />
+                 {this.validator.message('labCode', this.state.student.labCode, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labName" className="form-label">lab Name</label>
@@ -137,6 +147,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labName}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('labName', this.state.student.labName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labSection" className="form-label">lab Section</label>
@@ -148,6 +159,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labSection}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('labSection', this.state.student.labSection, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labMeetTimes" className="form-label">lab Meet Times</label>
@@ -159,6 +171,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labMeetTimes}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('labMeetTimes', this.state.student.labMeetTimes, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labFaculty" className="form-label">lab Faculty</label>
@@ -170,6 +183,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labFaculty}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('labFaculty', this.state.student.labFaculty, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labActivities" className="form-label">Course Activities</label>
@@ -181,6 +195,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labActivities}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('labActivities', this.state.student.labActivities, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="activityTimes" className="form-label">Activity Times in minutes</label>
@@ -192,6 +207,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.activityTimes}
                   onChange={this.changeHandler}
                 />
+                {this.validator.message('ActivityTimes', this.state.student.activityTimes, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="GAPref" className="form-label">GA Preference</label>
