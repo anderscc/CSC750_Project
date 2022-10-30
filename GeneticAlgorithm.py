@@ -149,7 +149,7 @@ class Schedule:
         if self._isFitnessChanged == True:
             # Recalculate fitness for each schedule
             self._fitness = self.calculate_fitness()
-            print(self._fitness)
+            print("Number of conflicts for current schedule:",self._fitness)
             self._isFitnessChanged = False
         return self._fitness
 
@@ -533,8 +533,6 @@ generationNumber = 0
 print("\n> Generation # " + str(generationNumber))
 population = Population(POPULATION_SIZE)
 cur_schedules = population.get_schedules()
-print(cur_schedules[0].get_fitness())
-cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
 displayMgr.print_generation(population)
 displayMgr.print_schedule_as_table(population.get_schedules()[0])
 geneticAlgorithm = GeneticAlgorithm()
