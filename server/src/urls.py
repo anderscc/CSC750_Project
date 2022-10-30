@@ -29,6 +29,5 @@ router.register(r'semYear', views.SemesterView, 'SemYear')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('Scheduler/', include(router.urls)),
+    path('api/', include(router.urls))
 ]

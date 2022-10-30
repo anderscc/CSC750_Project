@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const BASEURL = 'http://127.0.0.1:8000/api/courses/'
+const BASEURL = 'http://127.0.0.1:8000/api/labs/'
 
-export const addCourse = async (data)=>{
+export const addLab = async (data)=>{
 
     return await axios.post(BASEURL, {...data})
         .catch(error => {
@@ -10,24 +10,24 @@ export const addCourse = async (data)=>{
         })
 }
 
-export const getCourse = async (id)=>{
-     const Course = await axios.get(BASEURL + `${id}/`)
+export const getLab = async (id)=>{
+     const Lab = await axios.get(BASEURL + `${id}/`)
         .catch(error => {
             alert(" an error occurred")
         })
-    return Course.data
+    return Lab.data
 }
 
-export const getAllCourse = async ()=>{
-     const Courses = await axios.get(BASEURL)
+export const getAllLab = async ()=>{
+     const Labs = await axios.get(BASEURL)
         .catch(error => {
             alert(" an error occurred")
         })
-    return Courses.data
+    return Labs.data
 }
 
 
-export const updateCourse = async (id, data)=>{
+export const updateLab = async (id, data)=>{
 
     return await axios.put(BASEURL + `${id}/`, {...data})
         .catch(error => {
