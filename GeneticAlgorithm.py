@@ -149,7 +149,7 @@ class Schedule:
         if self._isFitnessChanged == True:
             # Recalculate fitness for each schedule
             self._fitness = self.calculate_fitness()
-            print("Number of conflicts for current schedule:",self._fitness)
+            # print("Number of conflicts for current schedule:",self._fitness)
             self._isFitnessChanged = False
         return self._fitness
 
@@ -216,8 +216,18 @@ class Schedule:
 
         # Iterate through all courses
         for cur_lab in labs:
-            # TODO: If this lab requires a TA, run the algorithm in the list of TA to assign a teaching TA
-            #  then assign an assisting GA in the entire GATA list
+            # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
+            # TODO: Always assign GA to Lab to assist TA.
+            # TODO: Make sure GA is not being assigned to 2 labs simultaneously. We need to take into account Meeting Times when making assignments.
+            # TODO: Think about case where Faculty wants GA present for the course meeting time. Professor will make a lab for this class and GA assigned to that class will need to be assigned to that specific lab.
+            # TODO: For TA assignment, assign additional hours for Preparation.
+            # TODO: Think about scenario where we have multiple classes to assign but not enough hours on a single GA/TA. Possibly split up activities into 2 parts to assign 2 GAs. This will help the Professor greatly.
+            # TODO: If assigning GA to more than 3 courses, should penalize.
+            # TODO: If course or lab has 8 hours, we prefer to have a single GA for course or GA and TA for lab, if not enough hours remaining Can split between 2 GAs but assignment should be penalized, 3 way split should be heavily penalized.
+            # TODO: [Not Necessary, Would be nice] Possibly think about an hour break for lunch in middle of day.
+            # If (!facultyTaught):
+            #   Assign a TA.
+            # 
 
             # Assign a random gata
             random_gata = gatas[rnd.randrange(0, len(gatas))]
@@ -282,7 +292,7 @@ class Schedule:
 
             # TODO: Calculate the rewards score for each assignments for rank of final results.
 
-        return self._numbOfConflicts
+        return 1 / ((1.0*self._numbOfConflicts + 1))
 
 
 class Population:
@@ -485,13 +495,9 @@ class CourseAssignment:
 # TODO: Tobi
 class Data:
     Courses = [["Fall 2022", "CSC 799", "Thesis", "001", "M 11:00 - 12:00", "DR RAZIB IQBAL", 4, "Caleb B.", ],
-               ["Fall 2022", "CSC 790", "Graduate Topics in Computer Science", "001", "TW 11:00 - 12:00",
-                "DR AJAY KATANGUR", 2, ''],
-               ["Fall 2022", "CSC 765", "Ubiquitous Computing and Internet of Things", "001", "F 1:00 - 2:30",
-                "DR MUKULIKA GHOSH", 3, ''],
-               ["Fall 2022", "CSC 755", "Software Testing and Quality Assurance", "001", "M 1:00 - 3:00",
-                "DR LLOYD SMITH", 4,
-                "Calvin A"],
+               ["Fall 2022", "CSC 790", "Graduate Topics in Computer Science", "001", "TW 11:00 - 12:00","DR AJAY KATANGUR", 2, ''],
+               ["Fall 2022", "CSC 765", "Ubiquitous Computing and Internet of Things", "001", "F 1:00 - 2:30","DR MUKULIKA GHOSH", 3, ''],
+               ["Fall 2022", "CSC 755", "Software Testing and Quality Assurance", "001", "M 1:00 - 3:00","DR LLOYD SMITH", 4,"Calvin A"],
                ["Fall 2022", "CSC 750", "Advanced Topics in Software Engineering", "001", "M 5:00 - 7:30",
                 "DR RAZIB IQBAL", 1,
                 "Caleb B."],
@@ -526,10 +532,9 @@ class Data:
     #            ["Fall 2022", "CSC 736", "Machine Learning", "001", "M 11:00 - 12:00", "DR AJAY KATANGUR", 4, '']]
 
     GATA = [
-        ["Fall 2022", "CALVIN A.", 20, "DR RAZIB IQBAL", "CSC 750", "WR 9:00 - 10:00",
-         "MT 15:30 - 17:30;M 11:00 - 12:00", 'GA'],
-        ["Fall 2022", "CALEB B.", 20, "DR ALAA SHETA", "CSC 742", "MF 9:00 - 10:00", "TR 13:30 - 14:45;M 11:00 - 12:00",
-         'TA'],
+        # Office hours needs to be taken into consideration. If a GA has 2 office hours, that means 18 hours are available for courses.
+        ["Fall 2022", "CALVIN A.", 20, "DR RAZIB IQBAL", "CSC 750", "WR 9:00 - 10:00","MT 15:30 - 17:30;M 11:00 - 12:00", 'GA'],
+        ["Fall 2022", "CALEB B.", 20, "DR ALAA SHETA", "CSC 742", "MF 9:00 - 10:00", "TR 13:30 - 14:45;M 11:00 - 12:00",'TA'],
         ["Fall 2022", "WENYU Z.", 10, "DR MUKULIKA GHOSH", "CSC 737", "R 9:00 - 10:00", "T 8:00 - 10:00", 'GA'],
         ["Fall 2022", "GODWIN E.", 10, "DR AJAY KATANGUR", "CSC 736", "T 9:00 - 10:00", "F 9:00 - 11:00", 'GA'],
         ["Fall 2022", "OLUWATOBI A.", 20, "DR LLOYD SMITH", "CSC 745", "M 9:00 - 10:00", "W 9:00 - 10:15", 'GA'],
