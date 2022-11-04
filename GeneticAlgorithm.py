@@ -21,6 +21,19 @@ MUTATION_RATE = 0.1
 # TODO: [For Tobi] Define class for Data and Define hard coded test data.
 
 # TODO: Godwin
+'''
+Methods: 
+    Getter: 
+        get_semYr
+        get_studentName
+        get_hoursAvailable
+        get_facultyPref
+        get_coursePref
+        get_officeHours
+        get_classTimes
+        get_studentType
+    Setter: 
+'''
 class GATA:
     # define variables for a course.
     def __init__(self, semYr, studentName, hoursAvailable, coursePref, facultyPref, officeHours, classTimes,
@@ -53,7 +66,19 @@ class GATA:
 
     def __str__(self): return self._name
 
-
+'''
+Methods:
+    Getters:
+        get_semYr
+        get_courseCode
+        get_courseName
+        get_courseSection
+        get_meetTimes
+        get_courseFaculty
+        get_activityTimes
+        get_GAPref
+    Setters:
+'''
 class Course:
     def __init__(self, semYr, courseCode, courseName, courseSection, courseMeetTimes, courseFaculty, activityTimes,
                  GAPref):
@@ -87,7 +112,20 @@ class Course:
 
     def __str__(self): return self._name
 
-
+'''
+Methods:
+    Getters:
+        get_semYr
+        get_labCode
+        get_labName
+        get_labSection
+        get_meetTimes
+        get_labFaculty
+        get_activityTimes
+        get_GAPref
+        get_facultyTaught
+    Setters:
+'''
 class Lab:
     def __init__(self, semYr, labCode, labName, labSection, labMeetTimes, labFaculty, activityTimes,
                  GAPref, facultyTaught):
@@ -124,6 +162,15 @@ class Lab:
 
 
 # TODO: Wenyu
+'''
+Methods:
+    Getter:
+        get_assignments
+        get_numbOfConflicts
+        get_fitness
+        get_rewardScore
+    Setter:
+'''
 class Schedule:
     # Define a Schedule
     def __init__(self):
@@ -214,6 +261,7 @@ class Schedule:
 
             self._assignments.append(newCourseAssignment)
 
+
         # Iterate through all courses
         for cur_lab in labs:
             # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
@@ -294,7 +342,12 @@ class Schedule:
 
         return 1 / ((1.0*self._numbOfConflicts + 1))
 
-
+'''
+Methods:
+    Getter:
+        get_schedules
+    Setter:
+'''
 class Population:
     # Defining variables for Population of schedules.
     def __init__(self, size):
@@ -306,61 +359,47 @@ class Population:
     # Getting the schedules.
     def get_schedules(self): return self._schedules
 
-
-# TODO: Calvin
+'''
+Meeting time class
+Data: 
+- Meeting time ID # (Int)
+- time intervals (string)
+Methods:
+    Getter:
+        get_id
+        get_time
+    Setter:
+'''
 class MeetingTime:
     def __init__(self, id, time):
         self._id = id
         self._time = time
     def get_id(self): return self._id
     def get_time(self): return self._time
+
 class DisplayMgr:
-    def print_available_data(self):
-        print("> All Available Data")
-        self.print_course()
-        self.print_student()
-        self.print_meeting_times()
-    def print_course(self):
-        availableCoursesTable = prettytable.PrettyTable(['id', 'course #', 'Activity Hours', 'students'])
-        courses = data.get_courses()
-        for i in range(0, len(courses)):
-            students = courses[i].get_students()
-            tempStr = ""
-            for j in range(0, len(students) - 1):
-                tempStr += students[j].__str__() + ", "
-            tempStr += students[len(students) - 1].__str__()
-            availableCoursesTable.add_row(
-                [courses[i].get_number(), courses[i].get_name(), str(courses[i].get_activityHours()), tempStr])
-        print(availableCoursesTable)
-    def print_student(self):
-        availableStudentsTable = prettytable.PrettyTable(['id', 'student'])
-        students = data.get_students()
-        for i in range(0, len(students)):
-            availableStudentsTable.add_row([students[i].get_id(), students[i].get_name()])
-        print(availableStudentsTable)
-    def print_meeting_times(self):
-        availableMeetingTimeTable = prettytable.PrettyTable(['id', 'Meeting Time'])
-        meetingTimes = data.get_meetingTimes()
-        for i in range(0, len(meetingTimes)):
-            availableMeetingTimeTable.add_row([meetingTimes[i].get_id(), meetingTimes[i].get_time()])
-        print(availableMeetingTimeTable)
     def print_generation(self, population):
         table1 = prettytable.PrettyTable(['schedule #', 'fitness', '# of conflicts', 'classes [dept,class,room,student,meeting-time]'])
         schedules = population.get_schedules()
         for i in range(0, len(schedules)):
             table1.add_row([str(i), round(schedules[i].get_fitness(),3), schedules[i].get_numbOfConflicts(), schedules[i].__str__()])
         print(table1)
-    def print_schedule_as_table(self, schedule):
-        classes = schedule.get_classes()
-        table = prettytable.PrettyTable(['Class #', 'Course (number, Activity Hours)','Student (Id)',  'Meeting Time (Id)'])
-        for i in range(0, len(classes)):
-            table.add_row([str(i), classes[i].get_course().get_name() + " (" +
-                           classes[i].get_course().get_number() + ", " +
-                           str(classes[i].get_course().get_activityHours()) +")",
-                           classes[i].get_student().get_name() +" (" + str(classes[i].get_student().get_id()) +")",
-                           classes[i].get_meetingTime().get_time() +" (" + str(classes[i].get_meetingTime().get_id()) +")"])
-        print(table)
 
+    def print_schedule_as_table(self, population):
+        scheduleData = population.get_assignments()
+        fitness =population.get_fitness()
+        table = prettytable.PrettyTable(['Schedule #','Fitness','ID','Course','GA','Meeting Times','Semester Year','GA Hours Remaining','GA Hours Used'])
+        for i in range(0, len(scheduleData)):
+            table.add_row([str(i), 
+                            fitness,
+                            scheduleData[i].get_id(),
+                            scheduleData[i].get_course().get_courseName(),
+                            scheduleData[i].get_gata().get_studentName(),
+                            scheduleData[i].get_meetingTime(),
+                            scheduleData[i].get_semYr(),
+                            scheduleData[i].get_hoursAvail(),
+                            scheduleData[i].get_hoursUsed()])
+        print(table)
 
 # Leave for Last, this class defines our genetic algorithm.
 # TODO: Caleb but also all of us.
@@ -442,11 +481,29 @@ class GeneticAlgorithm:
         return tournament_pop
 
 
-# This class defines a courseAssignment
-# it requires the id or scheduleNumber, the GATA that it references,
-# the course that is assigned, the meeting time, the semester/year, 
-# hours available to be scheduled on this specific GA, 
-# and how many hours this course takes up each week.
+'''
+This class defines a courseAssignment
+it requires the id or scheduleNumber, the GATA that it references,
+the course that is assigned, the meeting time, the semester/year, 
+hours available to be scheduled on this specific GA, 
+and how many hours this course takes up each week.
+
+Methods:
+    Getters:
+        get_id
+        get_gata
+        get_course
+        get_meetingTime
+        get_semYr
+        get_hoursAvail
+        get_hoursUsed
+    Setters:
+        set_hoursUsed
+        set_hoursAvail
+        set_semYr
+        set_course
+        set_meetingTime
+'''
 class CourseAssignment:
     # Defining a CourseAssignment
     def __init__(self, id, gata):
@@ -493,6 +550,14 @@ class CourseAssignment:
 
 
 # TODO: Tobi
+'''
+Methods:
+    Getters:
+        get_gata
+        get_courses
+        get_labs
+    Setters:
+'''
 class Data:
     Courses = [["Fall 2022", "CSC 799", "Thesis", "001", "M 11:00 - 12:00", "DR RAZIB IQBAL", 4, "Caleb B.", ],
                ["Fall 2022", "CSC 790", "Graduate Topics in Computer Science", "001", "TW 11:00 - 12:00","DR AJAY KATANGUR", 2, ''],
