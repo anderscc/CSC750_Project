@@ -282,6 +282,7 @@ class Schedule:
                 # print("This course has a GA preference.")
                 CourseGAPref.append(course)
         # print("\n")
+        unique_labs = {}
         for lab in labs:
             # Testing
             # print(lab.get_GAPref())
@@ -291,6 +292,12 @@ class Schedule:
             elif(lab.get_GAPref() != None):
                 # print("This lab has a GA Preference.")
                 LabTAPref.append(lab)
+
+            if lab.get_labCode() in unique_labs:
+                unique_labs[lab.get_labCode()].append(lab)
+            else:
+                unique_labs[lab.get_labCode()] = [lab]
+
 
         len_ga = len(GAList)
         len_ta = len(TAList)
@@ -315,10 +322,11 @@ class Schedule:
 
         # Iterate through all courses and labs
         # Iterate through all courses to assign a random TAGA
+        gata_course_counter = 0
         for cur_course in CourseNonGAPref:
 
-            random_gata = GAList[rnd.randrange(0, len_ga)]
-            newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
+            gata = GAList[gata_course_counter]
+            newCourseAssignment = CourseAssignment(self._classNumb, gata)
             self._classNumb += 1
             # Setting the course, meeting time, and semester year and append it to newClass.
             newCourseAssignment.set_course(cur_course)
@@ -327,6 +335,11 @@ class Schedule:
             newCourseAssignment.set_semYr(cur_course.get_semYr())
 
             self._assignments.append(newCourseAssignment)
+
+            if (len(GAList) - 1) == gata_course_counter:
+                gata_course_counter = 0
+            else:
+                gata_course_counter += 1
 
         # Iterate through all courses
         for cur_lab in LabTAPref:
@@ -345,6 +358,7 @@ class Schedule:
 
 
         # Iterate through all courses
+        gata_lab_counter = 0
         for cur_lab in LabNonTAPref:
             # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
             # TODO: Always assign GA to Lab to assist TA.
@@ -360,8 +374,8 @@ class Schedule:
             # 
 
             # Assign a random gata
-            random_gata = TAList[rnd.randrange(0, len_ta)]
-            newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
+            gata = TAList[gata_lab_counter]
+            newCourseAssignment = CourseAssignment(self._classNumb, gata)
             self._classNumb += 1
             # Setting the lab, meeting time, and semester year and append it to assignment list.
             newCourseAssignment.set_course(cur_lab)
@@ -370,6 +384,29 @@ class Schedule:
             newCourseAssignment.set_semYr(cur_lab.get_semYr())
 
             self._assignments.append(newCourseAssignment)
+
+            if (len(GAList) - 1) == gata_lab_counter:
+                gata_lab_counter = 0
+            else:
+                gata_lab_counter += 1
+
+        for cur_lab in unique_labs:
+
+            gata = GAList[gata_course_counter]
+            newCourseAssignment = CourseAssignment(self._classNumb, gata)
+            self._classNumb += 1
+            # Setting the course, meeting time, and semester year and append it to newClass.
+            newCourseAssignment.set_course(cur_lab)
+            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
+            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+            self._assignments.append(newCourseAssignment)
+
+            if (len(GAList) - 1) == gata_course_counter:
+                gata_course_counter = 0
+            else:
+                gata_course_counter += 1
 
         return self
 
