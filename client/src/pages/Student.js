@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {getAllSemester} from "../services/semesterService";
-import { addStudent } from "../services/studentService";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import {addStudent, getAllStudent} from "../services/studentService";
@@ -152,7 +151,6 @@ class Student extends Component {
                       type={"number"}
                       className="form-control"
                       placeholder="E.g 10"
-                      name={"hoursAvail"}
                       value={this.state.student.hoursAvail}
                       onChange={this.changeHandler}
                   />
@@ -165,7 +163,6 @@ class Student extends Component {
                       type={"text"}
                       className="form-control"
                       placeholder=""
-                      name={"coursePref"}
                       value={this.state.student.coursePref}
                       onChange={this.changeHandler}
                   />
@@ -178,7 +175,6 @@ class Student extends Component {
                       type={"text"}
                       className="form-control"
                       placeholder=""
-                      name={"facultyPref"}
                       value={this.state.student.facultyPref}
                       onChange={this.changeHandler}
                   />

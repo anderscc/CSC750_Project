@@ -8,8 +8,6 @@ class GATA(models.Model):
     semYr = models.ForeignKey('SemesterYear', on_delete=models.CASCADE)
     studentName = models.CharField(max_length = 100)
     hoursAvailable = models.PositiveSmallIntegerField(default=10)
-    coursePref = models.CharField(max_length = 255)
-    facultyPref = models.CharField(max_length = 255)
     officeHours = models.PositiveSmallIntegerField(default = 1)
     classTimes = models.CharField(max_length = 255)
     studentType = models.CharField(max_length = 255, default="GA")
