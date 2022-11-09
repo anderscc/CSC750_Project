@@ -385,7 +385,7 @@ class Schedule:
 
             self._assignments.append(newCourseAssignment)
 
-            if (len(GAList) - 1) == gata_lab_counter:
+            if (len(TAList) - 1) == gata_lab_counter:
                 gata_lab_counter = 0
             else:
                 gata_lab_counter += 1
