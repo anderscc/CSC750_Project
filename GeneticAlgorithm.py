@@ -294,7 +294,8 @@ class Schedule:
                 LabTAPref.append(lab)
 
             if lab.get_labCode() in unique_labs:
-                unique_labs[lab.get_labCode()].append(lab)
+                if lab.get_labSection() !=  unique_labs[lab.get_labCode()][0].get_labSection():
+                    unique_labs[lab.get_labCode()].append(lab)
             else:
                 unique_labs[lab.get_labCode()] = [lab]
 
@@ -390,18 +391,20 @@ class Schedule:
             else:
                 gata_lab_counter += 1
 
-        for cur_lab in unique_labs:
+        for lab in unique_labs:
 
-            gata = GAList[gata_course_counter]
-            newCourseAssignment = CourseAssignment(self._classNumb, gata)
-            self._classNumb += 1
-            # Setting the course, meeting time, and semester year and append it to newClass.
-            newCourseAssignment.set_course(cur_lab)
-            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
-            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
-            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+            for cur_lab in unique_labs[lab]:
 
-            self._assignments.append(newCourseAssignment)
+                gata = GAList[gata_course_counter]
+                newCourseAssignment = CourseAssignment(self._classNumb, gata)
+                self._classNumb += 1
+                # Setting the course, meeting time, and semester year and append it to newClass.
+                newCourseAssignment.set_course(cur_lab)
+                newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+                newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
+                newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+                self._assignments.append(newCourseAssignment)
 
             if (len(GAList) - 1) == gata_course_counter:
                 gata_course_counter = 0
