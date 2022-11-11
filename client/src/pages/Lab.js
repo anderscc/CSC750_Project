@@ -111,7 +111,7 @@ class lab extends Component {
     //console.log(defaultOption)
     return (
       <div className={'container-fluid'}>
-        <h1> lab Page</h1>
+        <h1> Lab Page</h1>
         <div>
           <form>
             <div className='lab-form container'>
@@ -135,7 +135,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labCode}
                   onChange={this.changeHandler}
                 />
-                 {this.validator.message('labCode', this.state.student.labCode, 'required|numeric')}
+                 {this.validator.message('labCode', this.state.lab.labCode, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labName" className="form-label">lab Name</label>
@@ -147,7 +147,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labName}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labName', this.state.student.labName, 'required|alpha_num_space')}
+                {this.validator.message('labName', this.state.lab.labName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labSection" className="form-label">lab Section</label>
@@ -159,7 +159,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labSection}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labSection', this.state.student.labSection, 'required|numeric')}
+                {this.validator.message('labSection', this.state.lab.labSection, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labMeetTimes" className="form-label">lab Meet Times</label>
@@ -171,7 +171,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labMeetTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labMeetTimes', this.state.student.labMeetTimes, 'required|alpha_num_space')}
+                {this.validator.message('labMeetTimes', this.state.lab.labMeetTimes, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labFaculty" className="form-label">lab Faculty</label>
@@ -183,7 +183,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labFaculty}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labFaculty', this.state.student.labFaculty, 'required|alpha_num_space')}
+                {this.validator.message('labFaculty', this.state.lab.labFaculty, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labActivities" className="form-label">Course Activities</label>
@@ -195,7 +195,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labActivities}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labActivities', this.state.student.labActivities, 'required|alpha_num_space')}
+                {this.validator.message('labActivities', this.state.lab.labActivities, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="activityTimes" className="form-label">Activity Times in minutes</label>
@@ -207,7 +207,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('ActivityTimes', this.state.student.activityTimes, 'required|numeric')}
+                {this.validator.message('ActivityTimes', this.state.lab.activityTimes, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="GAPref" className="form-label">GA Preference</label>

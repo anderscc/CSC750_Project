@@ -5,7 +5,7 @@ from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
 class GATASerializer(serializers.ModelSerializer):
     class Meta:
         model = GATA
-        fields = ('id', 'studentName','semYr','hoursAvailable', 'coursePref', 'facultyPref', 'officeHours', 'classTimes', 'studentType')
+        fields = ('id', 'studentName','semYr','hoursAvailable', 'officeHours', 'classTimes', 'studentType')
 
 
 class CoursesSerializer(serializers.ModelSerializer):
