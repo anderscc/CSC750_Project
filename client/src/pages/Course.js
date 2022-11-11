@@ -134,10 +134,10 @@ class Course extends Component {
                   className="form-control"
                   name="courseCode"
                   placeholder="0"
-                  defaultValue={this.state.course.courseCode}
+                  value={this.state.course.courseCode}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseCode', this.state.student.courseCode, 'required|numeric')}
+                {this.validator.message('courseCode', this.state.course.courseCode, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseName" className="form-label">Course Name</label>
@@ -149,7 +149,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseName}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseName', this.state.student.courseName, 'required|alpha_num_space')}
+                {this.validator.message('courseName', this.state.course.courseName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseSection" className="form-label">Course Section</label>
@@ -161,7 +161,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseSection}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseSection', this.state.student.courseSection, 'required|numeric')}
+                {this.validator.message('courseSection', this.state.course.courseSection, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times</label>
@@ -173,7 +173,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseMeetTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseMeetTimes', this.state.student.courseMeetTimes, 'required|alpha_num_space')}
+                {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseFaculty" className="form-label">Course Faculty</label>
@@ -185,7 +185,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseFaculty}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseFaculty', this.state.student.courseFaculty, 'required|alpha_num_space')}
+                {this.validator.message('courseFaculty', this.state.course.courseFaculty, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseActivities" className="form-label">Course Activities</label>
@@ -197,7 +197,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseActivities}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseActivities', this.state.student.courseActivities, 'required|alpha_num_space')}
+                {this.validator.message('courseActivities', this.state.course.courseActivities, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="activityTimes" className="form-label">Activity Times in minutes</label>
@@ -209,7 +209,7 @@ class Course extends Component {
                   defaultValue={this.state.course.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('activityTimes', this.state.student.activityTimes, 'required|numeric')}
+                {this.validator.message('activityTimes', this.state.course.activityTimes, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="gaPreference" className="form-label">GA Preference</label>
