@@ -113,7 +113,7 @@ class Course extends Component {
     //console.log(defaultOption)
     return (
       <div className={'container-fluid'}>
-        <h1>This Course Page</h1>
+        <h1> Course Page</h1>
         <div>
           <form>
             <div className='course-form container'>
