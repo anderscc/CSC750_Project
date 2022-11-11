@@ -18,7 +18,7 @@ class CoursesSerializer(serializers.ModelSerializer):
 class LabsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Labs
-        fields = ('id', 'semYr','labCode', 'labName', 'labFaculty', 'labSection', 'labMeetTimes', 'activityTimes', 'GAPref')
+        fields = ('id', 'semYr','labCode', 'labName', 'labFaculty', 'labSection', 'labMeetTimes', 'activityTimes', 'GAPref', 'labPrepTime')
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
