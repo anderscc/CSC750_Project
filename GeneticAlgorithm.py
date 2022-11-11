@@ -739,7 +739,7 @@ class Data:
         [9, "Fall 2022", "Violet",         10, "T 9:00 - 10:00", "F 9:00 - 11:00",                   'TA'],
         [10, "Fall 2022", "Dash",          20, "M 9:00 - 10:00", "W 9:00 - 10:15",                   'TA']
     ]
-           # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught
+           # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught, prepTime
     Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      None, True, 2],
            ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "001", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     None, True, 2],
            ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:00", "DR LLOYD SMITH", 2.5,     None, True, 2],
