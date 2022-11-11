@@ -127,7 +127,7 @@ Methods:
 '''
 class Lab:
     def __init__(self, semYr, labCode, labName, labSection, labMeetTimes, labFaculty, activityTimes,
-                 GAPref, facultyTaught):
+                 GAPref, facultyTaught, prepTime):
         self._semYr = semYr
         self._labCode = labCode
         self._labName = labName
@@ -137,6 +137,7 @@ class Lab:
         self._activityTimes = activityTimes
         self._GAPref = GAPref
         self._facultyTaught = facultyTaught
+        self._prepTime = prepTime
 
     # Getters.
     def get_semYr(self): return self._semYr
@@ -159,6 +160,8 @@ class Lab:
     def get_GAPref(self): return self._GAPref
 
     def get_facultyTaught(self): return self._facultyTaught
+
+    def get_prepTime(self): return self._prepTime
 
 
 # TODO: Wenyu
@@ -235,6 +238,7 @@ class Schedule:
                     return True
 
         return False
+
     # This compares GA Preferences, it's a generalized function that works with courses or labs.
     def compare_GAPref(self, CourseLab, GATAList):
         for GA in GATAList:
@@ -282,6 +286,7 @@ class Schedule:
                 # print("This course has a GA preference.")
                 CourseGAPref.append(course)
         # print("\n")
+        unique_labs = {}
         for lab in labs:
             # Testing
             # print(lab.get_GAPref())
@@ -292,8 +297,62 @@ class Schedule:
                 # print("This lab has a GA Preference.")
                 LabTAPref.append(lab)
 
+            if lab.get_labCode() in unique_labs:
+                if lab.get_labSection() !=  unique_labs[lab.get_labCode()][0].get_labSection():
+                    unique_labs[lab.get_labCode()].append(lab)
+            else:
+                unique_labs[lab.get_labCode()] = [lab]
+
+
         len_ga = len(GAList)
         len_ta = len(TAList)
+
+        # Iterate through all courses
+        for cur_lab in LabTAPref:
+            TA = self.compare_GAPref(cur_lab, gatas)
+            # print(TA)
+            newCourseAssignment = CourseAssignment(self._classNumb, TA)
+            self._classNumb += 1
+            # Setting the lab, meeting time, and semester year and append it to assignment list.
+            newCourseAssignment.set_course(cur_lab)
+            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes() + cur_lab.get_prepTime())
+            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+            self._assignments.append(newCourseAssignment)
+
+        # Iterate through all courses
+        gata_counter = 0
+        for cur_lab in LabNonTAPref:
+            # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
+            # TODO: Always assign GA to Lab to assist TA.
+            # TODO: Make sure GA is not being assigned to 2 labs simultaneously. We need to take into account Meeting Times when making assignments.
+            # TODO: Think about case where Faculty wants GA present for the course meeting time. Professor will make a lab for this class and GA assigned to that class will need to be assigned to that specific lab.
+            # TODO: For TA assignment, assign additional hours for Preparation.
+            # TODO: Think about scenario where we have multiple classes to assign but not enough hours on a single GA/TA. Possibly split up activities into 2 parts to assign 2 GAs. This will help the Professor greatly.
+            # TODO: If assigning GA to more than 3 courses, should penalize.
+            # TODO: If course or lab has 8 hours, we prefer to have a single GA for course or GA and TA for lab, if not enough hours remaining Can split between 2 GAs but assignment should be penalized, 3 way split should be heavily penalized.
+            # TODO: [Not Necessary, Would be nice] Possibly think about an hour break for lunch in middle of day.
+            # If (!facultyTaught):
+            #   Assign a TA.
+            #
+
+            # Assign a random gata
+            gata = gatas[gata_counter]
+            newCourseAssignment = CourseAssignment(self._classNumb, gata)
+            self._classNumb += 1
+            # Setting the lab, meeting time, and semester year and append it to assignment list.
+            newCourseAssignment.set_course(cur_lab)
+            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes() + cur_lab.get_prepTime())
+            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+            self._assignments.append(newCourseAssignment)
+
+            if (len(gatas) - 1) == gata_counter:
+                gata_counter = 0
+            else:
+                gata_counter += 1
 
 
         # Iterate through all courses and labs
@@ -317,8 +376,8 @@ class Schedule:
         # Iterate through all courses to assign a random TAGA
         for cur_course in CourseNonGAPref:
 
-            random_gata = GAList[rnd.randrange(0, len_ga)]
-            newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
+            gata = gatas[gata_counter]
+            newCourseAssignment = CourseAssignment(self._classNumb, gata)
             self._classNumb += 1
             # Setting the course, meeting time, and semester year and append it to newClass.
             newCourseAssignment.set_course(cur_course)
@@ -328,48 +387,32 @@ class Schedule:
 
             self._assignments.append(newCourseAssignment)
 
-        # Iterate through all courses
-        for cur_lab in LabTAPref:
-            
-            TA = self.compare_GAPref(cur_lab, TAList)
-            # print(TA)
-            newCourseAssignment = CourseAssignment(self._classNumb, TA)
-            self._classNumb += 1
-            # Setting the lab, meeting time, and semester year and append it to assignment list.
-            newCourseAssignment.set_course(cur_lab)
-            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
-            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
-            newCourseAssignment.set_semYr(cur_lab.get_semYr())
-
-            self._assignments.append(newCourseAssignment)
+            if (len(gatas) - 1) == gata_counter:
+                gata_counter = 0
+            else:
+                gata_counter += 1
 
 
-        # Iterate through all courses
-        for cur_lab in LabNonTAPref:
-            # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
-            # TODO: Always assign GA to Lab to assist TA.
-            # TODO: Make sure GA is not being assigned to 2 labs simultaneously. We need to take into account Meeting Times when making assignments.
-            # TODO: Think about case where Faculty wants GA present for the course meeting time. Professor will make a lab for this class and GA assigned to that class will need to be assigned to that specific lab.
-            # TODO: For TA assignment, assign additional hours for Preparation.
-            # TODO: Think about scenario where we have multiple classes to assign but not enough hours on a single GA/TA. Possibly split up activities into 2 parts to assign 2 GAs. This will help the Professor greatly.
-            # TODO: If assigning GA to more than 3 courses, should penalize.
-            # TODO: If course or lab has 8 hours, we prefer to have a single GA for course or GA and TA for lab, if not enough hours remaining Can split between 2 GAs but assignment should be penalized, 3 way split should be heavily penalized.
-            # TODO: [Not Necessary, Would be nice] Possibly think about an hour break for lunch in middle of day.
-            # If (!facultyTaught):
-            #   Assign a TA.
-            # 
 
-            # Assign a random gata
-            random_gata = TAList[rnd.randrange(0, len_ta)]
-            newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
-            self._classNumb += 1
-            # Setting the lab, meeting time, and semester year and append it to assignment list.
-            newCourseAssignment.set_course(cur_lab)
-            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
-            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
-            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+        for lab in unique_labs:
 
-            self._assignments.append(newCourseAssignment)
+            for cur_lab in unique_labs[lab]:
+
+                gata = gatas[gata_counter]
+                newCourseAssignment = CourseAssignment(self._classNumb, gata)
+                self._classNumb += 1
+                # Setting the course, meeting time, and semester year and append it to newClass.
+                newCourseAssignment.set_course(cur_lab)
+                newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+                newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
+                newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+                self._assignments.append(newCourseAssignment)
+
+            if (len(gatas) - 1) == gata_counter:
+                gata_counter = 0
+            else:
+                gata_counter += 1
 
         return self
 
@@ -696,15 +739,15 @@ class Data:
         [9, "Fall 2022", "Violet",         10, "T 9:00 - 10:00", "F 9:00 - 11:00",                   'TA'],
         [10, "Fall 2022", "Dash",          20, "M 9:00 - 10:00", "W 9:00 - 10:15",                   'TA']
     ]
-           # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught
-    Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      None, True],
-           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "001", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     None, True],
-           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:00", "DR LLOYD SMITH", 2.5,     None, True],
-           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "001", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, None, True],
-           ["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "002", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      7, False],
-           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "002", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     6, False],
-           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:01", "DR LLOYD SMITH", 2.5,     8, False],
-           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "002", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, 10,False]
+           # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught, prepTime
+    Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      None, True, 2],
+           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "001", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     None, True, 2],
+           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:00", "DR LLOYD SMITH", 2.5,     None, True, 2],
+           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "001", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, None, True, 2],
+           ["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "002", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      7, False, 2],
+           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "002", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     6, False, 2],
+           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:01", "DR LLOYD SMITH", 2.5,     8, False, 2],
+           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "002", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, 10,False, 2]
            ]
 
     def __init__(self):
@@ -720,7 +763,7 @@ class Data:
 
         for i in range(0, len(self.Lab)):
             self._Lab.append(Lab(self.Lab[i][0], self.Lab[i][1], self.Lab[i][2], self.Lab[i][3], self.Lab[i][4], self.Lab[i][5],
-                    self.Lab[i][6], self.Lab[i][7], self.Lab[i][8]))
+                    self.Lab[i][6], self.Lab[i][7], self.Lab[i][8], self.Lab[i][9]))
 
     # Getter functions
     def get_gata(self): return self._GATA
