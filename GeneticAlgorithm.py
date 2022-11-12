@@ -270,6 +270,7 @@ class Schedule:
         CourseNonGAPref = []
         LabTAPref = []
         LabNonTAPref = []
+        same_ga_class_list = [] # Nested List where contains [course,lab] as an element
 
         # Dict to keep track of GA's work load
         ga_work_load = {}
@@ -298,10 +299,10 @@ class Schedule:
         for course in courses:
             # Testing
             # print(course.get_GAPref())
-            if (course.get_GAPref() is None):
+            if course.get_GAPref() is None:
                 # print("This course does not have a GA Preference.")
                 CourseNonGAPref.append(course)
-            elif (course.get_GAPref() != None):
+            elif course.get_GAPref() != None:
                 # print("This course has a GA preference.")
                 CourseGAPref.append(course)
         # print("\n")
@@ -362,9 +363,33 @@ class Schedule:
             # Subtract hours from the dict
             ga_work_load[GA.get_studentName()] -= cur_course.get_activityTimes()
 
-
         # Iterate through all courses
         gata_counter = 0
+
+        # TODO: to be complete: Assign same GA to course and lab when the user requires.
+        for course_lab in same_ga_class_list:
+            # Assign a  gata
+            gata = gatas[gata_counter]
+            for class_element in course_lab:
+                newCourseAssignment = CourseAssignment(self._classNumb, gata)
+                self._classNumb += 1
+                # Setting the lab, meeting time, and semester year and append it to assignment list.
+                newCourseAssignment.set_course(class_element)
+                newCourseAssignment.set_meetingTime(class_element.get_meetTimes())
+                newCourseAssignment.set_hoursUsed(class_element.get_activityTimes())
+                newCourseAssignment.set_semYr(class_element.get_semYr())
+
+                self._assignments.append(newCourseAssignment)
+
+                # Subtract hours from the dict
+                ga_work_load[gata.get_studentName()] -= class_element.get_activityTimes()
+
+                if (len(gatas) - 1) == gata_counter:
+                    gata_counter = 0
+                else:
+                    gata_counter += 1
+
+
         for cur_lab in LabNonTAPref:
             # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
             # TODO: Always assign GA to Lab to assist TA.
@@ -379,7 +404,7 @@ class Schedule:
             #   Assign a TA.
             #
 
-            # Assign a random gata
+            # Assign a  gata
             gata = gatas[gata_counter]
             newCourseAssignment = CourseAssignment(self._classNumb, gata)
             self._classNumb += 1
@@ -399,10 +424,26 @@ class Schedule:
             else:
                 gata_counter += 1
 
+        # Iterate through courses without GA Preference
+        for cur_course_index in range(0, len(CourseNonGAPref)):
+            cur_course = CourseNonGAPref[cur_course_index]
 
-        # Iterate through all courses and labs
-        # Iterate through all courses to assign a random TAGA
-        for cur_course in CourseNonGAPref:
+            # When this is the last course and none of the GAs are available
+            if cur_course_index == len(CourseNonGAPref) - 1:
+                if not (lambda: x >= cur_course.get_activityTimes() for x in ga_work_load.values()):
+                    # Split the activity time and assign to different students:
+                    for i in range(0, 2):
+                        gata = gatas[gata_counter]
+                        newCourseAssignment = CourseAssignment(self._classNumb, gata)
+                        self._classNumb += 1
+                        gata_counter += 1
+                        # Setting the course, meeting time, and semester year and append it to newClass.
+                        newCourseAssignment.set_course(cur_course)
+                        newCourseAssignment.set_meetingTime(cur_course.get_meetTimes())
+                        newCourseAssignment.set_hoursUsed(cur_course.get_activityTimes() / 2)
+                        newCourseAssignment.set_semYr(cur_course.get_semYr())
+
+                        self._assignments.append(newCourseAssignment)
 
             gata = gatas[gata_counter]
             newCourseAssignment = CourseAssignment(self._classNumb, gata)
@@ -466,52 +507,50 @@ class Schedule:
             # print("FIND ME")
             # print(cur_assigned_gata)
 
-            # Conflict 1: Penalize when a course is assigned to more than 1 GAs
-            if len(assigned_gata) > 1:
+            # TODO: Conflict 1: Penalize when a course is assigned to more than 1 GAs
+            #if len(assigned_gata) > 1:
                 # self._numbOfConflicts += (len(assigned_gata)-1)
+                #pass
+
+            #for cur_assigned_gata in assigned_gata:
+            cur_assigned_gata_name = assigned_gata.get_studentName()
+
+            # if current gata is not in the gata_hours_time (which means it is this gata's first assignment)
+            if cur_assigned_gata_name not in name_keys:
+                # add this gata's original data to the dict
+                gata_class_times = self.parse_times(assigned_gata.get_classTimes())
+                gata_hours_time.update(
+                    {cur_assigned_gata_name: {"remaining_hours": assigned_gata.get_hoursAvailable(),
+                                              "unavail_time": gata_class_times}})
+
+                name_keys.append(cur_assigned_gata_name)
+
+            #  Conflict 2. Compare the gata's unavailable times with class meet time
+            #  Parse class time string
+            cur_class_time = self.parse_times(cur_course.get_meetTimes())[0]
+
+            # Compare class time and gata's each unavailable times
+            for unavail_time in gata_hours_time[cur_assigned_gata_name]["unavail_time"]:
+                if self.find_time_conflicts(cur_class_time, unavail_time):
+                    # self._numbOfConflicts += 1
+                    pass
+                    # end for loop
+                    break
+
+            # Conflict 2. This gata's available hours is 0 or less; or is less than class activity times
+            # can be optimized by comparing the remaining hours with 0 before getting the activicity times?
+            if gata_hours_time[cur_assigned_gata_name]["remaining_hours"] < cur_course.get_activityTimes():
+                # self._numbOfConflicts += 1
                 pass
 
-            for cur_assigned_gata in assigned_gata:
-                cur_assigned_gata_name = assigned_gata.get_studentName()
+            # Record status of this gata to gata_hours_time, to check if later assignments
+            # will conflict with this assignment
+            gata_hours_time[cur_assigned_gata_name]["remaining_hours"] -= cur_course.get_activityTimes()
+            gata_hours_time[cur_assigned_gata_name]["unavail_time"].append(cur_class_time)
 
-                # if current gata is not in the gata_hours_time (which means it is this gata's first assignment)
-                if cur_assigned_gata_name not in name_keys:
-                    # add this gata's original data to the dict
-                    gata_class_times = self.parse_times(cur_assigned_gata.get_classTimes())
-                    '''gata_hours_time.update(
-                        {cur_assigned_gata_name: {"remaining_hours": cur_assigned_gata.get_hoursAvailable(),
-                                                  "unavail_time": gata_class_times}})'''
-                    gata_hours_time.update(
-                        {cur_assigned_gata_name: {"unavail_time": gata_class_times}})
-                    name_keys.append(cur_assigned_gata_name)
+        # TODO: Calculate the rewards score for each assignments for rank of final results.
 
-                #  Conflict 2. Compare the gata's unavailable times with class meet time
-                #  Parse class time string
-                cur_class_time = self.parse_times(cur_course.get_meetTimes())[0]
-
-                # Compare class time and gata's each unavailable times
-                for unavail_time in gata_hours_time[cur_assigned_gata_name]["unavail_time"]:
-                    if self.find_time_conflicts(cur_class_time, unavail_time):
-                        # self._numbOfConflicts += 1
-                        pass
-                        # end for loop
-                        break
-
-                # Conflict 2. This gata's available hours is 0 or less; or is less than class activity times
-                # can be optimized by comparing the remaining hours with 0 before getting the activicity times?
-                #if gata_hours_time[cur_assigned_gata_name]["remaining_hours"] < cur_course.get_activityTimes():
-                    # self._numbOfConflicts += 1
-                #    pass
-
-
-                # Record status of this gata to gata_hours_time, to check if later assignments
-                # will conflict with this assignment
-                #gata_hours_time[cur_assigned_gata_name]["remaining_hours"] -= cur_course.get_activityTimes()
-                gata_hours_time[cur_assigned_gata_name]["unavail_time"].append(cur_class_time)
-
-            # TODO: Calculate the rewards score for each assignments for rank of final results.
-
-        return 1 / ((1.0 * self._numbOfConflicts + 1))
+        return 1 / (1.0 * self._numbOfConflicts + 1)
 
 
 '''
@@ -819,7 +858,7 @@ class Data:
         ["Fall 2022", "CSC 226", "Special Languages", "001", "W 4:00 - 5:01", "DR LLOYD SMITH", 2.5, 8, False, 2],
         ["Fall 2022", "CSC 121", "Introduction to BASIC Programming", "002", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5,
          10, False, 2]
-        ]
+    ]
 
     def __init__(self):
         self._Courses = []
