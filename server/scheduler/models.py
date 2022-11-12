@@ -34,6 +34,7 @@ class Labs(models.Model):
     activityTimes = models.CharField(max_length = 255)
     GAPref = models.ForeignKey('GATA', on_delete=models.CASCADE) # This needs to reference id of GATA and datatype must be changed to integer.
     facultyTaught = models.BooleanField(default = True)
+    labPrepTime = models.PositiveSmallIntegerField(default=1)
 # Assignment Table
 class Assignment(models.Model):
     scheduleNum = models.AutoField(primary_key = True, editable = False, unique = True)

@@ -69,6 +69,8 @@ class GATA:
     def get_studentType(self):
         return self._studentType
 
+    def set_hoursAvailable(self, hours): self._hoursAvailable = hours 
+
     def __str__(self): return self._studentName
 
 
@@ -157,18 +159,8 @@ Methods:
 
 
 class Lab:
-    def __init__(
-        self,
-        semYr,
-        labCode,
-        labName,
-        labSection,
-        labMeetTimes,
-        labFaculty,
-        activityTimes,
-        GAPref,
-        facultyTaught,
-    ):
+    def __init__(self, semYr, labCode, labName, labSection, labMeetTimes, labFaculty, activityTimes,
+                 GAPref, facultyTaught, prepTime):
         self._semYr = semYr
         self._labCode = labCode
         self._labName = labName
@@ -178,6 +170,7 @@ class Lab:
         self._activityTimes = activityTimes
         self._GAPref = GAPref
         self._facultyTaught = facultyTaught
+        self._prepTime = prepTime
 
     # Getters.
     def get_semYr(self):
@@ -209,8 +202,9 @@ class Lab:
     def get_facultyTaught(self):
         return self._facultyTaught
 
-    def __str__(self): return self._labName
+    def get_prepTime(self): return self._prepTime
 
+    def __str__(self): return self._labName
 
 # TODO: Wenyu
 """
@@ -282,15 +276,15 @@ class Schedule:
         if len(set(class_meet_time["day"]).intersection(gata_unavail_time["day"])) > 0:
             # 2. Compare start time and end times,
             # class starts and end in between  or equal to gata's unavailable time
-            if class_meet_time["start_time"] >= gata_unavail_time["start_time"]:
-                if class_meet_time["start_time"] <= gata_unavail_time["end_time"]:
-                    return True
+            if class_meet_time['start_time'] >= gata_unavail_time['start_time'] and class_meet_time['start_time'] <= gata_unavail_time['end_time']:  
+                return True
             # class starts before unavailable time, and end after unavailable time starts
             if class_meet_time["end_time"] <= gata_unavail_time["end_time"]:
                 if class_meet_time["end_time"] >= gata_unavail_time["start_time"]:
                     return True
 
         return False
+
     # This compares GA Preferences, it's a generalized function that works with courses or labs.
     def compare_GAPref(self, CourseLab, GATAList):
         for GA in GATAList:
@@ -302,6 +296,7 @@ class Schedule:
 
     # Initializing schedule.
     def initialize(self):
+        # TODO: Create 
         # Get lists of courses and labs
         courses = self._data.get_courses()
         labs = self._data.get_labs()
@@ -320,6 +315,7 @@ class Schedule:
             # Differentiate between GA and TA and append to appropriate list.
             if(i.get_studentType() == 'GA'):
                 GAList.append(i)
+                # print(i)
             elif(i.get_studentType() == 'TA'):
                 TAList.append(i)
             # Input validation.
@@ -338,6 +334,7 @@ class Schedule:
                 # print("This course has a GA preference.")
                 CourseGAPref.append(course)
         # print("\n")
+        unique_labs = {}
         for lab in labs:
             # Testing
             # print(lab.get_GAPref())
@@ -348,8 +345,62 @@ class Schedule:
                 # print("This lab has a GA Preference.")
                 LabTAPref.append(lab)
 
+            if lab.get_code() in unique_labs:
+                if lab.get_section() !=  unique_labs[lab.get_code()][0].get_section():
+                    unique_labs[lab.get_code()].append(lab)
+            else:
+                unique_labs[lab.get_code()] = [lab]
+
+
         len_ga = len(GAList)
         len_ta = len(TAList)
+
+        # Iterate through all courses
+        for cur_lab in LabTAPref:
+            TA = self.compare_GAPref(cur_lab, gatas)
+            # print(TA)
+            newCourseAssignment = CourseAssignment(self._classNumb, TA)
+            self._classNumb += 1
+            # Setting the lab, meeting time, and semester year and append it to assignment list.
+            newCourseAssignment.set_course(cur_lab)
+            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes() + cur_lab.get_prepTime())
+            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+            self._assignments.append(newCourseAssignment)
+
+        # Iterate through all courses
+        gata_counter = 0
+        for cur_lab in LabNonTAPref:
+            # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
+            # TODO: Always assign GA to Lab to assist TA.
+            # TODO: Make sure GA is not being assigned to 2 labs simultaneously. We need to take into account Meeting Times when making assignments.
+            # TODO: Think about case where Faculty wants GA present for the course meeting time. Professor will make a lab for this class and GA assigned to that class will need to be assigned to that specific lab.
+            # TODO: For TA assignment, assign additional hours for Preparation.
+            # TODO: Think about scenario where we have multiple classes to assign but not enough hours on a single GA/TA. Possibly split up activities into 2 parts to assign 2 GAs. This will help the Professor greatly.
+            # TODO: If assigning GA to more than 3 courses, should penalize.
+            # TODO: If course or lab has 8 hours, we prefer to have a single GA for course or GA and TA for lab, if not enough hours remaining Can split between 2 GAs but assignment should be penalized, 3 way split should be heavily penalized.
+            # TODO: [Not Necessary, Would be nice] Possibly think about an hour break for lunch in middle of day.
+            # If (!facultyTaught):
+            #   Assign a TA.
+            #
+
+            # Assign a random gata
+            gata = gatas[gata_counter]
+            newCourseAssignment = CourseAssignment(self._classNumb, gata)
+            self._classNumb += 1
+            # Setting the lab, meeting time, and semester year and append it to assignment list.
+            newCourseAssignment.set_course(cur_lab)
+            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes() + cur_lab.get_prepTime())
+            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+            self._assignments.append(newCourseAssignment)
+
+            if (len(gatas) - 1) == gata_counter:
+                gata_counter = 0
+            else:
+                gata_counter += 1
 
 
         # Iterate through all courses and labs
@@ -373,8 +424,8 @@ class Schedule:
         # Iterate through all courses to assign a random TAGA
         for cur_course in CourseNonGAPref:
 
-            random_gata = GAList[rnd.randrange(0, len_ga)]
-            newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
+            gata = gatas[gata_counter]
+            newCourseAssignment = CourseAssignment(self._classNumb, gata)
             self._classNumb += 1
             # Setting the course, meeting time, and semester year and append it to newClass.
             newCourseAssignment.set_course(cur_course)
@@ -384,48 +435,32 @@ class Schedule:
 
             self._assignments.append(newCourseAssignment)
 
-        # Iterate through all courses
-        for cur_lab in LabTAPref:
-            
-            TA = self.compare_GAPref(cur_lab, TAList)
-            # print(TA)
-            newCourseAssignment = CourseAssignment(self._classNumb, TA)
-            self._classNumb += 1
-            # Setting the lab, meeting time, and semester year and append it to assignment list.
-            newCourseAssignment.set_course(cur_lab)
-            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
-            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
-            newCourseAssignment.set_semYr(cur_lab.get_semYr())
-
-            self._assignments.append(newCourseAssignment)
+            if (len(gatas) - 1) == gata_counter:
+                gata_counter = 0
+            else:
+                gata_counter += 1
 
 
-        # Iterate through all courses
-        for cur_lab in LabNonTAPref:
-            # TODO: If applicable, assign TA to Faculty taught lab and TA taught lab so TA knows how to teach the lab.
-            # TODO: Always assign GA to Lab to assist TA.
-            # TODO: Make sure GA is not being assigned to 2 labs simultaneously. We need to take into account Meeting Times when making assignments.
-            # TODO: Think about case where Faculty wants GA present for the course meeting time. Professor will make a lab for this class and GA assigned to that class will need to be assigned to that specific lab.
-            # TODO: For TA assignment, assign additional hours for Preparation.
-            # TODO: Think about scenario where we have multiple classes to assign but not enough hours on a single GA/TA. Possibly split up activities into 2 parts to assign 2 GAs. This will help the Professor greatly.
-            # TODO: If assigning GA to more than 3 courses, should penalize.
-            # TODO: If course or lab has 8 hours, we prefer to have a single GA for course or GA and TA for lab, if not enough hours remaining Can split between 2 GAs but assignment should be penalized, 3 way split should be heavily penalized.
-            # TODO: [Not Necessary, Would be nice] Possibly think about an hour break for lunch in middle of day.
-            # If (!facultyTaught):
-            #   Assign a TA.
-            # 
 
-            # Assign a random gata
-            random_gata = TAList[rnd.randrange(0, len_ta)]
-            newCourseAssignment = CourseAssignment(self._classNumb, random_gata)
-            self._classNumb += 1
-            # Setting the lab, meeting time, and semester year and append it to assignment list.
-            newCourseAssignment.set_course(cur_lab)
-            newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
-            newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
-            newCourseAssignment.set_semYr(cur_lab.get_semYr())
+        for lab in unique_labs:
 
-            self._assignments.append(newCourseAssignment)
+            for cur_lab in unique_labs[lab]:
+
+                gata = gatas[gata_counter]
+                newCourseAssignment = CourseAssignment(self._classNumb, gata)
+                self._classNumb += 1
+                # Setting the course, meeting time, and semester year and append it to newClass.
+                newCourseAssignment.set_course(cur_lab)
+                newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
+                newCourseAssignment.set_hoursUsed(cur_lab.get_activityTimes())
+                newCourseAssignment.set_semYr(cur_lab.get_semYr())
+
+                self._assignments.append(newCourseAssignment)
+
+            if (len(gatas) - 1) == gata_counter:
+                gata_counter = 0
+            else:
+                gata_counter += 1
 
         return self
 
@@ -442,12 +477,9 @@ class Schedule:
 
         # Iterate through length of assignments
         for cur_course_assignment in assignments:
-            # print(type(cur_course_assignment.get_gata()))
             # local variables to avoid multiple callings
             cur_course = cur_course_assignment.get_course()
             cur_assigned_gata = cur_course_assignment.get_gata()
-            # print("FIND ME")
-            # print(cur_assigned_gata)
             cur_assigned_gata_name = cur_assigned_gata.get_studentName()
 
             # if current gata is not in the gata_hours_time (which means it is this gata's first assignment)
@@ -463,7 +495,6 @@ class Schedule:
                     }
                 )
                 name_keys.append(cur_assigned_gata_name)
-
             #  Conflict 1. Compare the gata's unavailable times with class meet time
             #  Parse class time string
             cur_class_time = self.parse_times(cur_course.get_meetTimes())[0]
@@ -471,25 +502,20 @@ class Schedule:
             # Compare class time and gata's each unavailable times
             for unavail_time in gata_hours_time[cur_assigned_gata_name]["unavail_time"]:
                 if self.find_time_conflicts(cur_class_time, unavail_time):
-                    # self._numbOfConflicts += 1
-                    pass
+                    self._numbOfConflicts += 1
                     # end for loop
                     break
 
             # Conflict 2. This gata's available hours is 0 or less; or is less than class activity times
             # can be optimized by comparing the remaining hours with 0 before getting the activicity times?
             if gata_hours_time[cur_assigned_gata_name]["remaining_hours"] < cur_course.get_activityTimes():
-                # self._numbOfConflicts += 1
-                pass
+                self._numbOfConflicts += 1
 
             # Record status of this gata to gata_hours_time, to check if later assignments
             # will conflict with this assignment
-            gata_hours_time[cur_assigned_gata_name][
-                "remaining_hours"
-            ] -= cur_course.get_activityTimes()
-            gata_hours_time[cur_assigned_gata_name]["unavail_time"].append(
-                cur_class_time
-            )
+            gata_hours_time[cur_assigned_gata_name]["remaining_hours"] -= cur_course.get_activityTimes()
+            # print(gata_hours_time[cur_assigned_gata_name])
+            gata_hours_time[cur_assigned_gata_name]["unavail_time"].append(cur_class_time)
 
             # TODO: Calculate the rewards score for each assignments for rank of final results.
 
@@ -556,7 +582,7 @@ class DisplayMgr:
                 "schedule #",
                 "fitness",
                 "# of conflicts",
-                "classes [dept,class,room,student,meeting-time]",
+                "classes [Student,Class section.ClassCode,Meeting Time,Hours Available,Hours Used]",
             ]
         )
         schedules = population.get_schedules()
@@ -588,6 +614,7 @@ class DisplayMgr:
             ]
         )
         for i in range(0, len(scheduleData)):
+            # print(scheduleData[i].get_hoursAvail())
             table.add_row([str(i), 
                             fitness,
                             scheduleData[i].get_id(),
@@ -782,7 +809,7 @@ Methods:
 
 
 class Data:
-                # semYr,    courseCode, courseName,                     courseSection, courseMeetTimes, courseFaculty, activityTimes, GAPref
+    # semYr,    courseCode, courseName,                     courseSection, courseMeetTimes, courseFaculty, activityTimes, GAPref
     Courses = [["Fall 2022", "CSC 799", "Thesis",                                      "001", "M 11:00 - 12:00", "DR RAZIB IQBAL",    4, 1],
                ["Fall 2022", "CSC 790", "Graduate Topics in Computer Science",         "001", "TW 11:00 - 12:00","DR AJAY KATANGUR",  2, None],
                ["Fall 2022", "CSC 765", "Ubiquitous Computing and Internet of Things", "001", "F 1:00 - 2:30",   "DR MUKULIKA GHOSH", 3, None],
@@ -829,17 +856,27 @@ class Data:
         [7, "Fall 2022", "Mr. Incredible", 20, 2, "TR 13:30 - 14:45;M 11:00 - 12:00",'TA'],
         [8, "Fall 2022", "Ms. Incredible", 10, 1, "T 8:00 - 10:00",                   'TA'],
         [9, "Fall 2022", "Violet",         10, 1, "F 9:00 - 11:00",                   'TA'],
+        [10, "Fall 2022", "Dash",          20, 2, "W 9:00 - 10:15",                   'TA'],
+        [1, "Fall 2022", "CALVIN A.",      20, 2,"MT 15:30 - 17:30;W 11:00 - 12:00", 'GA'],
+        [2, "Fall 2022", "CALEB B.",       20, 2, "TR 13:30 - 14:45;M 11:00 - 12:00",'GA'],
+        [3, "Fall 2022", "WENYU Z.",       10, 1, "T 8:00 - 10:00",                   'GA'],
+        [4, "Fall 2022", "GODWIN E.",      10, 1, "F 9:00 - 11:00",                   'GA'],
+        [5, "Fall 2022", "OLUWATOBI A.",   20, 2, "W 9:00 - 10:15",                   'GA'],
+        [6, "Fall 2022", "Jack Jack",      20, 2,"MT 15:30 - 17:30;M 11:00 - 12:00", 'TA'],
+        [7, "Fall 2022", "Mr. Incredible", 20, 2, "TR 13:30 - 14:45;M 11:00 - 12:00",'TA'],
+        [8, "Fall 2022", "Ms. Incredible", 10, 1, "T 8:00 - 10:00",                   'TA'],
+        [9, "Fall 2022", "Violet",         10, 1, "F 9:00 - 11:00",                   'TA'],
         [10, "Fall 2022", "Dash",          20, 2, "W 9:00 - 10:15",                   'TA']
     ]
-           # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught
-    Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      None, True],
-           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "001", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     None, True],
-           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:00", "DR LLOYD SMITH", 2.5,     None, True],
-           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "001", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, None, True],
-           ["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "002", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      7, False],
-           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "002", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     6, False],
-           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:01", "DR LLOYD SMITH", 2.5,     8, False],
-           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "002", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, 10,False]
+           # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught, prepTime
+    Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      None, True, 2],
+           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "001", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     None, True, 2],
+           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:00", "DR LLOYD SMITH", 2.5,     None, True, 2],
+           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "001", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, None, True, 2],
+           ["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "002", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      7, False, 2],
+           ["Fall 2022", "CSC 197", "Introductory Topics in Computer Science", "002", "T 1:00 - 2:30","DR AJAY KATANGUR", 3,     6, False, 2],
+           ["Fall 2022", "CSC 226", "Special Languages",                       "001", "W 4:00 - 5:01", "DR LLOYD SMITH", 2.5,     8, False, 2],
+           ["Fall 2022", "CSC 121", "Introduction to BASIC Programming",       "002", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5, 10,False, 2]
            ]
 
     def __init__(self):
@@ -863,7 +900,7 @@ class Data:
 
         for i in range(0, len(self.Lab)):
             self._Lab.append(Lab(self.Lab[i][0], self.Lab[i][1], self.Lab[i][2], self.Lab[i][3], self.Lab[i][4], self.Lab[i][5],
-                    self.Lab[i][6], self.Lab[i][7], self.Lab[i][8]))
+                    self.Lab[i][6], self.Lab[i][7], self.Lab[i][8], self.Lab[i][9]))
 
     # Getter functions
     def get_gata(self): return self._GATA
@@ -890,11 +927,19 @@ geneticAlgorithm = GeneticAlgorithm()
 # Here we determine how long we want the algorithm to run.
 # Currently set to find a single schedule with 0 conflicts.
 # This can be changed by implementing a count variable to get many schedules with 0 conflicts.
-while population.get_schedules()[0].get_fitness() != 1.0:
+while (population.get_schedules()[0].get_fitness() != 1.0):
     generationNumber += 1
     print("\n> Generation # " + str(generationNumber))
     population = geneticAlgorithm.evolve(population)
     population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
     displayMgr.print_generation(population)
     displayMgr.print_schedule_as_table(population.get_schedules()[0])
+    # These lines are strictly for testing purposes.
+    # displayMgr.print_schedule_as_table(population.get_schedules()[1])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[2])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[3])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[4])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[5])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[6])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[7])
 print("\n\n")

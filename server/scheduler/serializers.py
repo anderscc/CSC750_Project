@@ -5,7 +5,7 @@ from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
 class GATASerializer(serializers.ModelSerializer):
     class Meta:
         model = GATA
-        fields = ('id', 'studentName','semYr','hoursAvailable', 'coursePref', 'facultyPref', 'officeHours', 'classTimes', 'studentType')
+        fields = ('id', 'studentName','semYr','hoursAvailable', 'officeHours', 'classTimes', 'studentType')
 
 
 class CoursesSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class CoursesSerializer(serializers.ModelSerializer):
 class LabsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Labs
-        fields = ('id', 'semYr','labCode', 'labName', 'labFaculty', 'labSection', 'labMeetTimes', 'activityTimes', 'GAPref')
+        fields = ('id', 'semYr','labCode', 'labName', 'labFaculty', 'labSection', 'labMeetTimes', 'activityTimes', 'GAPref', 'labPrepTime')
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
