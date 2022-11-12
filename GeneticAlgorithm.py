@@ -62,6 +62,8 @@ class GATA:
 
     def get_studentType(self): return self._studentType
 
+    def set_hoursAvailable(self, hours): self._hoursAvailable = hours 
+
     # def __str__(self): return self._name
 
 '''
@@ -229,9 +231,8 @@ class Schedule:
         if len(set(class_meet_time['day']).intersection(gata_unavail_time['day'])) > 0:
             # 2. Compare start time and end times,
             # class starts and end in between  or equal to gata's unavailable time
-            if class_meet_time['start_time'] >= gata_unavail_time['start_time']:
-                if class_meet_time['start_time'] <= gata_unavail_time['end_time']:
-                    return True
+            if class_meet_time['start_time'] >= gata_unavail_time['start_time'] and class_meet_time['start_time'] <= gata_unavail_time['end_time']:  
+                return True
             # class starts before unavailable time, and end after unavailable time starts
             if class_meet_time['end_time'] <= gata_unavail_time['end_time']:
                 if class_meet_time['end_time'] >= gata_unavail_time['start_time']:
@@ -250,6 +251,7 @@ class Schedule:
 
     # Initializing schedule.
     def initialize(self):
+        # TODO: Create 
         # Get lists of courses and labs
         courses = self._data.get_courses()
         labs = self._data.get_labs()
@@ -268,6 +270,7 @@ class Schedule:
             # Differentiate between GA and TA and append to appropriate list.
             if(i.get_studentType() == 'GA'):
                 GAList.append(i)
+                # print(i)
             elif(i.get_studentType() == 'TA'):
                 TAList.append(i)
             # Input validation.
@@ -429,12 +432,9 @@ class Schedule:
 
         # Iterate through length of assignments
         for cur_course_assignment in assignments:
-            # print(type(cur_course_assignment.get_gata()))
             # local variables to avoid multiple callings
             cur_course = cur_course_assignment.get_course()
             cur_assigned_gata = cur_course_assignment.get_gata()
-            # print("FIND ME")
-            # print(cur_assigned_gata)
             cur_assigned_gata_name = cur_assigned_gata.get_studentName()
 
             # if current gata is not in the gata_hours_time (which means it is this gata's first assignment)
@@ -445,7 +445,6 @@ class Schedule:
                     {cur_assigned_gata_name: {"remaining_hours": cur_assigned_gata.get_hoursAvailable(),
                                               "unavail_time": gata_class_times}})
                 name_keys.append(cur_assigned_gata_name)
-
             #  Conflict 1. Compare the gata's unavailable times with class meet time
             #  Parse class time string
             cur_class_time = self.parse_times(cur_course.get_meetTimes())[0]
@@ -453,20 +452,19 @@ class Schedule:
             # Compare class time and gata's each unavailable times
             for unavail_time in gata_hours_time[cur_assigned_gata_name]["unavail_time"]:
                 if self.find_time_conflicts(cur_class_time, unavail_time):
-                    # self._numbOfConflicts += 1
-                    pass
+                    self._numbOfConflicts += 1
                     # end for loop
                     break
 
             # Conflict 2. This gata's available hours is 0 or less; or is less than class activity times
             # can be optimized by comparing the remaining hours with 0 before getting the activicity times?
             if gata_hours_time[cur_assigned_gata_name]["remaining_hours"] < cur_course.get_activityTimes():
-                # self._numbOfConflicts += 1
-                pass
+                self._numbOfConflicts += 1
 
             # Record status of this gata to gata_hours_time, to check if later assignments
             # will conflict with this assignment
             gata_hours_time[cur_assigned_gata_name]["remaining_hours"] -= cur_course.get_activityTimes()
+            # print(gata_hours_time[cur_assigned_gata_name])
             gata_hours_time[cur_assigned_gata_name]["unavail_time"].append(cur_class_time)
 
             # TODO: Calculate the rewards score for each assignments for rank of final results.
@@ -521,6 +519,7 @@ class DisplayMgr:
         fitness =population.get_fitness()
         table = prettytable.PrettyTable(['Schedule #','Fitness','ID','Course','GA','Meeting Times','Semester Year','GA Hours Remaining','GA Hours Used'])
         for i in range(0, len(scheduleData)):
+            # print(scheduleData[i].get_hoursAvail())
             table.add_row([str(i), 
                             fitness,
                             scheduleData[i].get_id(),
@@ -728,16 +727,16 @@ class Data:
     GATA = [
         # Office hours needs to be taken into consideration. If a GA has 2 office hours, that means 18 hours are available for courses.
         # id, semYr,      studentName,  hoursAvailable, officeHours, classTimes,                   studentType
-        [1, "Fall 2022", "CALVIN A.",      20, "WR 9:00 - 10:00","MT 15:30 - 17:30;M 11:00 - 12:00", 'GA'],
-        [2, "Fall 2022", "CALEB B.",       20, "MF 9:00 - 10:00", "TR 13:30 - 14:45;M 11:00 - 12:00",'GA'],
-        [3, "Fall 2022", "WENYU Z.",       10, "R 9:00 - 10:00", "T 8:00 - 10:00",                   'GA'],
-        [4, "Fall 2022", "GODWIN E.",      10, "T 9:00 - 10:00", "F 9:00 - 11:00",                   'GA'],
-        [5, "Fall 2022", "OLUWATOBI A.",   20, "M 9:00 - 10:00", "W 9:00 - 10:15",                   'GA'],
-        [6, "Fall 2022", "Jack Jack",      20, "WR 9:00 - 10:00","MT 15:30 - 17:30;M 11:00 - 12:00", 'TA'],
-        [7, "Fall 2022", "Mr. Incredible", 20, "MF 9:00 - 10:00", "TR 13:30 - 14:45;M 11:00 - 12:00",'TA'],
-        [8, "Fall 2022", "Ms. Incredible", 10, "R 9:00 - 10:00", "T 8:00 - 10:00",                   'TA'],
-        [9, "Fall 2022", "Violet",         10, "T 9:00 - 10:00", "F 9:00 - 11:00",                   'TA'],
-        [10, "Fall 2022", "Dash",          20, "M 9:00 - 10:00", "W 9:00 - 10:15",                   'TA']
+        [1, "Fall 2022", "CALVIN A.",      20, 2,"MT 15:30 - 17:30;W 11:00 - 12:00", 'GA'],
+        [2, "Fall 2022", "CALEB B.",       20, 2, "TR 13:30 - 14:45;M 11:00 - 12:00",'GA'],
+        [3, "Fall 2022", "WENYU Z.",       10, 1, "T 8:00 - 10:00",                   'GA'],
+        [4, "Fall 2022", "GODWIN E.",      10, 1, "F 9:00 - 11:00",                   'GA'],
+        [5, "Fall 2022", "OLUWATOBI A.",   20, 2, "W 9:00 - 10:15",                   'GA'],
+        [6, "Fall 2022", "Jack Jack",      20, 2,"MT 15:30 - 17:30;M 11:00 - 12:00", 'TA'],
+        [7, "Fall 2022", "Mr. Incredible", 20, 2, "TR 13:30 - 14:45;M 11:00 - 12:00",'TA'],
+        [8, "Fall 2022", "Ms. Incredible", 10, 1, "T 8:00 - 10:00",                   'TA'],
+        [9, "Fall 2022", "Violet",         10, 1, "F 9:00 - 11:00",                   'TA'],
+        [10, "Fall 2022", "Dash",          20, 2, "W 9:00 - 10:15",                   'TA']
     ]
            # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught, prepTime
     Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      None, True, 2],
@@ -791,11 +790,19 @@ geneticAlgorithm = GeneticAlgorithm()
 # Here we determine how long we want the algorithm to run. 
 # Currently set to find a single schedule with 0 conflicts.
 # This can be changed by implementing a count variable to get many schedules with 0 conflicts.
-while (population.get_schedules()[0].get_fitness() != 1.0):
+while (population.get_schedules()[7].get_fitness() != 1.0):
     generationNumber += 1
     print("\n> Generation # " + str(generationNumber))
     population = geneticAlgorithm.evolve(population)
     population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
     displayMgr.print_generation(population)
     displayMgr.print_schedule_as_table(population.get_schedules()[0])
+    # These lines are strictly for testing purposes.
+    # displayMgr.print_schedule_as_table(population.get_schedules()[1])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[2])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[3])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[4])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[5])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[6])
+    # displayMgr.print_schedule_as_table(population.get_schedules()[7])
 print("\n\n")
