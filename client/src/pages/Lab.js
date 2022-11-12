@@ -16,8 +16,9 @@ class lab extends Component {
         labSection: '',
         labMeetTimes: '',
         labFaculty: '',
-        labActivities: 'Grading, preparation',
         activityTimes: '',
+        facultyTaught: true,
+        LabPrepTime: '',
         GAPref: '',
       },
       students: []
@@ -186,19 +187,7 @@ class lab extends Component {
                 {this.validator.message('labFaculty', this.state.lab.labFaculty, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labActivities" className="form-label">Course Activities</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="labActivities"
-                  placeholder="Grading, preparation"
-                  defaultValue={this.state.lab.labActivities}
-                  onChange={this.changeHandler}
-                />
-                {this.validator.message('labActivities', this.state.lab.labActivities, 'required|alpha_num_space')}
-              </div>
-              <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Activity Times in minutes</label>
+                <label htmlFor="activityTimes" className="form-label">Activity Time in hours</label>
                 <input
                   type="float"
                   className="form-control"
@@ -209,6 +198,23 @@ class lab extends Component {
                 />
                 {this.validator.message('ActivityTimes', this.state.lab.activityTimes, 'required|numeric')}
               </div>
+              <div className="mb-3">
+                <label htmlFor="activityTimes" className="form-label">Lab Prep Time in hours</label>
+                <input
+                  type="float"
+                  className="form-control"
+                  name="LabPrepTime"
+                  placeholder="30"
+                  defaultValue={this.state.lab.LabPrepTime}
+                  onChange={this.changeHandler}
+                />
+                {this.validator.message('ActivityTimes', this.state.lab.LabPrepTime, 'required|numeric')}
+              </div>
+              <div className="mb-3" onChange={this.onChangeValue}>
+                  Is this a Falculty or TA taught lab?:
+                  <input type="radio" name="facultyTaught" value="true" defaultChecked="true"/> GA
+                  <input type="radio" name="facultyTaught" value="false"/> TA
+                </div>
               <div className="mb-3">
                 <label htmlFor="GAPref" className="form-label">GA Preference</label>
                <select className="form-control" id="exampleFormControlSelect1" name={"GAPref"} onChange={this.onChangeValue}>
