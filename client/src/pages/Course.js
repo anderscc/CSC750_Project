@@ -16,7 +16,6 @@ class Course extends Component {
         courseSection: '',
         courseMeetTimes: '',
         courseFaculty: '',
-        courseActivities: 'Grading, preparation',
         activityTimes: '',
         GAPref: '',
       },
@@ -200,7 +199,7 @@ class Course extends Component {
                 {this.validator.message('courseActivities', this.state.course.courseActivities, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Activity Times in minutes</label>
+                <label htmlFor="activityTimes" className="form-label">Activity Time in hours</label>
                 <input
                   type="float"
                   className="form-control"

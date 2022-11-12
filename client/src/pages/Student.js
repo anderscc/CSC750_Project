@@ -16,8 +16,6 @@ class Student extends Component {
         studentName: '',
         classTimes: '',
         hoursAvail: 20,
-        coursePref: '',
-        facultyPref: '',
         officeHours: 0,
         studentType: 'GA'
       },
@@ -155,30 +153,6 @@ class Student extends Component {
                       onChange={this.changeHandler}
                   />
                     {this.validator.message('hoursAvail', this.state.student.hoursAvail, 'required|integer|min:10|max:20')}
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="coursePref" className="form-label">Course Preference</label>
-                  <input
-                      name='coursePref'
-                      type={"text"}
-                      className="form-control"
-                      placeholder=""
-                      value={this.state.student.coursePref}
-                      onChange={this.changeHandler}
-                  />
-                    {this.validator.message('coursePref', this.state.student.coursePref, 'required|alpha_num_space')}
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="facultyPref" className="form-label">Faculty Preference</label>
-                  <input
-                      name='facultyPref'
-                      type={"text"}
-                      className="form-control"
-                      placeholder=""
-                      value={this.state.student.facultyPref}
-                      onChange={this.changeHandler}
-                  />
-                    {this.validator.message('coursePref', this.state.student.coursePref, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="officeHours" className="form-label">Office Hours Duration</label>
