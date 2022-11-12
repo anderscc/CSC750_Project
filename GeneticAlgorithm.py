@@ -69,7 +69,7 @@ class GATA:
     def get_studentType(self):
         return self._studentType
 
-    # def __str__(self): return self._name
+    def __str__(self): return self._studentName
 
 
 """
@@ -112,13 +112,13 @@ class Course:
     def get_semYr(self):
         return self._semYr
 
-    def get_courseCode(self):
+    def get_code(self):
         return self._courseCode
 
     # Generalize function name.
     def get_Name(self): return self._courseName
 
-    def get_courseSection(self):
+    def get_section(self):
         return self._courseSection
 
     # make the function more general callable
@@ -136,7 +136,7 @@ class Course:
         return self._GAPref
 
     def __str__(self):
-        return self._name
+        return self._courseName
 
 
 """
@@ -183,13 +183,13 @@ class Lab:
     def get_semYr(self):
         return self._semYr
 
-    def get_labCode(self):
+    def get_code(self):
         return self._labCode
 
-    def get_labName(self):
+    def get_Name(self):
         return self._labName
 
-    def get_labSection(self):
+    def get_section(self):
         return self._labSection
 
     # make the function more general applicable
@@ -208,6 +208,8 @@ class Lab:
 
     def get_facultyTaught(self):
         return self._facultyTaught
+
+    def __str__(self): return self._labName
 
 
 # TODO: Wenyu
@@ -493,6 +495,12 @@ class Schedule:
 
         return 1 / ((1.0 * self._numbOfConflicts + 1))
 
+    def __str__(self):
+        returnValue = ""
+        for i in range(0, len(self._assignments)-1):
+            returnValue += str(self._assignments[i]) + ", "
+        returnValue += str(self._assignments[len(self._assignments)-1])
+        return returnValue
 
 """
 Methods:
@@ -757,6 +765,10 @@ class CourseAssignment:
     def set_meetingTime(self, meetingTime):
         self._meetingTime = meetingTime
 
+    def __str__(self):
+        return str(self.get_gata()) + "," +  str(self.get_course().get_code()) + "." +  str(self.get_course().get_section())  + "," + str(self.get_meetingTime()) + "," + \
+            str(self.get_hoursAvail()) + "," + str(self.get_hoursUsed()) + " // "
+
 
 # TODO: Tobi
 """
@@ -808,16 +820,16 @@ class Data:
     GATA = [
         # Office hours needs to be taken into consideration. If a GA has 2 office hours, that means 18 hours are available for courses.
         # id, semYr,      studentName,  hoursAvailable, officeHours, classTimes,                   studentType
-        [1, "Fall 2022", "CALVIN A.",      20, "WR 9:00 - 10:00","MT 15:30 - 17:30;M 11:00 - 12:00", 'GA'],
-        [2, "Fall 2022", "CALEB B.",       20, "MF 9:00 - 10:00", "TR 13:30 - 14:45;M 11:00 - 12:00",'GA'],
-        [3, "Fall 2022", "WENYU Z.",       10, "R 9:00 - 10:00", "T 8:00 - 10:00",                   'GA'],
-        [4, "Fall 2022", "GODWIN E.",      10, "T 9:00 - 10:00", "F 9:00 - 11:00",                   'GA'],
-        [5, "Fall 2022", "OLUWATOBI A.",   20, "M 9:00 - 10:00", "W 9:00 - 10:15",                   'GA'],
-        [6, "Fall 2022", "Jack Jack",      20, "WR 9:00 - 10:00","MT 15:30 - 17:30;M 11:00 - 12:00", 'TA'],
-        [7, "Fall 2022", "Mr. Incredible", 20, "MF 9:00 - 10:00", "TR 13:30 - 14:45;M 11:00 - 12:00",'TA'],
-        [8, "Fall 2022", "Ms. Incredible", 10, "R 9:00 - 10:00", "T 8:00 - 10:00",                   'TA'],
-        [9, "Fall 2022", "Violet",         10, "T 9:00 - 10:00", "F 9:00 - 11:00",                   'TA'],
-        [10, "Fall 2022", "Dash",          20, "M 9:00 - 10:00", "W 9:00 - 10:15",                   'TA']
+        [1, "Fall 2022", "CALVIN A.",      20, 2,"MT 15:30 - 17:30;W 11:00 - 12:00", 'GA'],
+        [2, "Fall 2022", "CALEB B.",       20, 2, "TR 13:30 - 14:45;M 11:00 - 12:00",'GA'],
+        [3, "Fall 2022", "WENYU Z.",       10, 1, "T 8:00 - 10:00",                   'GA'],
+        [4, "Fall 2022", "GODWIN E.",      10, 1, "F 9:00 - 11:00",                   'GA'],
+        [5, "Fall 2022", "OLUWATOBI A.",   20, 2, "W 9:00 - 10:15",                   'GA'],
+        [6, "Fall 2022", "Jack Jack",      20, 2,"MT 15:30 - 17:30;M 11:00 - 12:00", 'TA'],
+        [7, "Fall 2022", "Mr. Incredible", 20, 2, "TR 13:30 - 14:45;M 11:00 - 12:00",'TA'],
+        [8, "Fall 2022", "Ms. Incredible", 10, 1, "T 8:00 - 10:00",                   'TA'],
+        [9, "Fall 2022", "Violet",         10, 1, "F 9:00 - 11:00",                   'TA'],
+        [10, "Fall 2022", "Dash",          20, 2, "W 9:00 - 10:15",                   'TA']
     ]
            # semYr,        labCode, labName,                               labSection, labMeetTimes, labFaculty, activityTimes, GAPref, facultyTaught
     Lab = [["Fall 2022", "CSC 125", "Introduction to C++ Programming",         "001", "M 1:00 - 2:30", "DR RAZIB IQBAL", 2,      None, True],
@@ -847,7 +859,7 @@ class Data:
             )
             self._Courses.append(new_course)
         for i in range(0, len(self.GATA)):
-            self._GATA.append(GATA(self.GATA[i][0], self.GATA[i][1], self.GATA[i][2], self.GATA[i][3], self.GATA[i][4],self.GATA[i][5],self.GATA[i][6]))
+            self._GATA.append(GATA(self.GATA[i][0], self.GATA[i][1], self.GATA[i][2], self.GATA[i][3]-self.GATA[i][4], self.GATA[i][4],self.GATA[i][5],self.GATA[i][6]))
 
         for i in range(0, len(self.Lab)):
             self._Lab.append(Lab(self.Lab[i][0], self.Lab[i][1], self.Lab[i][2], self.Lab[i][3], self.Lab[i][4], self.Lab[i][5],
@@ -871,10 +883,9 @@ generationNumber = 0
 print("\n> Generation # " + str(generationNumber))
 population = Population(POPULATION_SIZE)
 cur_schedules = population.get_schedules()
-# print(population)
 cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
 displayMgr.print_generation(population)
-displayMgr.print_schedule_as_table(population.get_schedules()[0])
+#displayMgr.print_schedule_as_table(population.get_schedules()[0])
 geneticAlgorithm = GeneticAlgorithm()
 # Here we determine how long we want the algorithm to run.
 # Currently set to find a single schedule with 0 conflicts.
