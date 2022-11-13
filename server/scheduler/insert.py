@@ -11,9 +11,9 @@ def createAssignment(scheduleNum, semYr, id, coursesAsn, hoursAsn):
     return True
 
 
-class createSchedule(id, semYr, scheduleNum, conflicts):
+def createSchedule(id, semYr, scheduleNum, conflicts):
     try:
-        sched = Schedule(id, semYr, scheduleNum, conflicts)
+        sched = Schedules(id, semYr, scheduleNum, conflicts)
         sched.save()
     except Exception as e:
         print("Could not insert due to error: " + e)
