@@ -884,6 +884,22 @@ class Data:
         [9, "Fall 2022", "Violet",         10, 1, "F 9:00 - 11:00",                 'TA'],
         [10, "Fall 2022", "Dash",          20, 2, "W 9:00 - 10:15",                 'TA'],
     ]
+
+    #Testing stop point
+    '''GATA = [
+        # Office hours needs to be taken into consideration. If a GA has 2 office hours, that means 18 hours are available for courses.
+        # id, semYr,      studentName,  hoursAvailable, officeHours, classTimes,  studentType
+        [1, "Fall 2022", "CALVIN A.", 20, 2, "M 08:30 - 15:30", 'GA'],
+        [2, "Fall 2022", "CALEB B.", 20, 2, "TR 08:30 - 15:30;M 11:00 - 12:00", 'GA'],
+        [3, "Fall 2022", "WENYU Z.", 10, 1, "T 08:30 - 15:30", 'GA'],
+        [4, "Fall 2022", "GODWIN E.", 10, 1, "F 08:30 - 15:30", 'GA'],
+        [5, "Fall 2022", "OLUWATOBI A.", 20, 2, "W 08:30 - 15:30", 'GA'],
+        [6, "Fall 2022", "Jack Jack", 20, 2, "M 08:30 - 15:30;M 11:00 - 12:00", 'TA'],
+        [7, "Fall 2022", "Mr. Incredible", 20, 2, "TR 08:30 - 15:30;M 11:00 - 12:00", 'TA'],
+        [8, "Fall 2022", "Ms. Incredible", 10, 1, "T 08:30 - 15:30", 'TA'],
+        [9, "Fall 2022", "Violet", 10, 1, "F 08:30 - 15:30", 'TA'],
+        [10, "Fall 2022", "Dash", 20, 2, "W 08:30 - 15:30", 'TA'],
+    ]'''
            # semYr, labCode, labName,  labSection, labMeetTimes, labFaculty,     activityTimes, GAPref, facultyTaught, prepTime
     Lab = [["Fall 2022", "CSC 125", "Lab 1", "001", "M 1:00 - 2:30", "DR RAZIB IQBAL",    2,       None, True,  2],
            ["Fall 2022", "CSC 197", "Lab 2", "001", "T 1:00 - 2:30","DR AJAY KATANGUR",   3,       None, True,  2],
@@ -950,6 +966,9 @@ while (population.get_schedules()[0].get_fitness() != 1.0):
     population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
     displayMgr.print_generation(population)
     displayMgr.print_schedule_as_table(population.get_schedules()[0])
+    # Stop point
+    if generationNumber == 100:
+        break
     # These lines are strictly for testing purposes.
     # displayMgr.print_schedule_as_table(population.get_schedules()[1])
     # displayMgr.print_schedule_as_table(population.get_schedules()[2])
