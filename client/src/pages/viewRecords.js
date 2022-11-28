@@ -6,6 +6,7 @@ import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography 
 import {getAllStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
 
+
 const studentField = {
     id: '',
         semYr: '',
@@ -329,7 +330,8 @@ const ViewRecords = () => {
                         onChange: cancel,
                     }}
                 />
-            </Form> ;
+               <Button  type="primary">Generate Schedule</Button>
+            </Form>
         </>)
 }
 export default ViewRecords;
