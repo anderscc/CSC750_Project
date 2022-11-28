@@ -30,5 +30,5 @@ router.register(r'semYear', views.SemesterView, 'SemYear')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-
+    path('generate_schedule',views.runAlgorithm)
 ]
