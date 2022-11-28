@@ -1,8 +1,10 @@
 # Pretty table helps with displaying output, we can use something else if it works better.
 import prettytable as prettytable
+from django.db import models
 # Random class.
 import random as rnd
 import datetime  # for time comparison
+
 
 # Defined population size.
 # Adjusted to 1 for testing, change back to 9 when finished. TODO
@@ -689,6 +691,30 @@ Methods:
         get_labs
     Setters:
 '''
+
+
+#class GettersModel(models.Model):
+    #GATA = models.CharField()
+    #Course = models.TextField()
+    #Labs = models.TextField()
+    #Assignment = models.TextField()
+    #SemesterYear = models.CharField()
+    #Schedules = models.TextField()
+
+class Getters():
+    def __init__(self, get_gata, get_courses, get_labs):
+        self.get_gata = GATA
+        self.get_courses = Course
+        self.get_labs = Lab
+
+    def __str__(self):
+        return self.GATA
+
+    def __str__(self):
+        return self.Course
+
+    def __str__(self):
+        return self.Labs
 class Data:
                 # semYr,    courseCode, courseName,                     courseSection, courseMeetTimes, courseFaculty, activityTimes, GAPref
     Courses = [["Fall 2022", "CSC 799", "Thesis",                                      "001", "M 11:00 - 12:00", "DR RAZIB IQBAL",    4, 1],
