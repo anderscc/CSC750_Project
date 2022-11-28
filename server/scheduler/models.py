@@ -39,8 +39,8 @@ class Labs(models.Model):
 class Assignment(models.Model):
     scheduleNum = models.AutoField(primary_key = True, editable = False, unique = True)
     semYr = models.ForeignKey('SemesterYear', on_delete=models.CASCADE)
-    id = models.ForeignKey('GATA', on_delete=models.CASCADE) #GA id which is refernced from GATA
-    id = models.ForeignKey('GATA', on_delete=models.CASCADE) #TA id which is also referenced from GATA
+    GAid = models.ForeignKey('GATA', on_delete=models.CASCADE) #GA id which is refernced from GATA
+    TAid = models.ForeignKey('GATA', on_delete=models.CASCADE) #TA id which is also referenced from GATA
     MeetTimes = models.CharField(max_length = 100)
     GAhrsused = models.PositiveSmallIntegerField(default = 0)
     TAhrsused = models.PositiveSmallIntegerField(default = 0)
