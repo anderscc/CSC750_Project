@@ -1,8 +1,14 @@
+import os
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import GATASerializer,CoursesSerializer, SchedulesSerializer, AssignmentSerializer, LabsSerializer, SemesterSerializer
 from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
-
+from pathlib import Path
+import sys
+path_root = Path(__file__).parents[3]
+sys.path.append(str(path_root))
+import GAScheduler.GeneticAlgorithm
 
 # Create your views here.
 
@@ -30,3 +36,7 @@ class SchedulesView(viewsets.ModelViewSet):
 class SemesterView(viewsets.ModelViewSet):
     serializer_class = SemesterSerializer
     queryset = SemesterYear.objects.all()
+
+def runAlgorithm():
+    os.system('python GeneticAlgorithm.py')
+    return HttpResponse("OK")
