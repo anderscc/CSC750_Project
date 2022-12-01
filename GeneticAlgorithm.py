@@ -518,7 +518,6 @@ class Schedule:
 
         # Iterate through length of assignments
         for cur_course_assignment in assignments:
-            print(cur_course_assignment.get_hoursAvailGA(), cur_course_assignment.get_hoursAvailTA())
             # local variables to avoid multiple callings
             cur_course = cur_course_assignment.get_course()
             cur_assigned_ga = cur_course_assignment.get_ga()
@@ -533,6 +532,7 @@ class Schedule:
             if cur_assigned_ga_name not in name_keys:
                 # add this gata's original data to the dict
                 gata_class_times = self.parse_times(cur_assigned_ga.get_classTimes())
+                print(type(gata_class_times))
                 gata_hours_time.update(
                     {
                         cur_assigned_ga_name: {
@@ -542,7 +542,7 @@ class Schedule:
                     }
                 )
                 name_keys.append(cur_assigned_ga_name)
-            elif cur_assigned_ta_name not in name_keys:
+            if cur_assigned_ta_name not in name_keys:
                 # add this gata's original data to the dict
                 gata_class_times = self.parse_times(cur_assigned_ta.get_classTimes())
                 gata_hours_time.update(
@@ -558,23 +558,28 @@ class Schedule:
             #  Parse class time string
             cur_class_time = self.parse_times(cur_course.get_meetTimes())[0]
 
-            # Compare class time and gata's each unavailable times
-            for unavail_time in gata_hours_time[cur_assigned_ga_name]["unavail_time"], gata_hours_time[cur_assigned_ta_name]["unavail_time"]:
+            # Compare class time and ga's/ta's each unavailable times
+            for unavail_time in gata_hours_time[cur_assigned_ga_name]["unavail_time"]:
                 if self.find_time_conflicts(cur_class_time, unavail_time):
                     self._numbOfConflicts += 1
-                    # pass
 
+            for unavail_time in gata_hours_time[cur_assigned_ta_name]["unavail_time"]:
+                if self.find_time_conflicts(cur_class_time, unavail_time):
+                    self._numbOfConflicts += 1
             # Conflict 2. This gata's available hours is 0 or less; or is less than class activity times
             # can be optimized by comparing the remaining hours with 0 before getting the activicity times?
             if gata_hours_time[cur_assigned_ga_name]["remaining_hours"] < cur_course.get_activityTimes(): 
                 self._numbOfConflicts += 1
                 # pass
-
+            if gata_hours_time[cur_assigned_ta_name]["remaining_hours"] < cur_course.get_activityTimes(): 
+                self._numbOfConflicts += 1
             # Record status of this gata to gata_hours_time, to check if later assignments
             # will conflict with this assignment
-            # gata_hours_time[cur_assigned_gata_name]["remaining_hours"] -= cur_course.get_activityTimes()
+            gata_hours_time[cur_assigned_ga_name]["remaining_hours"] -= cur_course.get_activityTimes()
+            gata_hours_time[cur_assigned_ta_name]["remaining_hours"] -= cur_course.get_activityTimes() + cur_course.get_prepTime()
             # print(gata_hours_time[cur_assigned_gata_name])
             gata_hours_time[cur_assigned_ga_name]["unavail_time"].append(cur_class_time)
+            gata_hours_time[cur_assigned_ta_name]["unavail_time"].append(cur_class_time)
 
             # TODO: Calculate the rewards score for each assignments for rank of final results.
 
