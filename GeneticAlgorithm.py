@@ -666,7 +666,7 @@ class DisplayMgr:
         fitness = population.get_fitness()
         table = prettytable.PrettyTable(
             [
-                "Schedule #",
+                "CourseAsn#",
                 "Fitness",
                 "ID",
                 "Course",
