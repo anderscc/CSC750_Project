@@ -1,4 +1,4 @@
-from .models import Assignment, Schedules
+from .models import Assignment, Schedules, Courses, Labs, GATA
 
 
 def createAssignment(scheduleNum, semYr, id, coursesAsn, hoursAsn):
@@ -19,3 +19,13 @@ def createSchedule(id, semYr, scheduleNum, conflicts):
         print("Could not insert due to error: " + e)
         return False
     return True
+
+def getCourses(semYr):
+    return Courses.objects.filter(semYr=semYr)
+
+def getLabs(semYr):
+    return Labs.objects.filter(semYr=semYr)
+
+def getGATAs(semYr):
+    return GATA.objects.filter(semYr=semYr)
+
