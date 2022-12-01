@@ -334,7 +334,6 @@ class Schedule:
         # List of original available hours to assign to GAs and TAs
         global OriginalHours
         OriginalHours = []
-        NewHours = []
 
         # Iterates through gatas to sort by student type.
         for i in gatas:
@@ -399,9 +398,6 @@ class Schedule:
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
             newCourseAssignment.set_hoursAvailTA(TA.get_hoursAvailable())
 
-
-            NewHours.append((GA.get_hoursAvailable(), GA.get_id(), newCourseAssignment.get_hoursUsedGA()))
-            NewHours.append((TA.get_hoursAvailable(), TA.get_id(), newCourseAssignment.get_hoursUsedTA()))
             self._assignments.append(newCourseAssignment)
         # Assigning Labs that don't have a TA preference to TAs and are not faculty taught.
         for cur_lab in LabNoTAPref:
@@ -433,9 +429,6 @@ class Schedule:
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
             newCourseAssignment.set_hoursAvailTA(TA.get_hoursAvailable())
 
-
-            NewHours.append((GA.get_hoursAvailable(), GA.get_id(), newCourseAssignment.get_hoursUsedGA()))
-            NewHours.append((TA.get_hoursAvailable(), TA.get_id(), newCourseAssignment.get_hoursUsedTA()))
             self._assignments.append(newCourseAssignment)
         # Assigning Labs that don't have a TA preference to TAs and are not faculty taught.
         for cur_lab in LabFacultyTaught:
@@ -456,7 +449,6 @@ class Schedule:
             newCourseAssignment.set_hoursAvailTA(TA.get_hoursAvailable())
             cur_lab.set_GAPref(None)
 
-            NewHours.append((TA.get_hoursAvailable(), TA.get_id(), newCourseAssignment.get_hoursUsedTA()))
             self._assignments.append(newCourseAssignment)
         # Assigning courses that have GA preferences to preferred GAs
         for cur_course in CourseGAPref:
@@ -475,8 +467,6 @@ class Schedule:
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
             newCourseAssignment.set_semYr(cur_course.get_semYr())
 
-
-            NewHours.append((GA.get_hoursAvailable(), GA.get_id(), newCourseAssignment.get_hoursUsedGA()))
             self._assignments.append(newCourseAssignment)
         # Assigning courses that have no GA preferences.
         for cur_course in CourseNonGAPref:
@@ -496,8 +486,7 @@ class Schedule:
             GAHours = GA.get_hoursAvailable() - newCourseAssignment.get_hoursUsedGA()
             GA.set_hoursAvailable(GAHours)
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
-            # Testing
-            NewHours.append((GA.get_hoursAvailable(), GA.get_id(), newCourseAssignment.get_hoursUsedGA()))
+            
             self._assignments.append(newCourseAssignment)
         # Set remaining hours back to original values.
         # print("NewOrigin2", NewHours)
