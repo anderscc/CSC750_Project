@@ -1,5 +1,6 @@
 
-import React, { Component } from 'react';
+import React, {Component, useEffect} from "react";
+import { useState } from 'react';
 import { Space, Table, Typography, Popconfirm } from 'antd';
 
 //it'll be one table
@@ -63,6 +64,17 @@ const data = [
 ]
 
 
-const ViewSchedule = () => <Table columns={columns} dataSource={data} />;
+const ViewSchedule = () =><Table columns={columns} dataSource={data} />;
+  {/*const [schedules, setSchedules] = useState([])
+
+  useEffect(() => {
+    const getData = async () => {
+        const schedulesData = await getAllSchedules()
+        setSchedules(schedulesData)
+    }
+    getData()},[]);*/}
+
+
   
+
 export default ViewSchedule;
