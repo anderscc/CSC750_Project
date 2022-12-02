@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import { Space, Table, Typography, Popconfirm } from 'antd';
 
 //it'll be one table
 //get the data from api probably in array format
@@ -16,17 +17,52 @@ import React, { Component } from 'react';
 // var array = [ "geeks", "4", "geeks" ];
 // var csv = array.toString();
 // document.write(csv);
-class ViewSchedule extends Component {
-  render(){
-    return (
-      <div className={'container-fluid'}>
-        <h1> This is the view schedule page</h1>
 
-        <p> Click below to return to Home page and start a new 
-          schedule or return to the Confirmation page: </p>
-      </div>
-    )
+// import api 
+// import {getAllSchedule} from "../services/scheduleService"
+
+const columns = [
+  {
+    title: 'Schedule Id',
+    dataIndex: 'scheduleId',
+    key: 'scheduleId',
+    //render: (text) => <a>{text}</a>,
+  },
+  {
+    title: 'Semester Year',
+    dataIndex: 'semYr',
+    key: 'semYr',
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        {/*Action to save the schedule*/}
+        <Typography.Link >Download</Typography.Link>
+        {/*Action to delete the schedule, onConfirm={}*/}
+        <Popconfirm title="Sure to delete?" ><a>Delete</a></Popconfirm>
+      </Space>
+    ),
   }
-}
+]
+
+const data = [
+  {
+    scheduleId: '1',
+    semYr:"Fall 2022"
+  },
+  {
+    scheduleId: '2',
+    semYr:"Fall 2022"
+  },
+  {
+    scheduleId: '3',
+    semYr:"Spring 2022"
+  }
+]
+
+
+const ViewSchedule = () => <Table columns={columns} dataSource={data} />;
   
 export default ViewSchedule;
