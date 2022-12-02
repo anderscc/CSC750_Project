@@ -24,4 +24,13 @@ def getSchedules(semYr):
     schedules = Schedules.objects.filter(semYr=semYr)
     return schedules
 
+def getCourses(semYr):
+    return Courses.objects.filter(semYr=semYr)
+
+def getLabs(semYr):
+    return Labs.objects.filter(semYr=semYr)
+
+def getGATAs(semYr):
+    return GATA.objects.filter(semYr=semYr)
+
 
