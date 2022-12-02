@@ -173,7 +173,7 @@ class Student extends Component {
                       name='classTimes'
                       type={"text"}
                       className="form-control"
-                      placeholder="MW: 1:00PM - 2:00PM, TH: 1:00PM - 2:00PM"
+                      placeholder="MW 13:00 - 14:00, TH: 15:30 - 17:00"
                       defaultValue={this.state.student.officeHours}
                       onChange={this.changeHandler}
                   />

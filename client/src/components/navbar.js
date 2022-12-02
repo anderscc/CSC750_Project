@@ -11,13 +11,13 @@ const Navbar = () => {
             Home
           </NavLink>
           <NavLink to="/student" activeStyle>
-            Student
+            Add Student
           </NavLink>
           <NavLink to="/course" activeStyle>
-            Courses
+            Add Course
           </NavLink>
           <NavLink to="/lab" activeStyle>
-            Labs
+            Add Lab
           </NavLink>
           <NavLink to="/Confirmation" activeStyle>
             Confirmation

@@ -4,6 +4,7 @@ import {toast, ToastContainer} from "react-toastify";
 import {addCourse} from "../services/courseService";
 import {addStudent, getAllStudent} from "../services/studentService";
 import SimpleReactValidator from 'simple-react-validator';
+import "../components/style.css"
 
 class Course extends Component {
   constructor(args) {
@@ -117,7 +118,7 @@ class Course extends Component {
           <form>
             <div className='course-form container'>
               <div className="mb-3">
-                <label htmlFor="semYr" className="form-label">Semester</label>
+                <label htmlFor="semYr" className="form-label">Semester<span color='red'>*</span></label>
                 <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
                     <option>select</option>
                   {this.props.semesters.map((item, index) => (
@@ -127,31 +128,31 @@ class Course extends Component {
                 </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="courseCode" className="form-label">Course Code</label>
+                <label htmlFor="courseCode" className="form-label">Course Code<span color='red'>*</span></label>
                 <input
                   type={"number"}
                   className="form-control"
                   name="courseCode"
-                  placeholder="0"
+                  placeholder="CSC130"
                   value={this.state.course.courseCode}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseCode', this.state.course.courseCode, 'required|numeric')}
+                {this.validator.message('courseCode', this.state.course.courseCode, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseName" className="form-label">Course Name</label>
+                <label htmlFor="courseName" className="form-label">Course Name<span color='red'>*</span></label>
                 <input
                   type="text"
                   className="form-control"
                   name="courseName"
-                  placeholder="0"
+                  placeholder=""
                   defaultValue={this.state.course.courseName}
                   onChange={this.changeHandler}
                 />
                 {this.validator.message('courseName', this.state.course.courseName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseSection" className="form-label">Course Section</label>
+                <label htmlFor="courseSection" className="form-label">Course Section<span color='red'>*</span></label>
                 <input
                   type={"number"}
                   className="form-control"
@@ -163,7 +164,7 @@ class Course extends Component {
                 {this.validator.message('courseSection', this.state.course.courseSection, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times</label>
+                <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times<span color='red'>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -175,7 +176,7 @@ class Course extends Component {
                 {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseFaculty" className="form-label">Course Faculty</label>
+                <label htmlFor="courseFaculty" className="form-label">Course Faculty<span color='red'>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -199,12 +200,12 @@ class Course extends Component {
                 {this.validator.message('courseActivities', this.state.course.courseActivities, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Activity Time in hours</label>
+                <label htmlFor="activityTimes" className="form-label">Activity Time in hours<span color='red'>*</span></label>
                 <input
                   type="float"
                   className="form-control"
                   name="activityTimes"
-                  placeholder="30"
+                  placeholder="2"
                   defaultValue={this.state.course.activityTimes}
                   onChange={this.changeHandler}
                 />

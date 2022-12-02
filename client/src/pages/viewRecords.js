@@ -77,7 +77,7 @@ const ViewRecords = () => {
 
     const [students, setStudents] = useState([])
     const [courses, setCourses] = useState([])
-        const [data, setData] = useState(students);
+    const [data, setData] = useState(students);
 
     useEffect(() => {
         const getData = async () => {
