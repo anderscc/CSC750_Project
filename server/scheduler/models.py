@@ -6,7 +6,7 @@ from django.db import models
 class GATA(models.Model):
     id = models.AutoField(primary_key = True, editable = False, unique = True)
     semYr = models.ForeignKey('SemesterYear', on_delete=models.CASCADE)
-    studentName = models.CharField(max_length = 100)
+    studentName = models.CharField(max_length = 100, unique = True)
     hoursAvailable = models.PositiveSmallIntegerField(default=10)
     officeHours = models.PositiveSmallIntegerField(default = 1)
     classTimes = models.CharField(max_length = 255)
@@ -37,22 +37,18 @@ class Labs(models.Model):
     labPrepTime = models.PositiveSmallIntegerField(default=1)
 # Assignment Table
 class Assignment(models.Model):
-    scheduleNum = models.AutoField(primary_key = True, editable = False, unique = True)
+    AssignmentID = models.AutoField(primary_key = True, editable = False, unique = True)
     semYr = models.ForeignKey('SemesterYear', on_delete=models.CASCADE)
-    GAid = models.ForeignKey('GATA', on_delete=models.CASCADE) #GA id which is refernced from GATA
-    TAid = models.ForeignKey('GATA', on_delete=models.CASCADE) #TA id which is also referenced from GATA
-    MeetTimes = models.CharField(max_length = 100)
-    GAhrsused = models.PositiveSmallIntegerField(default = 0)
-    TAhrsused = models.PositiveSmallIntegerField(default = 0)
-    GAHrsRem = models.PositiveSmallIntegerField(default = 0)
-    TAHrsRem = models.PositiveSmallIntegerField(default = 0)
+    studentName = models.ForeignKey('GATA', on_delete=models.CASCADE, default=None, to_field="studentName") #GA id which is refernced from GATA
+    MeetTimes = models.CharField(max_length = 100, default=None)
+    GATAhrsused = models.PositiveSmallIntegerField(default = 0)
+    GATAHrsRem = models.PositiveSmallIntegerField(default = 0)
     coursesAsn = models.CharField(max_length = 255)
-    hoursAsn = models.PositiveSmallIntegerField(default = 0)
+    scheduleNum = models.ForeignKey('Schedules', on_delete=models.CASCADE)
 # Schedules Table
 class Schedules(models.Model):
     id = models.AutoField(primary_key = True, editable = False, unique = True)
     semYr = models.ForeignKey('SemesterYear', on_delete=models.CASCADE)
-    scheduleNum = models.ForeignKey('Assignment', on_delete=models.CASCADE)
     conflicts = models.PositiveSmallIntegerField(default = 0)
 # Semester/Year Table
 class SemesterYear(models.Model):
