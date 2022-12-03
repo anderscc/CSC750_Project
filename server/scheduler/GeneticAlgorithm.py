@@ -5,7 +5,7 @@ import prettytable as prettytable
 import random as rnd
 import datetime  # for time comparison
 import time
-from .sql import getGATAs
+from .sql import getGATAs, getCourses, getLabs
 
 # Defined population size.
 # Adjusted to 1 for testing, change back to 9 when finished. TODO
@@ -225,7 +225,7 @@ Methods:
 
 class Schedule:
     # Define a Schedule
-    def __init__(self):
+    def __init__(self, data):
         self._id = id  # id of schedule
         self._data = data
         self._numbOfConflicts = 0
@@ -592,12 +592,13 @@ Methods:
 
 class Population:
     # Defining variables for Population of schedules.
-    def __init__(self, size):
+    def __init__(self, size, semYear):
+        data = Data(semYear)
         self._size = size
         self._data = data
         self._schedules = []
         for i in range(0, size):
-            self._schedules.append(Schedule().initialize())
+            self._schedules.append(Schedule(data).initialize())
 
     # Getting the schedules.
     def get_schedules(self):
@@ -924,33 +925,33 @@ class Data:
     #            [1, "CSC 736", "Machine Learning", "001", "M 11:00 - 12:00", "DR AJAY KATANGUR", 4, '']]
 
     # semYr,    courseCode, courseName,                     courseSection, courseMeetTimes, courseFaculty, activityTimes, GAPref
-    Courses = [[1, "CSC 799", "Thesis",                                      "001", "M 11:00 - 12:00", "DR RAZIB IQBAL",    4, 1],
-               [1, "CSC 790", "Graduate Topics in Computer Science",         "001", "TW 11:00 - 12:00","DR AJAY KATANGUR",  2, None],
-               [1, "CSC 765", "Ubiquitous Computing and Internet of Things", "001", "F 1:00 - 2:30",   "DR MUKULIKA GHOSH", 3, None],
-               [1, "CSC 755", "Software Testing and Quality Assurance",      "001", "M 1:00 - 3:00",   "DR LLOYD SMITH",    4, 5],
-               [1, "CSC 750", "Advanced Topics in Software Engineering",     "001", "M 5:00 - 7:30",   "DR RAZIB IQBAL",    1, 4],
-               [1, "CSC 747", "Multimedia Communications",                   "001", "R 10:00 - 12:00", "DR AJAY KATANGUR",  4, 3],
-               [1, "CSC 746", "Human Computer Interaction",                  "001", "T 4:00 - 5:15",   "DR ALAA SHETA",     3, None],
-               [1, "CSC 745", "Advanced Multimedia Programming",             "001", "W 9:00 - 10:15",  "DR LLOYD SMITH",    2, None],
-               [1, "CSC 742", "Evolutionary Computing",                      "001", "TR 3:30 - 4:45",  "DR ALAA SHETA",     1, None],
-               [1, "CSC 737", "Deep Learning",                               "001", "T 9:00 - 10:00",  "DR MUKULIKA GHOSH", 2, None],
-               [1, "CSC 736", "Machine Learning",                            "001", "F 09:00 - 11:00", "DR AJAY KATANGUR",  4, None]]
+    # Courses = [[1, "CSC 799", "Thesis",                                      "001", "M 11:00 - 12:00", "DR RAZIB IQBAL",    4, 1],
+    #            [1, "CSC 790", "Graduate Topics in Computer Science",         "001", "TW 11:00 - 12:00","DR AJAY KATANGUR",  2, None],
+    #            [1, "CSC 765", "Ubiquitous Computing and Internet of Things", "001", "F 1:00 - 2:30",   "DR MUKULIKA GHOSH", 3, None],
+    #            [1, "CSC 755", "Software Testing and Quality Assurance",      "001", "M 1:00 - 3:00",   "DR LLOYD SMITH",    4, 5],
+    #            [1, "CSC 750", "Advanced Topics in Software Engineering",     "001", "M 5:00 - 7:30",   "DR RAZIB IQBAL",    1, 4],
+    #            [1, "CSC 747", "Multimedia Communications",                   "001", "R 10:00 - 12:00", "DR AJAY KATANGUR",  4, 3],
+    #            [1, "CSC 746", "Human Computer Interaction",                  "001", "T 4:00 - 5:15",   "DR ALAA SHETA",     3, None],
+    #            [1, "CSC 745", "Advanced Multimedia Programming",             "001", "W 9:00 - 10:15",  "DR LLOYD SMITH",    2, None],
+    #            [1, "CSC 742", "Evolutionary Computing",                      "001", "TR 3:30 - 4:45",  "DR ALAA SHETA",     1, None],
+    #            [1, "CSC 737", "Deep Learning",                               "001", "T 9:00 - 10:00",  "DR MUKULIKA GHOSH", 2, None],
+    #            [1, "CSC 736", "Machine Learning",                            "001", "F 09:00 - 11:00", "DR AJAY KATANGUR",  4, None]]
     # GATA = getGATAs(1)
     # print((gatas))
-    GATA = [
-        # Office hours needs to be taken into consideration. If a GA has 2 office hours, that means 18 hours are available for courses.
-        # id, semYr,      studentName,  hoursAvailable, officeHours, classTimes,  studentType
-        [1, 1, "CALVIN A.",      20, 2,"M 3:30 - 5:30",                   'GA'],
-        [2, 1, "CALEB B.",       20, 2, "TR 1:30 - 2:45;M 11:00 - 12:00", 'GA'],
-        [3, 1, "WENYU Z.",       10, 1, "T 8:00 - 10:00",                 'GA'],
-        [4, 1, "GODWIN E.",      10, 1, "F 9:00 - 11:00",                 'GA'],
-        [5, 1, "OLUWATOBI A.",   20, 2, "W 9:00 - 10:15",                 'GA'],
-        [6, 1, "Jack Jack",      20, 2,"M 3:30 - 5:30;M 11:00 - 12:00",   'TA'],
-        [7, 1, "Mr. Incredible", 20, 2, "TR 1:30 - 2:45;M 11:00 - 12:00", 'TA'],
-        [8, 1, "Ms. Incredible", 10, 1, "T 8:00 - 10:00",                 'TA'],
-        [9, 1, "Violet",         10, 1, "F 9:00 - 11:00",                 'TA'],
-        [10, 1, "Dash",          20, 2, "W 9:00 - 10:15",                 'TA'],
-    ]
+    # GATA = [
+    #     # Office hours needs to be taken into consideration. If a GA has 2 office hours, that means 18 hours are available for courses.
+    #     # id, semYr,      studentName,  hoursAvailable, officeHours, classTimes,  studentType
+    #     [1, 1, "CALVIN A.",      20, 2,"M 3:30 - 5:30",                   'GA'],
+    #     [2, 1, "CALEB B.",       20, 2, "TR 1:30 - 2:45;M 11:00 - 12:00", 'GA'],
+    #     [3, 1, "WENYU Z.",       10, 1, "T 8:00 - 10:00",                 'GA'],
+    #     [4, 1, "GODWIN E.",      10, 1, "F 9:00 - 11:00",                 'GA'],
+    #     [5, 1, "OLUWATOBI A.",   20, 2, "W 9:00 - 10:15",                 'GA'],
+    #     [6, 1, "Jack Jack",      20, 2,"M 3:30 - 5:30;M 11:00 - 12:00",   'TA'],
+    #     [7, 1, "Mr. Incredible", 20, 2, "TR 1:30 - 2:45;M 11:00 - 12:00", 'TA'],
+    #     [8, 1, "Ms. Incredible", 10, 1, "T 8:00 - 10:00",                 'TA'],
+    #     [9, 1, "Violet",         10, 1, "F 9:00 - 11:00",                 'TA'],
+    #     [10, 1, "Dash",          20, 2, "W 9:00 - 10:15",                 'TA'],
+    # ]
 
     #Testing stop point
     '''GATA = [
@@ -968,20 +969,24 @@ class Data:
         [10, 1, "Dash", 20, 2, "W 08:30 - 15:30", 'TA'],
     ]'''
            # semYr, labCode, labName,  labSection, labMeetTimes, labFaculty,     activityTimes, GAPref, facultyTaught, prepTime
-    Lab = [[1, "CSC 125", "Lab 1", "001", "M 1:00 - 2:30", "DR RAZIB IQBAL",    2,       None, True,  2],
-           [1, "CSC 197", "Lab 2", "001", "T 1:00 - 2:30","DR AJAY KATANGUR",   3,       None, True,  2],
-           [1, "CSC 226", "Lab 3", "001", "W 4:00 - 5:00", "DR LLOYD SMITH",    2.5,     None, True,  2],
-           [1, "CSC 121", "Lab 4", "001", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5,     None, True,  2],
-           [1, "CSC 125", "Lab 1", "002", "M 3:00 - 4:30", "DR RAZIB IQBAL",    2,       7,    False, 2],
-           [1, "CSC 197", "Lab 2", "002", "T 3:00 - 4:30","DR AJAY KATANGUR",   3,       6,    False, 2],
-           [1, "CSC 226", "Lab 3", "002", "W 5:30 - 6:30", "DR LLOYD SMITH",    2.5,     8,    False, 2],
-           [1, "CSC 121", "Lab 4", "002", "R 4:05 - 6:05", "DR MUKULIKA GHOSH", 1.5,     10,   False, 2]
-           ]
+    # Lab = [[1, "CSC 125", "Lab 1", "001", "M 1:00 - 2:30", "DR RAZIB IQBAL",    2,       None, True,  2],
+    #        [1, "CSC 197", "Lab 2", "001", "T 1:00 - 2:30","DR AJAY KATANGUR",   3,       None, True,  2],
+    #        [1, "CSC 226", "Lab 3", "001", "W 4:00 - 5:00", "DR LLOYD SMITH",    2.5,     None, True,  2],
+    #        [1, "CSC 121", "Lab 4", "001", "R 2:00 - 4:00", "DR MUKULIKA GHOSH", 1.5,     None, True,  2],
+    #        [1, "CSC 125", "Lab 1", "002", "M 3:00 - 4:30", "DR RAZIB IQBAL",    2,       7,    False, 2],
+    #        [1, "CSC 197", "Lab 2", "002", "T 3:00 - 4:30","DR AJAY KATANGUR",   3,       6,    False, 2],
+    #        [1, "CSC 226", "Lab 3", "002", "W 5:30 - 6:30", "DR LLOYD SMITH",    2.5,     8,    False, 2],
+    #        [1, "CSC 121", "Lab 4", "002", "R 4:05 - 6:05", "DR MUKULIKA GHOSH", 1.5,     10,   False, 2]
+    #        ]
 
-    def __init__(self):
+    def __init__(self, semYr):
         self._Courses = []
         self._GATA = []
         self._Lab = []
+        self._semYr = semYr
+        self.Courses = getCourses(self._semYr)
+        self.Lab = getLabs(self._semYr)
+        self.GATA = getGATAs(self._semYr)
         for i in range(0, len(self.Courses)):
             new_course = Course(
                 self.Courses[i][0],
@@ -1010,38 +1015,38 @@ class Data:
 
 
 # Creating object for hard coded data.
-data = Data()
-# Creating object for output
-displayMgr = DisplayMgr()
-# Printing all available data.
-# displayMgr.print_available_data()
-generationNumber = 0
-print("\n> Generation # " + str(generationNumber))
-population = Population(POPULATION_SIZE)
-cur_schedules = population.get_schedules()
-cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
-displayMgr.print_generation(population)
-displayMgr.print_schedule_as_table(population.get_schedules()[0])
-geneticAlgorithm = GeneticAlgorithm()
-# Here we determine how long we want the algorithm to run.
-# Currently set to find a single schedule with 0 conflicts.
-# This can be changed by implementing a count variable to get many schedules with 0 conflicts.
-while (population.get_schedules()[0].get_fitness() != 1.0):
-    generationNumber += 1
-    print("\n> Generation # " + str(generationNumber))
-    population = geneticAlgorithm.evolve(population)
-    population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
-    displayMgr.print_generation(population)
-    displayMgr.print_schedule_as_table(population.get_schedules()[0])
-    # Stop point
-    if generationNumber == 100:
-        break
-    # These lines are strictly for testing purposes.
-    # displayMgr.print_schedule_as_table(population.get_schedules()[1])
-    # displayMgr.print_schedule_as_table(population.get_schedules()[2])
-    # displayMgr.print_schedule_as_table(population.get_schedules()[3])
-    # displayMgr.print_schedule_as_table(population.get_schedules()[4])
-    # displayMgr.print_schedule_as_table(population.get_schedules()[5])
-    # displayMgr.print_schedule_as_table(population.get_schedules()[6])
-    # displayMgr.print_schedule_as_table(population.get_schedules()[7])
-print("\n\n")
+
+# # Creating object for output
+# displayMgr = DisplayMgr()
+# # Printing all available data.
+# # displayMgr.print_available_data()
+# generationNumber = 0
+# print("\n> Generation # " + str(generationNumber))
+# population = Population(POPULATION_SIZE)
+# cur_schedules = population.get_schedules()
+# cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
+# displayMgr.print_generation(population)
+# displayMgr.print_schedule_as_table(population.get_schedules()[0])
+# geneticAlgorithm = GeneticAlgorithm()
+# # Here we determine how long we want the algorithm to run.
+# # Currently set to find a single schedule with 0 conflicts.
+# # This can be changed by implementing a count variable to get many schedules with 0 conflicts.
+# while (population.get_schedules()[0].get_fitness() != 1.0):
+#     generationNumber += 1
+#     print("\n> Generation # " + str(generationNumber))
+#     population = geneticAlgorithm.evolve(population)
+#     population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
+#     displayMgr.print_generation(population)
+#     displayMgr.print_schedule_as_table(population.get_schedules()[0])
+#     # Stop point
+#     if generationNumber == 100:
+#         break
+#     # These lines are strictly for testing purposes.
+#     # displayMgr.print_schedule_as_table(population.get_schedules()[1])
+#     # displayMgr.print_schedule_as_table(population.get_schedules()[2])
+#     # displayMgr.print_schedule_as_table(population.get_schedules()[3])
+#     # displayMgr.print_schedule_as_table(population.get_schedules()[4])
+#     # displayMgr.print_schedule_as_table(population.get_schedules()[5])
+#     # displayMgr.print_schedule_as_table(population.get_schedules()[6])
+#     # displayMgr.print_schedule_as_table(population.get_schedules()[7])
+# print("\n\n")
