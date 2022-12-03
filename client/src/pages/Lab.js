@@ -122,7 +122,7 @@ class lab extends Component {
                     <option>select</option>
                   {this.props.semesters.map((item, index) => (
 
-                      <option value={item.id} key={index}>{item.Semester}</option>
+                      <option value={item.id} key={index}>{item.Semester+" "+item.Year}</option>
                   ))}
                 </select>
               </div>
