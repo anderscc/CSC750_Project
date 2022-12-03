@@ -4,7 +4,6 @@ import {toast, ToastContainer} from "react-toastify";
 import {addCourse} from "../services/courseService";
 import {addStudent, getAllStudent} from "../services/studentService";
 import SimpleReactValidator from 'simple-react-validator';
-import "../components/style.css"
 
 class Course extends Component {
   constructor(args) {
@@ -120,10 +119,10 @@ class Course extends Component {
               <div className="mb-3">
                 <label htmlFor="semYr" className="form-label">Semester<span color='red'>*</span></label>
                 <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
-                    <option>select</option>
+                    <option>Select a semester</option>
                   {this.props.semesters.map((item, index) => (
 
-                      <option value={item.id} key={index}>{item.Semester}</option>
+                      <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
                   ))}
                 </select>
               </div>
@@ -133,11 +132,11 @@ class Course extends Component {
                   type={"number"}
                   className="form-control"
                   name="courseCode"
-                  placeholder="CSC130"
+                  placeholder="130"
                   value={this.state.course.courseCode}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseCode', this.state.course.courseCode, 'required|alpha_num_space')}
+                {this.validator.message('courseCode', this.state.course.courseCode, 'required|numeric')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseName" className="form-label">Course Name<span color='red'>*</span></label>
@@ -164,16 +163,17 @@ class Course extends Component {
                 {this.validator.message('courseSection', this.state.course.courseSection, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times<span color='red'>*</span></label>
+                <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times (Enter in this Format MW 13:00 -
+                    14:00)<span color='red'>*</span></label>
                 <input
                   type="text"
                   className="form-control"
                   name="courseMeetTimes"
-                  placeholder="MWF 12:00 PM - 1:30 PM"
+                  placeholder="MWF 12:00 - 13:30 "
                   defaultValue={this.state.course.courseMeetTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required|alpha_num_space')}
+                {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseFaculty" className="form-label">Course Faculty<span color='red'>*</span></label>
@@ -186,18 +186,6 @@ class Course extends Component {
                   onChange={this.changeHandler}
                 />
                 {this.validator.message('courseFaculty', this.state.course.courseFaculty, 'required|alpha_num_space')}
-              </div>
-              <div className="mb-3">
-                <label htmlFor="courseActivities" className="form-label">Course Activities</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="courseActivities"
-                  placeholder="Grading, preparation"
-                  defaultValue={this.state.course.courseActivities}
-                  onChange={this.changeHandler}
-                />
-                {this.validator.message('courseActivities', this.state.course.courseActivities, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="activityTimes" className="form-label">Activity Time in hours<span color='red'>*</span></label>

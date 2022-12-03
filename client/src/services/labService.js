@@ -6,14 +6,14 @@ export const addLab = async (data)=>{
 
     return await axios.post(BASEURL, {...data})
         .catch(error => {
-            alert(" an error occurred")
+            throw error
         })
 }
 
 export const getLab = async (id)=>{
      const Lab = await axios.get(BASEURL + `${id}/`)
         .catch(error => {
-            alert(" an error occurred")
+            throw error
         })
     return Lab.data
 }
@@ -21,7 +21,7 @@ export const getLab = async (id)=>{
 export const getAllLab = async ()=>{
      const Labs = await axios.get(BASEURL)
         .catch(error => {
-            alert(" an error occurred")
+            throw error
         })
     return Labs.data
 }
@@ -31,6 +31,6 @@ export const updateLab = async (id, data)=>{
 
     return await axios.put(BASEURL + `${id}/`, {...data})
         .catch(error => {
-            alert(" an error occurred")
+            throw error
         })
 }

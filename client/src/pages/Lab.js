@@ -122,7 +122,7 @@ class lab extends Component {
                     <option>select</option>
                   {this.props.semesters.map((item, index) => (
 
-                      <option value={item.id} key={index}>{item.Semester}</option>
+                      <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
                   ))}
                 </select>
               </div>
@@ -172,7 +172,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.labMeetTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labMeetTimes', this.state.lab.labMeetTimes, 'required|alpha_num_space')}
+                {this.validator.message('labMeetTimes', this.state.lab.labMeetTimes, 'required')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labFaculty" className="form-label">lab Faculty</label>
@@ -211,9 +211,9 @@ class lab extends Component {
                 {this.validator.message('ActivityTimes', this.state.lab.LabPrepTime, 'required|numeric')}
               </div>
               <div className="mb-3" onChange={this.onChangeValue}>
-                  Is this a Falculty or TA taught lab?:
-                  <input type="radio" name="facultyTaught" value="true" defaultChecked="true"/> GA
-                  <input type="radio" name="facultyTaught" value="false"/> TA
+                  Is this a Faculty taught lab?
+                  <input type="radio" name="facultyTaught" value="true" defaultChecked="true"/> True
+                  <input type="radio" name="facultyTaught" value="false"/> False
                 </div>
               <div className="mb-3">
                 <label htmlFor="GAPref" className="form-label">GA Preference</label>
