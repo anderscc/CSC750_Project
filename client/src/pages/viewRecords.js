@@ -47,6 +47,53 @@ const labFields =
 }
 
 
+const findValidateRule=(dataIndex)=>{
+    var validateRule;
+    
+    switch(dataIndex){
+        case "studentName"||"courseName"||"labName"||"courseFaculty"||"labFaculty":
+            validateRule = [
+                {
+                    required: true,
+                    message: `Please Input ${dataIndex}!`,
+                },
+            ]
+            break
+        case "classTimes":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/),
+                    message: `Please Input Valid ${dataIndex}!`,
+                },
+            ]    
+            break
+        case "courseMeetTimes"||"labMeetTimes":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/),
+                    message: `Please Input Valid ${dataIndex}!`,
+                },
+            ]    
+            break
+        case "hoursAvailable"||"labMeetTimes":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/),
+                    message: `Please Input Valid ${dataIndex}!`,
+                },
+            ]    
+                break
+        } 
+    console.log(dataIndex,validateRule)
+
+     
+     return validateRule
+}
+
+
 const EditableCell = ({
     editing,
     dataIndex,
@@ -59,20 +106,8 @@ const EditableCell = ({
 }) => {
      /*Input Validation*/
      const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-     var validateRule;
-     switch(dataIndex){
-        case "studentName"||"courseName"||"labName"||"courseFaculty"||"labFaculty":
-            validateRule = [
-                {
-                    required: true,
-                    type:"text",
-                    message: `Please Input ${title}!`,
-                },
-            ]
-
-     }
+     
      return (
-        
          <td {...restProps}>
              {editing ? (
                 
@@ -81,12 +116,7 @@ const EditableCell = ({
                      style={{
                          margin: 0,
                      }}
-                     rules={[
-                         {
-                             required: true,
-                             message: `Please Input ${title}!`,
-                         },
-                     ]}
+                     rules={findValidateRule(dataIndex)}
                  >
                      {inputNode}
                  </Form.Item>
@@ -98,7 +128,8 @@ const EditableCell = ({
  };
 
 const ViewRecords = () => {
-    const [viewType, setviewType] = useState(true);
+    const [fields, setfields] = useState(studentField);
+    
 
     const [students, setStudents] = useState([])
     const [courses, setCourses] = useState([])
@@ -120,27 +151,32 @@ const ViewRecords = () => {
 
     const [form] = Form.useForm();
 
-    const [editingKey, setEditingKey] = useState(null);
+    const [editingKey, setEditingKey] = useState("");
     const isEditing = (record) => record.id === editingKey;
 
     const displayStudents = () => {
-        setviewType("student")
+        setfields(studentField)
         setData(students)
+        setColumns(studentColumns)
     }
     const displayCourses = () => {
-        setviewType("course")
+        setfields(courseFields)
         setData(courses)
+        setColumns(courseColumns)
     }
     const displayLabs = () => {
-        setviewType("lab")
+        setfields(labFields)
         setData(labs)
+        setColumns(labColumns)
     }
 
+
+
     const edit = (record) => {
-        /*form.setFieldsValue({
+        form.setFieldsValue({
             fields,
             ...record,
-        });*/
+        });
         setEditingKey(record.id);
         /*TODO: Need to be connect to the API*/
     };
@@ -175,33 +211,24 @@ const ViewRecords = () => {
     };
 
 
+    /*switch(fields){
+        case "course":
+            columns = courseColumns;
+        case "lab":
+            columns = labColumns;
+        case "student":
+            columns = studentColumns;
+        default:
+            columns = studentColumns;
+    }*/
+
     const studentColumns = [
         {
             title: 'Name',
             dataIndex: 'studentName',
             key: 'studentName',
-            render: (text) => <a>{text}</a>,/*,record) => {
-                if(editingKey === record.key){
-                    return (<Form.Item
-                        name="studentName"
-                        style={{
-                            margin: 0,
-                        }}
-                        rules={[
-                            {
-                                required: true,
-                                type:text,
-                                message: `Please Input Name!`,
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>);
-                    
-                }else{
-                    return <p>{text}</p>
-                }
-            }*/
+            render: (text) => <a>{text}</a>,
+            editable: true
         },
         {
             title: 'Class Time',
@@ -398,20 +425,8 @@ const ViewRecords = () => {
             },
         },
     ];
-    var columns,fields
-    switch(viewType){
-        case "course":
-            fields = courseFields
-            columns = courseColumns;
-        case "lab":
-            fields=labFields
-            columns = labColumns;
-        case "student":
-            fields=studentField
-            columns = studentColumns;
-        default:
-            fields=studentField
-            columns = studentColumns;
+
+    const [columns,setColumns] = useState(studentColumns)
 
     
 
@@ -424,7 +439,7 @@ const ViewRecords = () => {
             onCell: (record) => ({
                 record,
                 /*Input type validation*/
-                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvail"||col.dataIndex === 'activityTimes'||col.dataIndex ==='officeHours'? 'number' : 'text',
+                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvail"||col.dataIndex ==="officeHours"||col.dataIndex === 'activityTimes'||col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
@@ -439,7 +454,7 @@ const ViewRecords = () => {
             <Space style={{ marginBottom: 16, }}>
                 <Button onClick={displayStudents}>Students</Button>
                 <Button onClick={displayCourses}>Courses</Button>
-                <Button onClick={displayLabs}>Courses</Button>
+                <Button onClick={displayLabs}>Labs</Button>
             </Space>
             <Form form={form} component={false}>
                 <Table
@@ -459,5 +474,5 @@ const ViewRecords = () => {
                <Button  type="primary">Generate Schedule</Button>
             </Form>
         </>)
-}}
+}
 export default ViewRecords;
