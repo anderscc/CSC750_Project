@@ -19,12 +19,25 @@ class Student extends Component {
         officeHours: 0,
         studentType: 'GA'
       },
-      semester: []
+      /*semester: []*/
 
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
-    this.validator = new SimpleReactValidator();
+    this.validator = new SimpleReactValidator({
+      validators:{
+        classTimes:{
+          message:"Please input valid class times according to the instruction.",
+          rule:(val,params,validator)=>{
+            return validator.helpers.testRegex(val,/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/) && params.indexOf(val) === -1
+            
+          },
+          required:true
+
+        }
+
+      }
+    });
   }
 
   onChangeValue(event) {
@@ -46,7 +59,6 @@ class Student extends Component {
         ...this.state.student,
         semYr: value
       },
-      semester: [...this.state.semester]
     });
   }
 
@@ -58,7 +70,6 @@ class Student extends Component {
         ...this.state.student,
         [name]: value
       },
-      semester: [...this.state.semester]
     });
   }
   onSubmit = async (event) => {
@@ -100,11 +111,11 @@ class Student extends Component {
 
   }
 
-  async componentDidMount() {
+  /**async componentDidMount() {
     let semester = await getAllSemester();
     semester = semester.map(item => ({value: item.id, label: item.Semester}))
     this.setState({...this.state, semester})
-  }
+  }*/
 
 
   render() {
@@ -173,10 +184,9 @@ class Student extends Component {
                       type={"text"}
                       className="form-control"
                       placeholder="MW 13:00 - 14:00, TR: 15:30 - 17:00"
-                      defaultValue={this.state.student.officeHours}
                       onChange={this.changeHandler}
                   />
-                     {this.validator.message('classTimes', this.state.student.classTimes, 'required|string')}
+                     {this.validator.message('classTimes', this.state.student.classTimes, 'required|classTimes')}
                 </div>
 
               </div>

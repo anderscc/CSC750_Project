@@ -23,7 +23,20 @@ class Course extends Component {
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
-    this.validator = new SimpleReactValidator();
+    this.validator = new SimpleReactValidator({
+      validators:{
+        classTimes:{
+          message:"Please input valid class times according to the instruction.",
+          rule:(val,params,validator)=>{
+            return validator.helpers.testRegex(val,/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/) && params.indexOf(val) === -1
+            
+          },
+          required:true
+
+        }
+
+      }
+    });
   }
 
   async componentDidMount() {
@@ -173,7 +186,7 @@ class Course extends Component {
                   defaultValue={this.state.course.courseMeetTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required')}
+                {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required|classTimes')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseFaculty" className="form-label">Course Faculty<span color='red'>*</span></label>
@@ -193,11 +206,10 @@ class Course extends Component {
                   type="float"
                   className="form-control"
                   name="activityTimes"
-                  placeholder="2"
                   defaultValue={this.state.course.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('activityTimes', this.state.course.activityTimes, 'required|numeric')}
+                {this.validator.message('activityTimes', this.state.course.activityTimes, 'required|numeric|min:0,num|max:10,num')}
               </div>
               <div className="mb-3">
                 <label htmlFor="gaPreference" className="form-label">GA Preference</label>

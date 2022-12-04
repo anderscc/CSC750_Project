@@ -25,7 +25,20 @@ class lab extends Component {
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
-    this.validator = new SimpleReactValidator();
+    this.validator = new SimpleReactValidator({
+      validators:{
+        classTimes:{
+          message:"Please input valid class times according to the instruction.",
+          rule:(val,params,validator)=>{
+            return validator.helpers.testRegex(val,/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/) && params.indexOf(val) === -1
+            
+          },
+          required:true
+
+        }
+
+      }
+    });
   }
 
   async componentDidMount() {
@@ -119,7 +132,7 @@ class lab extends Component {
               <div className="mb-3">
                 <label htmlFor="semYr" className="form-label">Semester</label>
                 <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
-                    <option>select</option>
+                    <option>Select a semester</option>
                   {this.props.semesters.map((item, index) => (
 
                       <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
@@ -127,7 +140,7 @@ class lab extends Component {
                 </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="labCode" className="form-label">lab Code</label>
+                <label htmlFor="labCode" className="form-label">Lab Code</label>
                 <input
                   type={"number"}
                   className="form-control"
@@ -139,19 +152,19 @@ class lab extends Component {
                  {this.validator.message('labCode', this.state.lab.labCode, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labName" className="form-label">lab Name</label>
+                <label htmlFor="labName" className="form-label">Lab Name</label>
                 <input
                   type="text"
                   className="form-control"
                   name="labName"
-                  placeholder="0"
+                  placeholder=""
                   defaultValue={this.state.lab.labName}
                   onChange={this.changeHandler}
                 />
                 {this.validator.message('labName', this.state.lab.labName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labSection" className="form-label">lab Section</label>
+                <label htmlFor="labSection" className="form-label">Lab Section</label>
                 <input
                   type={"number"}
                   className="form-control"
@@ -163,19 +176,19 @@ class lab extends Component {
                 {this.validator.message('labSection', this.state.lab.labSection, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labMeetTimes" className="form-label">lab Meet Times</label>
+                <label htmlFor="labMeetTimes" className="form-label">Lab Meet Times</label>
                 <input
                   type="text"
                   className="form-control"
                   name="labMeetTimes"
-                  placeholder="MWF 12:00 PM - 1:30 PM"
+                  placeholder="MWF 12:00- 13:30"
                   defaultValue={this.state.lab.labMeetTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labMeetTimes', this.state.lab.labMeetTimes, 'required')}
+                {this.validator.message('labMeetTimes', this.state.lab.labMeetTimes, 'required|classTimes')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labFaculty" className="form-label">lab Faculty</label>
+                <label htmlFor="labFaculty" className="form-label">Lab Faculty</label>
                 <input
                   type="text"
                   className="form-control"
@@ -192,11 +205,11 @@ class lab extends Component {
                   type="float"
                   className="form-control"
                   name="activityTimes"
-                  placeholder="30"
+                  placeholder="2"
                   defaultValue={this.state.lab.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('ActivityTimes', this.state.lab.activityTimes, 'required|numeric')}
+                {this.validator.message('ActivityTimes', this.state.lab.activityTimes, 'required|numeric|min:0,num|max:10,num')}
               </div>
               <div className="mb-3">
                 <label htmlFor="activityTimes" className="form-label">Lab Prep Time in hours</label>
@@ -204,11 +217,11 @@ class lab extends Component {
                   type="float"
                   className="form-control"
                   name="LabPrepTime"
-                  placeholder="30"
+                  placeholder="2"
                   defaultValue={this.state.lab.LabPrepTime}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('ActivityTimes', this.state.lab.LabPrepTime, 'required|numeric')}
+                {this.validator.message('Lab preparation time', this.state.lab.LabPrepTime, 'numeric|min:0,num|max:10,num')}
               </div>
               <div className="mb-3" onChange={this.onChangeValue}>
                   Is this a Faculty taught lab?
