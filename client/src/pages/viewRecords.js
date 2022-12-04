@@ -5,10 +5,10 @@ import 'antd/dist/antd.css';
 import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
 import {getAllStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
+import { getAllLab } from "../services/labService";
 
 
 const studentField = {
-    id: '',
         semYr: '',
         studentName: '',
         classTimes: '',
@@ -19,7 +19,6 @@ const studentField = {
 
 const courseFields =
 {
-        id: '',
         semYr: "",
         courseCode: '',
         courseName: '',
@@ -29,7 +28,21 @@ const courseFields =
         courseActivities: '',
         activityTimes: '',
         GAPref: '',
-        classType: '',
+
+}
+
+const labFields =
+{
+        semYr: "",
+        labCode: '',
+        labName: '',
+        labSection: '',
+        labMeetTimes: '',
+        labFaculty: '',
+        activityTimes: '',
+        prepTimes: '',
+        GAPref: '',
+        facultyTaught:''
 
 }
 
@@ -44,37 +57,52 @@ const EditableCell = ({
     children,
     ...restProps
 }) => {
-    /*Input Validation*/
-    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <Form.Item
-                    name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    {inputNode}
-                </Form.Item>
-            ) : (
-                children
-            )}
-        </td>
-    );
-};
+     /*Input Validation*/
+     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+     var validateRule;
+     switch(dataIndex){
+        case "studentName"||"courseName"||"labName"||"courseFaculty"||"labFaculty":
+            validateRule = [
+                {
+                    required: true,
+                    type:"text",
+                    message: `Please Input ${title}!`,
+                },
+            ]
+
+     }
+     return (
+        
+         <td {...restProps}>
+             {editing ? (
+                
+                 <Form.Item
+                     name={dataIndex}
+                     style={{
+                         margin: 0,
+                     }}
+                     rules={[
+                         {
+                             required: true,
+                             message: `Please Input ${title}!`,
+                         },
+                     ]}
+                 >
+                     {inputNode}
+                 </Form.Item>
+             ) : (
+                 children
+             )}
+         </td>
+     );
+ };
 
 const ViewRecords = () => {
-    const [viewStudent, setViewStudent] = useState(true);
+    const [viewType, setviewType] = useState(true);
 
     const [students, setStudents] = useState([])
     const [courses, setCourses] = useState([])
+    const [labs, setlabs] = useState([])
     const [data, setData] = useState(students);
 
     useEffect(() => {
@@ -84,31 +112,35 @@ const ViewRecords = () => {
             setData(studentsData)
             const coursesData = await getAllCourse()
             setCourses(coursesData)
+            const labsData = await getAllLab()
+            setlabs(labsData)
         }
         getData()
     },[])
 
     const [form] = Form.useForm();
 
-    const [editingKey, setEditingKey] = useState('');
+    const [editingKey, setEditingKey] = useState(null);
     const isEditing = (record) => record.id === editingKey;
 
     const displayStudents = () => {
-        setViewStudent(true)
+        setviewType("student")
         setData(students)
     }
     const displayCourses = () => {
-        setViewStudent(false)
+        setviewType("course")
         setData(courses)
     }
+    const displayLabs = () => {
+        setviewType("lab")
+        setData(labs)
+    }
 
-
-    var fields = viewStudent ? studentField : courseFields
     const edit = (record) => {
-        form.setFieldsValue({
+        /*form.setFieldsValue({
             fields,
             ...record,
-        });
+        });*/
         setEditingKey(record.id);
         /*TODO: Need to be connect to the API*/
     };
@@ -148,8 +180,28 @@ const ViewRecords = () => {
             title: 'Name',
             dataIndex: 'studentName',
             key: 'studentName',
-            render: (text) => <a>{text}</a>,
-            editable: true
+            render: (text) => <a>{text}</a>,/*,record) => {
+                if(editingKey === record.key){
+                    return (<Form.Item
+                        name="studentName"
+                        style={{
+                            margin: 0,
+                        }}
+                        rules={[
+                            {
+                                required: true,
+                                type:text,
+                                message: `Please Input Name!`,
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>);
+                    
+                }else{
+                    return <p>{text}</p>
+                }
+            }*/
         },
         {
             title: 'Class Time',
@@ -237,9 +289,84 @@ const ViewRecords = () => {
             key: 'GAPref', editable: true
         },
         {
-            title: 'class Type',
-            dataIndex: 'classType',
-            key: 'classType', editable: true
+            title: 'Action',
+            key: 'action',
+            render: (_, record) => {
+                const editable = isEditing(record);
+                return editable ? (
+                    <Space size="middle">
+                        <Typography.Link
+                            onClick={() => save(record.id)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            Save
+                        </Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                            <a>Cancel</a>
+                        </Popconfirm>
+                    </Space>
+                ) : (
+                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                        Edit
+                    </Typography.Link>
+                        <Popconfirm title="Sure to delete?" onConfirm={deleteRecord}>
+                            <a>Delete</a>
+                        </Popconfirm></Space>
+                )
+            },
+        },
+    ];
+    const labColumns = [
+        {
+            title: 'Lab Code',
+            dataIndex: 'labCode',
+            key: 'labCode',
+            render: (text) => <a>{text}</a>,
+            editable: true
+        },
+        {
+            title: 'Section',
+            dataIndex: 'labSection',
+            key: 'labSection',
+            editable: true
+        },
+        {
+            title: 'lab Name',
+            dataIndex: 'labName',
+            key: 'labName', editable: true
+        },
+        {
+            title: 'Meet Times',
+            dataIndex: 'labMeetTimes',
+            key: 'labMeetTimes', editable: true
+        },
+        {
+            title: 'Faculty',
+            dataIndex: 'labFaculty',
+            key: 'labFaculty', editable: true
+        },
+        {
+            title: 'Activity Times',
+            dataIndex: 'activityTimes',
+            key: 'activityTimes', editable: true
+        },
+        {
+            title: 'Preparation Times',
+            dataIndex: 'prepTimes',
+            key: 'prepTimes', editable: true
+        },
+        {
+            title: 'GA Preference',
+            dataIndex: 'GAPref',
+            key: 'GAPref', editable: true
+        },
+        
+        {
+            title: 'Faculty Taught',
+            dataIndex: 'facultyTaught',
+            key: 'facultyTaught', editable: true
         },
         {
             title: 'Action',
@@ -271,7 +398,22 @@ const ViewRecords = () => {
             },
         },
     ];
-    var columns = viewStudent ? studentColumns : courseColumns
+    var columns,fields
+    switch(viewType){
+        case "course":
+            fields = courseFields
+            columns = courseColumns;
+        case "lab":
+            fields=labFields
+            columns = labColumns;
+        case "student":
+            fields=studentField
+            columns = studentColumns;
+        default:
+            fields=studentField
+            columns = studentColumns;
+
+    
 
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {
@@ -282,7 +424,7 @@ const ViewRecords = () => {
             onCell: (record) => ({
                 record,
                 /*Input type validation*/
-                inputType: col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvail"||col.dataIndex === 'activityTimes'||col.dataIndex ==='officeHours'? 'number' : 'text',
+                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvail"||col.dataIndex === 'activityTimes'||col.dataIndex ==='officeHours'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
@@ -297,6 +439,7 @@ const ViewRecords = () => {
             <Space style={{ marginBottom: 16, }}>
                 <Button onClick={displayStudents}>Students</Button>
                 <Button onClick={displayCourses}>Courses</Button>
+                <Button onClick={displayLabs}>Courses</Button>
             </Space>
             <Form form={form} component={false}>
                 <Table
@@ -316,5 +459,5 @@ const ViewRecords = () => {
                <Button  type="primary">Generate Schedule</Button>
             </Form>
         </>)
-}
+}}
 export default ViewRecords;
