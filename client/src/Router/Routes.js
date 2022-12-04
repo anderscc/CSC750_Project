@@ -12,7 +12,7 @@ function RouterCustom({semesters}) {
         <>
             <Routes>
                 <Route path='/' exact element={<Home />} />
-                 <Route path='/home' exact element={<Home />} />
+                 <Route path='/home' exact element={<Home semesters={semesters} />} />
                 <Route path='/student' exact element={<Student semesters={semesters}/>} />
                 <Route path='/course' exact element={<Course semesters={semesters} />} />
                  <Route path='/lab' exact element={<Lab semesters={semesters} />} />
