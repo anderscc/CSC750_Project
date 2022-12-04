@@ -16,21 +16,28 @@ def createSchedule(semYr, conflicts):
         sched = Schedules(semYr=semYr, conflicts=conflicts)
         sched.save()
     except Exception as e:
-        print(e)
+        # print(e)
         return False
     return sched
 
 def getSchedules(semYr):
     schedules = Schedules.objects.filter(semYr=semYr)
-    return schedules
+    return schedules.values()
+
+def getAssignments(semYr):
+    assignments = Assignment.objects.filter(semYr=semYr)
+    return assignments.values()
 
 def getCourses(semYr):
-    return Courses.objects.filter(semYr=semYr)
+    return Courses.objects.filter(semYr=semYr).values_list()
 
 def getLabs(semYr):
-    return Labs.objects.filter(semYr=semYr)
+    return Labs.objects.filter(semYr=semYr).values_list()
 
 def getGATAs(semYr):
-    return GATA.objects.filter(semYr=semYr)
+    return GATA.objects.filter(semYr=semYr).values_list()
+
+def getGATA(id):
+    return  GATA.objects.filter(id=id)
 
 

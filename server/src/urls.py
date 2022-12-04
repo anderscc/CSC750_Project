@@ -31,5 +31,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('generate_schedule',views.generate_schedules),
-    path('get_schedule',views.get_schedules)
+    path('download_schedule',views.download_schedules)
 ]
