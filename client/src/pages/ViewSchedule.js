@@ -24,31 +24,7 @@ import {generateSchedules, downloadSchedule,getAllSchedules} from "../services/s
 // import api 
 // import {getAllSchedule} from "../services/scheduleService"
 
-const columns = [
-  {
-    title: 'Schedule Id',
-    dataIndex: 'scheduleId',
-    key: 'scheduleId',
-    //render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'Semester Year',
-    dataIndex: 'semYr',
-    key: 'semYr',
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        {/*Action to generate the schedule*/}
-        <Typography.Link onClick={()=>generate()} >Generate Schedule</Typography.Link>
-        {/*Action to save the schedule*/}
-        <Typography.Link onClick={()=>download()} >Download</Typography.Link>
-        {/*Action to delete the schedule, onConfirm={}*/}
-        <Popconfirm title="Sure to delete?" ><a>Delete</a></Popconfirm>
-      </Space>
-    ),}]
+
 
 //id conflicts semester year
 //
@@ -77,7 +53,7 @@ const columns = [
 // ]
 
 
-const data = [
+/*const data = [
   {
     scheduleId: '1',
     semYr:"Fall 2022"
@@ -90,36 +66,56 @@ const data = [
     scheduleId: '3',
     semYr:"Spring 2022"
   }
-]
+]*/
 
 
 
-const ViewSchedule = () =><Table columns={columns} dataSource={data} />;
+const ViewSchedule = () =>/*<Table columns={columns} dataSource={data} />;*/{
   const [schedules, setSchedules] = useState([])
-  const [semYr, setSemYr] = useState('')
-
   useEffect(() => {
     const getData = async () => {
-        const schedulesData = await getAllSchedules(semYr)
+        const schedulesData = await getAllSchedules()
         setSchedules(schedulesData)
     }
     getData()},[]);
+   
 
-    const generate = async ()=>{
-      try{
-        const response = await generateSchedule(semYr)
-      }catch (errInfo){
-        console.log('Could not generate schedule:', errInfo)
-      }
-    }
+    const columns = [
+      {
+        title: 'Schedule Id',
+        dataIndex: 'scheduleId',
+        key: 'scheduleId',
+        //render: (text) => <a>{text}</a>,
+      },
+      {
+        title: 'Semester Year',
+        dataIndex: 'semYr',
+        key: 'semYr',
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (_, record) => (
+          <Space size="middle">
+            {/*Action to generate the schedule*/}
+            <Typography.Link onClick={()=>download(record.scheduleId)} >Download</Typography.Link>
+            {/*Action to delete the schedule, onConfirm={}*/}
+            <Popconfirm title="Sure to delete?" ><a>Delete</a></Popconfirm>
+          </Space>
+        ),}]
 
-    const download = async () =>{
-      try{
-        const response = await downloadSchedule(semYr)
-      }catch (errInfo){
-        console.log('Could not download schedule:', errInfo)
+  const download = async (semYr) =>{
+    console.log(semYr)
+        try{
+          const response = await downloadSchedule(semYr)
+        }catch (errInfo){
+          console.log('Could not download schedule:', errInfo)
+        }
       }
-    }
+
+ return(<Table columns={columns} dataSource={schedules} />)}
   
+
+
 
 export default ViewSchedule;
