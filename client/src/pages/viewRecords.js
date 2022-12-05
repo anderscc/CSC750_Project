@@ -1,11 +1,12 @@
 import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import 'antd/dist/antd.css';
-import { generateSchedule,downloadSchedule } from '../services/scheduleService';
-import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+
+import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography, Dropdown } from 'antd';
 import {getAllStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
 import { getAllLab } from "../services/labService";
+import { getAllSemester } from "../services/semesterService";
 
 
 const studentField = {
@@ -40,14 +41,15 @@ const labFields =
         labMeetTimes: '',
         labFaculty: '',
         activityTimes: '',
-        prepTimes: '',
+        labprepTimes: '',
         GAPref: '',
         facultyTaught:''
 
 }
 
 
-const findValidateRule=(dataIndex)=>{
+
+const findValidateRule=(dataIndex,title)=>{
     var validateRule;
     
     switch(dataIndex){
@@ -55,7 +57,7 @@ const findValidateRule=(dataIndex)=>{
             validateRule = [
                 {
                     required: true,
-                    message: `Please Input ${dataIndex}!`,
+                    message: `Please Input ${title}!`,
                 },
             ]
             break
@@ -64,7 +66,7 @@ const findValidateRule=(dataIndex)=>{
                 {
                     required: true,
                     pattern: new RegExp(/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/),
-                    message: `Please Input Valid ${dataIndex}!`,
+                    message: `Please Input Valid ${title}!`,
                 },
             ]    
             break
@@ -73,16 +75,25 @@ const findValidateRule=(dataIndex)=>{
                 {
                     required: true,
                     pattern: new RegExp(/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/),
-                    message: `Please Input Valid ${dataIndex}!`,
+                    message: `Please Input Valid ${title}!`,
                 },
             ]    
             break
-        case "hoursAvailable"||"labMeetTimes":
+        case "hoursAvailable":
             validateRule = [
                 {
                     required: true,
-                    pattern: new RegExp(/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/),
-                    message: `Please Input Valid ${dataIndex}!`,
+                    pattern: new RegExp(/^([1][0-9])|[2][0]$/),
+                    message: `Please Input Valid ${title}!`,
+                },
+            ]    
+                break
+        case "studentType":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^([T]|[G])|[A]$/),
+                    message: `Please Input Valid ${title}!`,
                 },
             ]    
                 break
@@ -92,6 +103,7 @@ const findValidateRule=(dataIndex)=>{
      
      return validateRule
 }
+
 
 
 const EditableCell = ({
@@ -110,7 +122,6 @@ const EditableCell = ({
      return (
          <td {...restProps}>
              {editing ? (
-                
                  <Form.Item
                      name={dataIndex}
                      style={{
@@ -135,6 +146,8 @@ const ViewRecords = () => {
     const [courses, setCourses] = useState([])
     const [labs, setlabs] = useState([])
     const [data, setData] = useState(students);
+    const [semYr, setSemYr] = useState('');
+    const [semYrData, setsemYrData] = useState('');
 
     useEffect(() => {
         const getData = async () => {
@@ -145,11 +158,15 @@ const ViewRecords = () => {
             setCourses(coursesData)
             const labsData = await getAllLab()
             setlabs(labsData)
+            const semData = await getAllSemester()
+            setsemYrData(semData)
         }
         getData()
     },[])
 
+
     const [form] = Form.useForm();
+    console.log(semYrData)
 
     const [editingKey, setEditingKey] = useState("");
     const isEditing = (record) => record.id === editingKey;
@@ -165,9 +182,13 @@ const ViewRecords = () => {
         setColumns(courseColumns)
     }
     const displayLabs = () => {
+        console.log(labs)
         setfields(labFields)
         setData(labs)
         setColumns(labColumns)
+    }
+    const handleChange = (value)=>{
+        setSemYr(value)
     }
 
 
@@ -210,10 +231,6 @@ const ViewRecords = () => {
         }
     };
 
-    const generate = async(event) =>{
-        const response = await generateSchedule()
-    }
-
 
     /*switch(fields){
         case "course":
@@ -227,6 +244,13 @@ const ViewRecords = () => {
     }*/
 
     const studentColumns = [
+        {
+            title: 'Semester Year',
+            dataIndex: 'semYr',
+            key: 'semYr',
+            render: (text) => <a>{text}</a>,
+            editable: true
+        },
         {
             title: 'Name',
             dataIndex: 'studentName',
@@ -281,6 +305,13 @@ const ViewRecords = () => {
         },
     ];
     const courseColumns = [
+        {
+            title: 'Semester Year',
+            dataIndex: 'semYr',
+            key: 'semYr',
+            render: (text) => <a>{text}</a>,
+            editable: false
+        },
         {
             title: 'Course Code',
             dataIndex: 'courseCode',
@@ -355,7 +386,7 @@ const ViewRecords = () => {
             dataIndex: 'labCode',
             key: 'labCode',
             render: (text) => <a>{text}</a>,
-            editable: true
+            editable: false
         },
         {
             title: 'Section',
@@ -385,8 +416,8 @@ const ViewRecords = () => {
         },
         {
             title: 'Preparation Times',
-            dataIndex: 'prepTimes',
-            key: 'prepTimes', editable: true
+            dataIndex: 'labPrepTime',
+            key: 'labPrepTime', editable: true
         },
         {
             title: 'GA Preference',
@@ -443,7 +474,7 @@ const ViewRecords = () => {
             onCell: (record) => ({
                 record,
                 /*Input type validation*/
-                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvail"||col.dataIndex ==="officeHours"||col.dataIndex === 'activityTimes'||col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
+                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvailable"||col.dataIndex ==="officeHours"||col.dataIndex === 'activityTimes'||col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
@@ -459,6 +490,12 @@ const ViewRecords = () => {
                 <Button onClick={displayStudents}>Students</Button>
                 <Button onClick={displayCourses}>Courses</Button>
                 <Button onClick={displayLabs}>Labs</Button>
+                <select defaultValue="" style={{width: 120,}} onChange={handleChange} 
+                options={[semYrData.map((item, index) => (
+                      {value:item.id,
+                      key:{index},
+                      label:item.Semester+' '+item.Year,}))]}>
+                  </select>
             </Space>
             <Form form={form} component={false}>
                 <Table
@@ -475,7 +512,7 @@ const ViewRecords = () => {
                         onChange: cancel,
                     }}
                 />
-               <Button onclick={this.onSubmit}  type="primary">Generate Schedule</Button>
+               <Button  type="primary">Generate Schedule</Button>
             </Form>
         </>)
 }
