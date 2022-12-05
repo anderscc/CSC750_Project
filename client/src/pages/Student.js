@@ -13,7 +13,7 @@ class Student extends Component {
         semYr: '',
         studentName: '',
         classTimes: '',
-        hoursAvail: 20,
+        hoursAvailable: 20,
         officeHours: 0,
         studentType: 'GA'
       },
@@ -149,16 +149,16 @@ class Student extends Component {
                     {this.validator.message('studentName', this.state.student.studentName, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="hoursAvail" className="form-label">GA Hours (10-20)</label>
+                  <label htmlFor="hoursAvailable" className="form-label">GA Hours 10 or 20</label>
                   <input
-                      name='hoursAvail'
+                      name='hoursAvailable'
                       type={"number"}
                       className="form-control"
                       placeholder="E.g 10"
-                      value={this.state.student.hoursAvail}
+                      value={this.state.student.hoursAvailable}
                       onChange={this.changeHandler}
                   />
-                    {this.validator.message('GA Hours', this.state.student.hoursAvail, 'required|numeric|min:10,num|max:20,num')}
+                    {this.validator.message('GA Hours', this.state.student.hoursAvailable, 'required|numeric|min:10,num|max:20,num')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="officeHours" className="form-label">Office Hours Duration</label>
