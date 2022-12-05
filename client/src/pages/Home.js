@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import SimpleReactValidator from 'simple-react-validator';
 import {createSemester} from "../services/semesterService";
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-dropdown/style.css';
 
 class Home extends Component {
     constructor(args) {
@@ -48,14 +49,31 @@ class Home extends Component {
             [name]: value
         }
     });
-    console.log("This is the year on the change Handler funntion",this.state.semYr.year)
     }
 
+/*
+if semYr in this.props.semester:
+    return error("Semester already present")
+else:
+    submit()
+*/
     onSubmit = async (event) => {
     event.preventDefault()
     if (this.validator.allValid()) {
-                const response = await createSemester(this.state.semYr.year,this.state.semYr.semester).catch(error => {
-                    toast.error('An error occurred', {
+        this.props.semesters.forEach(element=>{
+            console.log(typeof this.state.semYr.year,typeof element.Year)
+            console.log(typeof this.state.semYr.semester,typeof element.Semester)
+            if(this.state.semYr.year===element.Year && this.state.semYr.semester===element.Semester)
+            {
+                console.log("Hitting the part you want")
+                return;
+            }
+            else{
+                console.log("Hitting the part you don't want")
+            }
+        })
+    const response = await createSemester(this.state.semYr.year,this.state.semYr.semester).catch(error => {
+        toast.error('An error occurred', {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -100,9 +118,16 @@ class Home extends Component {
                         constraints of half and full-time graduate/teaching assistants.
                     </p>
                 </div>
-                <div>
-                    Here are the semesters that are currently existing in the system:
-                </div>
+                <div className="mb-3">
+                <label htmlFor="semYr" className="form-label">Here are previously created semesters:</label>
+                <select className="form-control" id="exampleFormControlSelect1" name={"semYr"}>
+                    <option disabled selected hidden>Semesters</option>
+                  {this.props.semesters.map((item, index) => (
+
+                      <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
+                  ))}
+                </select>
+              </div>
                 <div className="mb-3">
                     If the semester you are looking for is not present and a new semester needs to be created, enter below:
                     <div>
