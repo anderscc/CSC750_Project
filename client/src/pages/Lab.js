@@ -134,7 +134,6 @@ class lab extends Component {
                 <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
                     <option>Select a semester</option>
                   {this.props.semesters.map((item, index) => (
-
                       <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
                   ))}
                 </select>
