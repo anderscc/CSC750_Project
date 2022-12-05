@@ -164,7 +164,7 @@ def generate_schedules(request):
                         assignment.get_meetingTime(),
                         hoursUsed,
                         hoursRem,
-                        assignment.get_course().get_Name() + " " + assignment.get_course().get_section(),
+                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_section()),
                         new_schedule
                     )
 
@@ -176,7 +176,7 @@ def generate_schedules(request):
                         assignment.get_meetingTime(),
                         assignment.get_hoursUsedTA(),
                         assignment.get_hoursAvailTA(),
-                        assignment.get_course().get_Name() + " " + assignment.get_course().get_section(),
+                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_section()),
                         new_schedule
                     )
     return  download_schedules(request)
