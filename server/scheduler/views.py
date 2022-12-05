@@ -7,12 +7,18 @@ from rest_framework import viewsets
 import json
 
 from .GeneticAlgorithm import Data, Population, GeneticAlgorithm, POPULATION_SIZE
-from .sql import getSchedules, createSchedule, createAssignment
+from .sql import getSchedules, createSchedule, createAssignment, getGATA, getAssignments
 
 from .serializers import GATASerializer,CoursesSerializer, SchedulesSerializer, AssignmentSerializer, LabsSerializer, SemesterSerializer
 from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
 from pathlib import Path
 import sys
+import pandas as pd
+from datetime import date
+import mimetypes
+
+
+
 path_root = Path(__file__).parents[3]
 sys.path.append(str(path_root))
 
@@ -55,10 +61,49 @@ def get_schedules(request):
     data = serializers.serialize('json', list(objectQuerySet))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+def download_schedules(request):
+    semYr = int(request.GET.get('semYr'))
+    assignment_records = getAssignments(semYr)
+
+    assignment_groups = {}
+    for item in assignment_records:
+        assignment_groups.setdefault(item['scheduleNum_id'], []).append(item)
+    print(assignment_groups)
+
+    excel_file_name = 'GAS_Schedules' + str(date.today()) + '.xlsx'
+    writer = pd.ExcelWriter(excel_file_name, engine='xlsxwriter')
+    sheet_counter = 1
+
+    for assignment in assignment_groups:
+        data_name = "Schedule " + str(sheet_counter)
+        df = pd.DataFrame(assignment_groups[assignment])
+        df.to_excel(writer, sheet_name=data_name)
+        sheet_counter += 1
+    writer.save()
+
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # Define text file name
+    filename = excel_file_name
+    # Define the full file path
+    filepath = BASE_DIR  + "/" + filename
+    # Open the file for reading content
+    # path = open(filepath, 'r')
+    with open(filepath, "rb") as excel:
+        data = excel.read()
+        mime_type, _ = mimetypes.guess_type(filepath)
+        print("mime_type:  ", mime_type)
+        # Set the return value of the HttpResponse
+        response = HttpResponse(data, content_type=mime_type)
+        # Set the HTTP header for sending to browser
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        # Return the response value
+
+    # Set the mime type
+
+    return response
+
 def generate_schedules(request):
-    data = Data()
     generationNumber = 0
-    print("\n> Generation # " + str(generationNumber))
     population = Population(POPULATION_SIZE)
     cur_schedules = population.get_schedules()
     cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
@@ -75,27 +120,33 @@ def generate_schedules(request):
     semester = SemesterYear.objects.filter(id=semYr)
     for schedule in schedules:
         assignments = schedule.get_assignments()
+        new_schedule = createSchedule(semester[0], schedule.get_numbOfConflicts())
         for assignment in assignments:
-            new_schedule = createSchedule(semester[0], schedule.get_numbOfConflicts())
             if (new_schedule):
-                createAssignment(
-                    semester[0],
-                    assignment.get_ga().get_studentName(),
-                    assignment.get_meetingTime(),
-                    assignment.get_hoursUsedGA(),
-                    assignment.get_hoursAvailGA(),
-                    assignment.get_course().get_Name() + " " + assignment.get_course().get_section(),
-                    new_schedule
-                )
-
-                if assignment.get_ta() is not 'None':
+                if assignment.get_ga() is not 'None':
+                    hoursUsed = assignment.get_hoursUsedGA() if assignment.get_hoursUsedGA() is not None else assignment.get_hoursUsedTA()
+                    hoursRem = assignment.get_hoursAvailGA() if assignment.get_hoursAvailGA() is not None else assignment.get_hoursAvailTA()
+                    ga = getGATA(assignment.get_ga().get_id())
                     createAssignment(
                         semester[0],
-                        assignment.get_ta().get_studentName(),
+                        ga[0],
+                        assignment.get_meetingTime(),
+                        hoursUsed,
+                        hoursRem,
+                        assignment.get_course().get_Name() + " " + assignment.get_course().get_section(),
+                        new_schedule
+                    )
+
+                if assignment.get_ta() is not 'None':
+                    ta = getGATA(assignment.get_ta().get_id())
+                    createAssignment(
+                        semester[0],
+                        ta[0],
                         assignment.get_meetingTime(),
                         assignment.get_hoursUsedTA(),
                         assignment.get_hoursAvailTA(),
                         assignment.get_course().get_Name() + " " + assignment.get_course().get_section(),
                         new_schedule
                     )
-    return HttpResponse("Ok")
+    return  download_schedules(request)
+

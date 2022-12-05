@@ -5,6 +5,7 @@ import prettytable as prettytable
 import random as rnd
 import datetime  # for time comparison
 import time
+from .sql import getGATAs
 
 # Defined population size.
 # Adjusted to 1 for testing, change back to 9 when finished. TODO
@@ -70,7 +71,7 @@ class GATA:
     def get_studentType(self):
         return self._studentType
 
-    def set_hoursAvailable(self, hours): self._hoursAvailable = hours 
+    def set_hoursAvailable(self, hours): self._hoursAvailable = hours
 
     def __str__(self): return self._studentName
 
@@ -280,7 +281,7 @@ class Schedule:
         if len(set(class_meet_time["day"]).intersection(gata_unavail_time["day"])) > 0:
             # 2. Compare start time and end times,
             # class starts and end in between  or equal to gata's unavailable time
-            if class_meet_time['start_time'] >= gata_unavail_time['start_time'] and class_meet_time['start_time'] <= gata_unavail_time['end_time']:  
+            if class_meet_time['start_time'] >= gata_unavail_time['start_time'] and class_meet_time['start_time'] <= gata_unavail_time['end_time']:
                 return True
             # class starts before unavailable time, and end after unavailable time starts
             if class_meet_time["end_time"] <= gata_unavail_time["end_time"]:
@@ -337,17 +338,17 @@ class Schedule:
 
         # Iterates through gatas to sort by student type.
         for i in gatas:
-            if(i.get_studentType() == 'GA'): 
+            if(i.get_studentType() == 'GA'):
                 GAList.append(i)
                 # print("GA: ", i.get_hoursAvailable(), i.get_id())
                 OriginalHours.append((i.get_hoursAvailable(), i.get_id()))
-            elif(i.get_studentType() == 'TA'): 
+            elif(i.get_studentType() == 'TA'):
                 TAList.append(i)
                 # print("TA: ", i.get_hoursAvailable(), i.get_id())
                 OriginalHours.append((i.get_hoursAvailable(), i.get_id()))
-            elif(i.get_studentType() == ''): 
+            elif(i.get_studentType() == ''):
                 print("This student does not have a student Type.")
-            else: 
+            else:
                 print("This students type is not valid.")
         # Iterates through courses to sort by GA Preference or No GA Preference
         # print("Origian", OriginalHours)
@@ -454,7 +455,7 @@ class Schedule:
         for cur_course in CourseGAPref:
             # Check if the course preference is the same as the GAs student name.
             GA = self.compare_GAPref(cur_course, GAList)
-            
+
             newCourseAssignment = CourseAssignment(self._classNumb, GA)
             self._classNumb += 1
             # Setting the course, meeting time, and semester year and append it to newClass.
@@ -486,7 +487,7 @@ class Schedule:
             GAHours = GA.get_hoursAvailable() - newCourseAssignment.get_hoursUsedGA()
             GA.set_hoursAvailable(GAHours)
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
-            
+
             self._assignments.append(newCourseAssignment)
         # Set remaining hours back to original values.
         # print("NewOrigin2", NewHours)
@@ -521,7 +522,7 @@ class Schedule:
             if cur_assigned_ga_name not in name_keys:
                 # add this gata's original data to the dict
                 gata_class_times = self.parse_times(cur_assigned_ga.get_classTimes())
-                print(type(gata_class_times))
+                # print(type(gata_class_times))
                 gata_hours_time.update(
                     {
                         cur_assigned_ga_name: {
@@ -557,10 +558,10 @@ class Schedule:
                     self._numbOfConflicts += 1
             # Conflict 2. This gata's available hours is 0 or less; or is less than class activity times
             # can be optimized by comparing the remaining hours with 0 before getting the activicity times?
-            if gata_hours_time[cur_assigned_ga_name]["remaining_hours"] < cur_course.get_activityTimes(): 
+            if gata_hours_time[cur_assigned_ga_name]["remaining_hours"] < cur_course.get_activityTimes():
                 self._numbOfConflicts += 1
                 # pass
-            if gata_hours_time[cur_assigned_ta_name]["remaining_hours"] < cur_course.get_activityTimes(): 
+            if gata_hours_time[cur_assigned_ta_name]["remaining_hours"] < cur_course.get_activityTimes():
                 self._numbOfConflicts += 1
             # Record status of this gata to gata_hours_time, to check if later assignments
             # will conflict with this assignment
@@ -648,7 +649,7 @@ class DisplayMgr:
                     schedules[i].__str__(),
                 ]
             )
-        print(table1)
+        # print(table1)
 
     def print_schedule_as_table(self, population):
         scheduleData = population.get_assignments()
@@ -672,7 +673,7 @@ class DisplayMgr:
         )
         for i in range(0, len(scheduleData)):
             # print(scheduleData[i].get_hoursAvail())
-            table.add_row([str(i), 
+            table.add_row([str(i),
                             fitness,
                             scheduleData[i].get_id(),
                             scheduleData[i].get_course().get_Name(),
@@ -686,7 +687,7 @@ class DisplayMgr:
                             scheduleData[i].get_hoursAvailTA(),
                             scheduleData[i].get_hoursUsedTA(),])
         return table
-        print(table)
+        # print(table)
 
 
 # Leave for Last, this class defines our genetic algorithm.
@@ -708,10 +709,10 @@ class GeneticAlgorithm:
                 # Check GA [0] and Check TA [1]
                 if GAsTAsAssigned[0] == OriginalHours[j][1]:
                     Assignments[i].get_ga().set_hoursAvailable(OriginalHours[j][0])
-                    
+
                 if GAsTAsAssigned[1] == OriginalHours[j][1]:
                     Assignments[i].get_ta().set_hoursAvailable(OriginalHours[j][0])
-        for k in range(0, len(Assignments)):          
+        for k in range(0, len(Assignments)):
             if Assignments[k].get_hoursUsedGA() is None:
                 Assignments[k].set_hoursAvailTA(Assignments[k].get_ga().get_hoursAvailable()-Assignments[k].get_hoursUsedTA())
                 Assignments[k].get_ga().set_hoursAvailable(Assignments[k].get_hoursAvailGA())
@@ -721,7 +722,7 @@ class GeneticAlgorithm:
                 continue
             else:
                 Assignments[k].set_hoursAvailTA(Assignments[k].get_ta().get_hoursAvailable()-Assignments[k].get_hoursUsedTA())
-            print(Assignments[k].get_hoursAvailGA(), Assignments[k].get_hoursAvailTA())
+            # print(Assignments[k].get_hoursAvailGA(), Assignments[k].get_hoursAvailTA())
         return Schedule
 
     # Evolve function calls mutate population which calls crossover population.
@@ -777,7 +778,7 @@ class GeneticAlgorithm:
             # If not we set classes of schedule 2 to crossover schedule.
             else:
                 # Getting course assignment of crossoverSchedule and exchanging with course assignment from schedule2
-                cross[i].set_ga(second[i].get_ga()) 
+                cross[i].set_ga(second[i].get_ga())
         # Return crossoverSchedule.
         crossoverSchedule = self._Fix_Scheduling_Hours(crossoverSchedule)
         return crossoverSchedule
@@ -921,7 +922,7 @@ class Data:
     #            [1, "CSC 742", "Evolutionary Computing", "001", "M 11:00 - 12:00", "DR ALAA SHETA", 1, ''],
     #            [1, "CSC 737", "Deep Learning", "001", "M 11:00 - 12:00", "DR MUKULIKA GHOSH", 2, ''],
     #            [1, "CSC 736", "Machine Learning", "001", "M 11:00 - 12:00", "DR AJAY KATANGUR", 4, '']]
-    
+
     # semYr,    courseCode, courseName,                     courseSection, courseMeetTimes, courseFaculty, activityTimes, GAPref
     Courses = [[1, "CSC 799", "Thesis",                                      "001", "M 11:00 - 12:00", "DR RAZIB IQBAL",    4, 1],
                [1, "CSC 790", "Graduate Topics in Computer Science",         "001", "TW 11:00 - 12:00","DR AJAY KATANGUR",  2, None],
@@ -934,7 +935,8 @@ class Data:
                [1, "CSC 742", "Evolutionary Computing",                      "001", "TR 3:30 - 4:45",  "DR ALAA SHETA",     1, None],
                [1, "CSC 737", "Deep Learning",                               "001", "T 9:00 - 10:00",  "DR MUKULIKA GHOSH", 2, None],
                [1, "CSC 736", "Machine Learning",                            "001", "F 09:00 - 11:00", "DR AJAY KATANGUR",  4, None]]
-
+    # GATA = getGATAs(1)
+    # print((gatas))
     GATA = [
         # Office hours needs to be taken into consideration. If a GA has 2 office hours, that means 18 hours are available for courses.
         # id, semYr,      studentName,  hoursAvailable, officeHours, classTimes,  studentType
