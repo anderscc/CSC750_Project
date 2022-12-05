@@ -2,13 +2,15 @@ import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import 'antd/dist/antd.css';
 
-import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import { Select, Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography, Dropdown } from 'antd';
 import {getAllStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
+import { getAllLab } from "../services/labService";
+import { getAllSemester } from "../services/semesterService";
+import {generateSchedules} from "../services/scheduleService";
 
 
 const studentField = {
-    id: '',
         semYr: '',
         studentName: '',
         classTimes: '',
@@ -19,7 +21,6 @@ const studentField = {
 
 const courseFields =
 {
-        id: '',
         semYr: "",
         courseCode: '',
         courseName: '',
@@ -29,9 +30,82 @@ const courseFields =
         courseActivities: '',
         activityTimes: '',
         GAPref: '',
-        classType: '',
 
 }
+
+const labFields =
+{
+        semYr: "",
+        labCode: '',
+        labName: '',
+        labSection: '',
+        labMeetTimes: '',
+        labFaculty: '',
+        activityTimes: '',
+        labprepTimes: '',
+        GAPref: '',
+        facultyTaught:''
+
+}
+
+
+
+
+const findValidateRule=(dataIndex,title)=>{
+    var validateRule;
+    
+    switch(dataIndex){
+        case "studentName"||"courseName"||"labName"||"courseFaculty"||"labFaculty":
+            validateRule = [
+                {
+                    required: true,
+                    message: `Please Input ${title}!`,
+                },
+            ]
+            break
+        case "classTimes":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/),
+                    message: `Please Input Valid ${title}!`,
+                },
+            ]    
+            break
+        case "courseMeetTimes"||"labMeetTimes":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/),
+                    message: `Please Input Valid ${title}!`,
+                },
+            ]    
+            break
+        case "hoursAvailable":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^([1][0-9])|[2][0]$/),
+                    message: `Please Input Valid ${title}!`,
+                },
+            ]    
+                break
+        case "studentType":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^([T]|[G])|[A]$/),
+                    message: `Please Input Valid ${title}!`,
+                },
+            ]    
+                break
+        } 
+    console.log(dataIndex,validateRule)
+
+     
+     return validateRule
+}
+
 
 
 const EditableCell = ({
@@ -44,38 +118,38 @@ const EditableCell = ({
     children,
     ...restProps
 }) => {
-    /*Input Validation*/
-    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <Form.Item
-                    name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    {inputNode}
-                </Form.Item>
-            ) : (
-                children
-            )}
-        </td>
-    );
-};
+     /*Input Validation*/
+     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+     
+     return (
+         <td {...restProps}>
+             {editing ? (
+                 <Form.Item
+                     name={dataIndex}
+                     style={{
+                         margin: 0,
+                     }}
+                     rules={findValidateRule(dataIndex)}
+                 >
+                     {inputNode}
+                 </Form.Item>
+             ) : (
+                 children
+             )}
+         </td>
+     );
+ };
 
 const ViewRecords = () => {
-    const [viewStudent, setViewStudent] = useState(true);
+    const [fields, setfields] = useState(studentField);
+    
 
     const [students, setStudents] = useState([])
     const [courses, setCourses] = useState([])
+    const [labs, setlabs] = useState([])
     const [data, setData] = useState(students);
+    const [semYr, setSemYr] = useState([]);
+    const [semYrData, setsemYrData] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
@@ -84,26 +158,48 @@ const ViewRecords = () => {
             setData(studentsData)
             const coursesData = await getAllCourse()
             setCourses(coursesData)
+            const labsData = await getAllLab()
+            setlabs(labsData)
+            const semData = await getAllSemester()
+
+            setsemYrData(semData)
         }
         getData()
     },[])
 
-    const [form] = Form.useForm();
 
-    const [editingKey, setEditingKey] = useState('');
+    const [form] = Form.useForm();
+    const options = semYrData.map((item, index) => (
+        {value:item.id,
+        key:{index},
+        label:item.Semester+' '+item.Year,}))
+    console.log(data)
+
+    const [editingKey, setEditingKey] = useState("");
     const isEditing = (record) => record.id === editingKey;
 
     const displayStudents = () => {
-        setViewStudent(true)
+        setfields(studentField)
         setData(students)
+        setColumns(studentColumns)
     }
     const displayCourses = () => {
-        setViewStudent(false)
+        setfields(courseFields)
         setData(courses)
+        setColumns(courseColumns)
+    }
+    const displayLabs = () => {
+        console.log(labs)
+        setfields(labFields)
+        setData(labs)
+        setColumns(labColumns)
+    }
+    const handleChange = (value)=>{
+        setSemYr(value)
     }
 
 
-    var fields = viewStudent ? studentField : courseFields
+
     const edit = (record) => {
         form.setFieldsValue({
             fields,
@@ -143,7 +239,25 @@ const ViewRecords = () => {
     };
 
 
+    /*switch(fields){
+        case "course":
+            columns = courseColumns;
+        case "lab":
+            columns = labColumns;
+        case "student":
+            columns = studentColumns;
+        default:
+            columns = studentColumns;
+    }*/
+
     const studentColumns = [
+        {
+            title: 'Semester Year',
+            dataIndex: 'semYr',
+            key: 'semYr',
+            render: (text) => <a>{text}</a>,
+            editable: true
+        },
         {
             title: 'Name',
             dataIndex: 'studentName',
@@ -199,6 +313,13 @@ const ViewRecords = () => {
     ];
     const courseColumns = [
         {
+            title: 'Semester Year',
+            dataIndex: 'semYr',
+            key: 'semYr',
+            render: (text) => <a>{text}</a>,
+            editable: false
+        },
+        {
             title: 'Course Code',
             dataIndex: 'courseCode',
             key: 'courseCode',
@@ -237,9 +358,84 @@ const ViewRecords = () => {
             key: 'GAPref', editable: true
         },
         {
-            title: 'class Type',
-            dataIndex: 'classType',
-            key: 'classType', editable: true
+            title: 'Action',
+            key: 'action',
+            render: (_, record) => {
+                const editable = isEditing(record);
+                return editable ? (
+                    <Space size="middle">
+                        <Typography.Link
+                            onClick={() => save(record.id)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            Save
+                        </Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                            <a>Cancel</a>
+                        </Popconfirm>
+                    </Space>
+                ) : (
+                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                        Edit
+                    </Typography.Link>
+                        <Popconfirm title="Sure to delete?" onConfirm={deleteRecord}>
+                            <a>Delete</a>
+                        </Popconfirm></Space>
+                )
+            },
+        },
+    ];
+    const labColumns = [
+        {
+            title: 'Lab Code',
+            dataIndex: 'labCode',
+            key: 'labCode',
+            render: (text) => <a>{text}</a>,
+            editable: false
+        },
+        {
+            title: 'Section',
+            dataIndex: 'labSection',
+            key: 'labSection',
+            editable: true
+        },
+        {
+            title: 'lab Name',
+            dataIndex: 'labName',
+            key: 'labName', editable: true
+        },
+        {
+            title: 'Meet Times',
+            dataIndex: 'labMeetTimes',
+            key: 'labMeetTimes', editable: true
+        },
+        {
+            title: 'Faculty',
+            dataIndex: 'labFaculty',
+            key: 'labFaculty', editable: true
+        },
+        {
+            title: 'Activity Times',
+            dataIndex: 'activityTimes',
+            key: 'activityTimes', editable: true
+        },
+        {
+            title: 'Preparation Times',
+            dataIndex: 'labPrepTime',
+            key: 'labPrepTime', editable: true
+        },
+        {
+            title: 'GA Preference',
+            dataIndex: 'GAPref',
+            key: 'GAPref', editable: true
+        },
+        
+        {
+            title: 'Faculty Taught',
+            dataIndex: 'facultyTaught',
+            key: 'facultyTaught', editable: true
         },
         {
             title: 'Action',
@@ -271,7 +467,10 @@ const ViewRecords = () => {
             },
         },
     ];
-    var columns = viewStudent ? studentColumns : courseColumns
+
+    const [columns,setColumns] = useState(studentColumns)
+
+    
 
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {
@@ -282,7 +481,7 @@ const ViewRecords = () => {
             onCell: (record) => ({
                 record,
                 /*Input type validation*/
-                inputType: col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvail"||col.dataIndex === 'activityTimes'||col.dataIndex ==='officeHours'? 'number' : 'text',
+                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvailable"||col.dataIndex ==="officeHours"||col.dataIndex === 'activityTimes'||col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
@@ -297,6 +496,9 @@ const ViewRecords = () => {
             <Space style={{ marginBottom: 16, }}>
                 <Button onClick={displayStudents}>Students</Button>
                 <Button onClick={displayCourses}>Courses</Button>
+                <Button onClick={displayLabs}>Labs</Button>
+                <Select defaultValue={options[0]} style={{width: 120,}} onChange={handleChange} options={options}>
+                  </Select>
             </Space>
             <Form form={form} component={false}>
                 <Table
@@ -313,7 +515,7 @@ const ViewRecords = () => {
                         onChange: cancel,
                     }}
                 />
-               <Button  type="primary">Generate Schedule</Button>
+               <Button  type="primary" onClick={() => generateSchedules(semYr)}>Generate Schedule</Button>
             </Form>
         </>)
 }

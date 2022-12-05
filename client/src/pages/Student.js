@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import {getAllSemester} from "../services/semesterService";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import {addStudent, getAllStudent} from "../services/studentService";
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,7 +17,7 @@ class Student extends Component {
         officeHours: 0,
         studentType: 'GA'
       },
-      /*semester: []*/
+      semester: []
 
     }
     this.onChangeValue = this.onChangeValue.bind(this)
@@ -107,8 +105,6 @@ class Student extends Component {
     // you can use the autoForceUpdate option to do this automatically`
     this.forceUpdate();
   }
-
-
   }
 
   /**async componentDidMount() {

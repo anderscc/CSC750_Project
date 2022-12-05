@@ -30,7 +30,7 @@ class lab extends Component {
         classTimes:{
           message:"Please input valid class times according to the instruction.",
           rule:(val,params,validator)=>{
-            return validator.helpers.testRegex(val,/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/) && params.indexOf(val) === -1
+            return validator.helpers.testRegex(val,/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/) && params.indexOf(val) === -1
             
           },
           required:true
