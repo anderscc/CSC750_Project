@@ -99,14 +99,14 @@ const ViewSchedule = () =>/*<Table columns={columns} dataSource={data} />;*/{
         render: (_, record) => (
           <Space size="middle">
             {/*Action to generate the schedule*/}
-            <Typography.Link onClick={()=>download(record.scheduleId)} >Download</Typography.Link>
+            <Typography.Link onClick={()=>download(record.semYr)} >Download</Typography.Link>
             {/*Action to delete the schedule, onConfirm={}*/}
             <Popconfirm title="Sure to delete?" ><a>Delete</a></Popconfirm>
           </Space>
         ),}]
 
   const download = async (semYr) =>{
-    console.log(semYr)
+    console.log(semYr,typeof(semYr))
         try{
           const response = await downloadSchedule(semYr)
         }catch (errInfo){
