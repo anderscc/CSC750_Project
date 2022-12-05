@@ -49,6 +49,7 @@ const labFields =
 
 
 
+
 const findValidateRule=(dataIndex,title)=>{
     var validateRule;
     
