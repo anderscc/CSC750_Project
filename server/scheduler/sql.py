@@ -33,13 +33,13 @@ def getAssignments(semYr):
     return assignments.values()
 
 def getCourses(semYr):
-    return Courses.objects.filter(semYr=semYr).values_list()
+    return Courses.objects.filter(semYr=semYr).values()
 
 def getLabs(semYr):
-    return Labs.objects.filter(semYr=semYr).values_list()
+    return Labs.objects.filter(semYr=semYr).values()
 
 def getGATAs(semYr):
-    return GATA.objects.filter(semYr=semYr).values_list()
+    return GATA.objects.filter(semYr=semYr).values()
 
 def getGATA(id):
     return  GATA.objects.filter(id=id)

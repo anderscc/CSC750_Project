@@ -68,7 +68,6 @@ def download_schedules(request):
     assignment_groups = {}
     for item in assignment_records:
         assignment_groups.setdefault(item['scheduleNum_id'], []).append(item)
-    print(assignment_groups)
 
     excel_file_name = 'GAS_Schedules' + str(date.today()) + '.xlsx'
     writer = pd.ExcelWriter(excel_file_name, engine='xlsxwriter')
@@ -91,7 +90,6 @@ def download_schedules(request):
     with open(filepath, "rb") as excel:
         data = excel.read()
         mime_type, _ = mimetypes.guess_type(filepath)
-        print("mime_type:  ", mime_type)
         # Set the return value of the HttpResponse
         response = HttpResponse(data, content_type=mime_type)
         # Set the HTTP header for sending to browser
@@ -138,19 +136,18 @@ def download_schedule(request):
 
 def generate_schedules(request):
     generationNumber = 0
-    population = Population(POPULATION_SIZE)
+    semYr = int(request.GET.get('semYr'))
+    population = Population(POPULATION_SIZE, semYr)
     cur_schedules = population.get_schedules()
     cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
     geneticAlgorithm = GeneticAlgorithm()
 
     while (population.get_schedules()[0].get_fitness() != 1.0):
         generationNumber += 1
-        print("\n> Generation # " + str(generationNumber))
         population = geneticAlgorithm.evolve(population)
         population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
     schedules = population.get_schedules()
 
-    semYr = int(request.GET.get('semYr'))
     semester = SemesterYear.objects.filter(id=semYr)
     for schedule in schedules:
         assignments = schedule.get_assignments()
@@ -167,7 +164,7 @@ def generate_schedules(request):
                         assignment.get_meetingTime(),
                         hoursUsed,
                         hoursRem,
-                        assignment.get_course().get_Name() + " " + assignment.get_course().get_section(),
+                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_section()),
                         new_schedule
                     )
 
@@ -179,7 +176,7 @@ def generate_schedules(request):
                         assignment.get_meetingTime(),
                         assignment.get_hoursUsedTA(),
                         assignment.get_hoursAvailTA(),
-                        assignment.get_course().get_Name() + " " + assignment.get_course().get_section(),
+                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_section()),
                         new_schedule
                     )
     return  download_schedules(request)

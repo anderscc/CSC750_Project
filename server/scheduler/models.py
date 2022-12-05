@@ -21,7 +21,7 @@ class Courses(models.Model):
     courseMeetTimes = models.CharField(max_length = 100)
     courseFaculty = models.CharField(max_length = 255)
     activityTimes = models.CharField(max_length = 255)
-    GAPref = models.ForeignKey('GATA', on_delete=models.CASCADE) # This needs to reference id of GATA and datatype must be changed to integer.
+    GAPref = models.ForeignKey('GATA', on_delete=models.CASCADE, default=None, blank=True, null=True) # This needs to reference id of GATA and datatype must be changed to integer.
 # Labs Table
 class Labs(models.Model):
     id = models.AutoField(primary_key = True, editable = False, unique = True)
@@ -32,7 +32,7 @@ class Labs(models.Model):
     labSection = models.PositiveSmallIntegerField(default = 1)
     labMeetTimes = models.CharField(max_length = 100)
     activityTimes = models.CharField(max_length = 255)
-    GAPref = models.ForeignKey('GATA', on_delete=models.CASCADE) # This needs to reference id of GATA and datatype must be changed to integer.
+    GAPref = models.ForeignKey('GATA', on_delete=models.CASCADE, default=None, blank=True, null=True) # This needs to reference id of GATA and datatype must be changed to integer.
     facultyTaught = models.BooleanField(default = True)
     labPrepTime = models.PositiveSmallIntegerField(default=1)
 # Assignment Table
@@ -41,8 +41,8 @@ class Assignment(models.Model):
     semYr = models.ForeignKey('SemesterYear', on_delete=models.CASCADE)
     studentName = models.ForeignKey('GATA', on_delete=models.CASCADE, default=None, to_field="studentName") #GA id which is refernced from GATA
     MeetTimes = models.CharField(max_length = 100, default=None)
-    GATAhrsused = models.PositiveSmallIntegerField(default = 0)
-    GATAHrsRem = models.PositiveSmallIntegerField(default = 0)
+    GATAhrsused = models.FloatField(default = 0.0)
+    GATAHrsRem = models.FloatField(default = 0.0)
     coursesAsn = models.CharField(max_length = 255)
     scheduleNum = models.ForeignKey('Schedules', on_delete=models.CASCADE)
 # Schedules Table
