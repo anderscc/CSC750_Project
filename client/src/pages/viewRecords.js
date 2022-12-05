@@ -13,8 +13,6 @@ const studentField = {
         studentName: '',
         classTimes: '',
         hoursAvail: '',
-        coursePref: '',
-        facultyPref: '',
         officeHours: '',
         studentType: ''
 }
@@ -77,7 +75,7 @@ const ViewRecords = () => {
 
     const [students, setStudents] = useState([])
     const [courses, setCourses] = useState([])
-        const [data, setData] = useState(students);
+    const [data, setData] = useState(students);
 
     useEffect(() => {
         const getData = async () => {
@@ -162,21 +160,6 @@ const ViewRecords = () => {
             title: 'Hours Available',
             dataIndex: 'hoursAvailable',
             key: 'hoursAvailable', editable: true
-        },
-        {
-            title: 'Course Preference',
-            dataIndex: 'coursePref',
-            key: 'coursePref', editable: true
-        },
-        {
-            title: 'Faculty Preference',
-            dataIndex: 'facultyPref',
-            key: 'facultyPref', editable: true
-        },
-        {
-            title: 'Office Hours',
-            dataIndex: 'officeHours',
-            key: 'officeHours', editable: true
         },
         {
             title: 'Student Type',
