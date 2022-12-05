@@ -24,7 +24,7 @@ class lab extends Component {
       students: []
     }
     this.onChangeValue = this.onChangeValue.bind(this)
-    this.__onSelect = this.__onSelect.bind(this)
+    /*this.__onSelect = this.__onSelect.bind(this)*/
     this.validator = new SimpleReactValidator({
       validators:{
         classTimes:{
@@ -59,17 +59,16 @@ class lab extends Component {
     });
     console.log(event.target.value);
   }
-  __onSelect(option) {
+  /*__onSelect(option) {
     console.log('You selected ', option)
     const value = option.value
     this.setState({
       lab: {
         ...this.state.lab,
-        /* TODO:change the variable name to be the name of field for use in semester menu*/
         gaPreference: value
       }
     });
-  }
+  }*/
 
   changeHandler = e => {
     const name = e.target.name
