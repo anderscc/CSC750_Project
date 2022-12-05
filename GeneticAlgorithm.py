@@ -7,7 +7,6 @@ import datetime  # for time comparison
 import time
 
 # Defined population size.
-# Adjusted to 1 for testing, change back to 9 when finished. TODO
 POPULATION_SIZE = 9
 # We select the top schedule given a generation.
 NUMB_OF_ELITE_SCHEDULES = 1
@@ -16,14 +15,6 @@ TOURNAMENT_SELECTION_SIZE = 3
 # Defined mutation rate.
 MUTATION_RATE = 0.2
 
-
-# TODO: [For Godwin] Define class for GA/TA, Course, and Lab.
-# TODO: [For Wenyu] Define class for Schedule and Population.
-# TODO: [For Calvin] Define class for MeetingTime and DisplayMgr.
-# TODO: [For Caleb] Define class for Class and Genetic Algorithm.
-# TODO: [For Tobi] Define class for Data and Define hard coded test data.
-
-# TODO: Godwin
 """
 Methods: 
     Getter: 
@@ -210,7 +201,6 @@ class Lab:
 
     def __str__(self): return self._labName
 
-# TODO: Wenyu
 """
 Methods:
     Getter:
@@ -517,6 +507,8 @@ class Schedule:
             # local variables to avoid multiple callings
             cur_course = cur_course_assignment.get_course()
             # maybe could be 1 line.
+            cur_ga_hours = cur_course_assignment.get_hoursAvailGA()
+            cur_ta_hours = cur_course_assignment.get_hoursAvailTA()
             cur_assigned_ga = cur_course_assignment.get_ga()
             cur_assigned_ga_name = cur_assigned_ga.get_studentName()
 
@@ -532,13 +524,10 @@ class Schedule:
                 gata_hours_time.update(
                     {
                         cur_assigned_ga_name: {
-                            # Take a look at this later TODO
-                            "remaining_hours": cur_assigned_ga.get_hoursAvailable(),
                             "unavail_time": ga_class_times,
                         }
                     }
                 )
-                print("Find me here", cur_assigned_ga.get_hoursAvailable(), cur_assigned_ga_name),
                 name_keys.append(cur_assigned_ga_name)
             if cur_assigned_ta_name not in name_keys and cur_assigned_ta != "None":
                 # add this gata's original data to the dict
@@ -546,7 +535,6 @@ class Schedule:
                 gata_hours_time.update(
                     {
                         cur_assigned_ta_name: {
-                            "remaining_hours": cur_assigned_ta.get_hoursAvailable(),
                             "unavail_time": ta_class_times,
                         }
                     }
@@ -565,20 +553,15 @@ class Schedule:
                     if self.find_time_conflicts(cur_class_time, unavail_time):
                         self._numbOfConflicts += 1
             
-            if gata_hours_time[cur_assigned_ga_name]["remaining_hours"] < 0:
-                # print("First Conflict", gata_hours_time[cur_assigned_ga_name]["remaining_hours"], cur_assigned_ga_name, cur_course_assignment.get_id(), cur_course_assignment.get_course())
-                # print()
+            if cur_ga_hours < 0:
                 self._numbOfConflicts += 1
             gata_hours_time[cur_assigned_ga_name]["unavail_time"].append(cur_class_time)
             
             if cur_assigned_ta != "None":
-                # gata_hours_time[cur_assigned_ta_name]["remaining_hours"] -= cur_course.get_activityTimes() + cur_course.get_prepTime()
-                if gata_hours_time[cur_assigned_ta_name]["remaining_hours"] < 0:
-                    print("Second Conflict")
+                if cur_ta_hours < 0:
                     self._numbOfConflicts += 1
                 gata_hours_time[cur_assigned_ta_name]["unavail_time"].append(cur_class_time)
             # TODO: Calculate the rewards score for each assignments for rank of final results.
-        print("Next Schedule")
         return 1 / ((1.0 * self._numbOfConflicts + 1))
 
     def __str__(self):
@@ -694,8 +677,7 @@ class DisplayMgr:
         print(table)
 
 
-# Leave for Last, this class defines our genetic algorithm.
-# TODO: Caleb but also all of us.
+#This class defines our genetic algorithm.
 class GeneticAlgorithm:
     def _Fix_Scheduling_Hours(self, Schedule):
         
@@ -1005,7 +987,6 @@ class Data:
             self._Courses.append(new_course)
         for i in range(0, len(self.GATA)):
             self._GATA.append(GATA(self.GATA[i][0], self.GATA[i][1], self.GATA[i][2], self.GATA[i][3]-self.GATA[i][4], self.GATA[i][4],self.GATA[i][5],self.GATA[i][6]))
-            print(i)
             OriginalHours.append((self.GATA[i][3]-self.GATA[i][4], self.GATA[i][0]))
 
         for i in range(0, len(self.Lab)):
