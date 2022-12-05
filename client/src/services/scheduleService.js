@@ -15,5 +15,10 @@ export const downloadSchedule = async (semYr) => {
         .catch(error => {
             throw error
         })
-
+    }
+export const getAllSchedules = async()=>{
+    return await axios.post(BASEURL + `api/schedules`)
+        .catch(error=>{
+            throw error
+        })
 }

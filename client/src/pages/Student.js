@@ -105,8 +105,6 @@ class Student extends Component {
     // you can use the autoForceUpdate option to do this automatically`
     this.forceUpdate();
   }
-
-
   }
 
   /**async componentDidMount() {
