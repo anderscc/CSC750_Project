@@ -24,6 +24,10 @@ def getSchedules(semYr):
     schedules = Schedules.objects.filter(semYr=semYr)
     return schedules.values()
 
+def getAssignment(semYr, schedule_id):
+    assignment = Assignment.objects.filter(semYr=semYr, scheduleNum_id=schedule_id)
+    return assignment.values()
+
 def getAssignments(semYr):
     assignments = Assignment.objects.filter(semYr=semYr)
     return assignments.values()

@@ -2,7 +2,7 @@
 import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import { Space, Table, Typography, Popconfirm } from 'antd';
-import {generateSchedules, downloadSchedule,getAllSchedules} from "../services/scheduleService";
+import {downloadSchedule, downloadSchedules, getAllSchedules} from "../services/scheduleService";
 
 
 //it'll be one table
@@ -99,16 +99,16 @@ const ViewSchedule = () =>/*<Table columns={columns} dataSource={data} />;*/{
         render: (_, record) => (
           <Space size="middle">
             {/*Action to generate the schedule*/}
-            <Typography.Link onClick={()=>download(record.semYr)} >Download</Typography.Link>
+            <Typography.Link onClick={()=>download(record.semYr, record.id)} >Download</Typography.Link>
             {/*Action to delete the schedule, onConfirm={}*/}
             <Popconfirm title="Sure to delete?" ><a>Delete</a></Popconfirm>
           </Space>
         ),}]
 
-  const download = async (semYr) =>{
+  const download = async (semYr,id) =>{
     console.log(semYr,typeof(semYr))
         try{
-          const response = await downloadSchedule(semYr)
+          const response = await downloadSchedule(semYr, id)
         }catch (errInfo){
           console.log('Could not download schedule:', errInfo)
         }
