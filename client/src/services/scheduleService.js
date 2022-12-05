@@ -17,7 +17,7 @@ export const downloadSchedule = async (semYr) => {
         })
     }
 export const getAllSchedules = async()=>{
-    return await axios.post(BASEURL + `api/schedules`)
+    return await axios.get('http://127.0.0.1:8000/api/schedules/')
         .catch(error=>{
             throw error
         })

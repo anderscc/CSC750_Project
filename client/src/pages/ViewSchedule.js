@@ -78,14 +78,15 @@ const ViewSchedule = () =>/*<Table columns={columns} dataSource={data} />;*/{
         setSchedules(schedulesData)
     }
     getData()},[]);
+    console.log(schedules.data)
    
 
     const columns = [
       {
         title: 'Schedule Id',
-        dataIndex: 'scheduleId',
-        key: 'scheduleId',
-        //render: (text) => <a>{text}</a>,
+        dataIndex: 'id',
+        key: 'id',
+        render: (text) => <a>{text}</a>,
       },
       {
         title: 'Semester Year',
@@ -113,7 +114,7 @@ const ViewSchedule = () =>/*<Table columns={columns} dataSource={data} />;*/{
         }
       }
 
- return(<Table columns={columns} dataSource={schedules} />)}
+ return(<Table columns={columns} dataSource={schedules.data} />)}
   
 
 
