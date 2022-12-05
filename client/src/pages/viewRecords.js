@@ -1,7 +1,7 @@
 import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import 'antd/dist/antd.css';
-
+import { generateSchedule,downloadSchedule } from '../services/scheduleService';
 import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
 import {getAllStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
@@ -209,6 +209,10 @@ const ViewRecords = () => {
             console.log('Validate Failed:', errInfo);
         }
     };
+
+    const generate = async(event) =>{
+        const response = await generateSchedule()
+    }
 
 
     /*switch(fields){
@@ -471,7 +475,7 @@ const ViewRecords = () => {
                         onChange: cancel,
                     }}
                 />
-               <Button  type="primary">Generate Schedule</Button>
+               <Button onclick={this.onSubmit}  type="primary">Generate Schedule</Button>
             </Form>
         </>)
 }

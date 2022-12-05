@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import {getAllSemester} from "../services/semesterService";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import {addStudent, getAllStudent} from "../services/studentService";
 import { ToastContainer, toast } from 'react-toastify';
