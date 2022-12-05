@@ -34,3 +34,11 @@ export const updateStudent = async (id, data)=>{
             throw error
         })
 }
+
+export const deleteStudent = async (id, data)=>{
+
+    return await axios.delete(BASEURL + `${id}/`, {...data})
+        .catch(error => {
+            throw error
+        })
+}

@@ -172,7 +172,7 @@ const ViewRecords = () => {
         {value:item.id,
         key:{index},
         label:item.Semester+' '+item.Year,}))
-    console.log(typeof(options))
+    console.log(data)
 
     const [editingKey, setEditingKey] = useState("");
     const isEditing = (record) => record.id === editingKey;
