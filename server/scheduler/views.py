@@ -62,7 +62,7 @@ def get_schedules(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 def download_schedules(request):
-    semYr = request.GET.get('semYr')
+    semYr = int(request.GET.get('semYr'))
     assignment_records = getAssignments(semYr)
 
     assignment_groups = {}
