@@ -2,7 +2,7 @@ import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import 'antd/dist/antd.css';
 
-import { Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography, Dropdown } from 'antd';
+import { Select, Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography, Dropdown } from 'antd';
 import {getAllStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
 import { getAllLab } from "../services/labService";
@@ -146,8 +146,8 @@ const ViewRecords = () => {
     const [courses, setCourses] = useState([])
     const [labs, setlabs] = useState([])
     const [data, setData] = useState(students);
-    const [semYr, setSemYr] = useState('');
-    const [semYrData, setsemYrData] = useState('');
+    const [semYr, setSemYr] = useState([]);
+    const [semYrData, setsemYrData] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
@@ -159,6 +159,7 @@ const ViewRecords = () => {
             const labsData = await getAllLab()
             setlabs(labsData)
             const semData = await getAllSemester()
+
             setsemYrData(semData)
         }
         getData()
@@ -166,7 +167,11 @@ const ViewRecords = () => {
 
 
     const [form] = Form.useForm();
-    console.log(semYrData)
+    const options = semYrData.map((item, index) => (
+        {value:item.id,
+        key:{index},
+        label:item.Semester+' '+item.Year,}))
+    console.log(typeof(options))
 
     const [editingKey, setEditingKey] = useState("");
     const isEditing = (record) => record.id === editingKey;
@@ -490,12 +495,8 @@ const ViewRecords = () => {
                 <Button onClick={displayStudents}>Students</Button>
                 <Button onClick={displayCourses}>Courses</Button>
                 <Button onClick={displayLabs}>Labs</Button>
-                <select defaultValue="" style={{width: 120,}} onChange={handleChange} 
-                options={[semYrData.map((item, index) => (
-                      {value:item.id,
-                      key:{index},
-                      label:item.Semester+' '+item.Year,}))]}>
-                  </select>
+                <Select defaultValue={options[0]} style={{width: 120,}} onChange={handleChange} options={options}>
+                  </Select>
             </Space>
             <Form form={form} component={false}>
                 <Table
