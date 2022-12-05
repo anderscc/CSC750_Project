@@ -2,6 +2,8 @@
 import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import { Space, Table, Typography, Popconfirm } from 'antd';
+import {generateSchedules, downloadSchedule,getAllSchedules} from "../services/scheduleService";
+
 
 //it'll be one table
 //get the data from api probably in array format
@@ -39,8 +41,10 @@ const columns = [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
+        {/*Action to generate the schedule*/}
+        <Typography.Link onClick={()=>generate()} >Generate Schedule</Typography.Link>
         {/*Action to save the schedule*/}
-        <Typography.Link >Download</Typography.Link>
+        <Typography.Link onClick={()=>download()} >Download</Typography.Link>
         {/*Action to delete the schedule, onConfirm={}*/}
         <Popconfirm title="Sure to delete?" ><a>Delete</a></Popconfirm>
       </Space>
@@ -89,17 +93,33 @@ const data = [
 ]
 
 
+
 const ViewSchedule = () =><Table columns={columns} dataSource={data} />;
-  {/*const [schedules, setSchedules] = useState([])
+  const [schedules, setSchedules] = useState([])
+  const [semYr, setSemYr] = useState('')
 
   useEffect(() => {
     const getData = async () => {
-        const schedulesData = await getAllSchedules()
+        const schedulesData = await getAllSchedules(semYr)
         setSchedules(schedulesData)
     }
-    getData()},[]);*/}
+    getData()},[]);
 
+    const generate = async ()=>{
+      try{
+        const response = await generateSchedule(semYr)
+      }catch (errInfo){
+        console.log('Could not generate schedule:', errInfo)
+      }
+    }
 
+    const download = async () =>{
+      try{
+        const response = await downloadSchedule(semYr)
+      }catch (errInfo){
+        console.log('Could not download schedule:', errInfo)
+      }
+    }
   
 
 export default ViewSchedule;
