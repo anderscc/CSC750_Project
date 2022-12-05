@@ -11,26 +11,26 @@ class GATASerializer(serializers.ModelSerializer):
 class CoursesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
-        fields = ('id', 'semYr', 'courseCode', 'courseName', 'courseSection', 'courseMeetTimes', 'courseFaculty', 'courseActivities',
+        fields = ('id', 'semYr', 'courseCode', 'courseName', 'courseSection', 'courseMeetTimes', 'courseFaculty',
                   'activityTimes', 'GAPref')
 
 
 class LabsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Labs
-        fields = ('id', 'semYr','labCode', 'labName', 'labFaculty', 'labSection', 'labMeetTimes', 'activityTimes', 'GAPref', 'labPrepTime')
+        fields = ('id', 'semYr','labCode', 'labName', 'labFaculty', 'labSection', 'labMeetTimes', 'activityTimes', 'GAPref', 'facultyTaught','labPrepTime')
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = ('id', 'semYr','scheduleNum', 'id', 'coursesAsn', 'hoursAsn')
+        fields = ('AssignmentID', 'semYr','studentName', 'MeetTimes', 'GATAhrsused', 'GATAHrsRem','coursesAsn','scheduleNum')
 
 
 class SchedulesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules
-        fields = ('id', 'semYr','scheduleNum', 'conflicts')
+        fields = ('id', 'semYr', 'conflicts')
 
 class SemesterSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import {getAllSemester} from "../services/semesterService";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import {addStudent, getAllStudent} from "../services/studentService";
 import { ToastContainer, toast } from 'react-toastify';
@@ -24,7 +22,20 @@ class Student extends Component {
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
-    this.validator = new SimpleReactValidator();
+    this.validator = new SimpleReactValidator({
+      validators:{
+        classTimes:{
+          message:"Please input valid class times according to the instruction.",
+          rule:(val,params,validator)=>{
+            return validator.helpers.testRegex(val,/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/) && params.indexOf(val) === -1
+            
+          },
+          required:true
+
+        }
+
+      }
+    });
   }
 
   onChangeValue(event) {
@@ -46,7 +57,6 @@ class Student extends Component {
         ...this.state.student,
         semYr: value
       },
-      semester: [...this.state.semester]
     });
   }
 
@@ -58,7 +68,6 @@ class Student extends Component {
         ...this.state.student,
         [name]: value
       },
-      semester: [...this.state.semester]
     });
   }
   onSubmit = async (event) => {
@@ -96,15 +105,13 @@ class Student extends Component {
     // you can use the autoForceUpdate option to do this automatically`
     this.forceUpdate();
   }
-
-
   }
 
-  async componentDidMount() {
+  /**async componentDidMount() {
     let semester = await getAllSemester();
     semester = semester.map(item => ({value: item.id, label: item.Semester}))
     this.setState({...this.state, semester})
-  }
+  }*/
 
 
   render() {
@@ -115,16 +122,15 @@ class Student extends Component {
             <div>
               <div className='studentForm container'>
                 <div className="mb-3">
-                  <label htmlFor="semYr" className="form-label">Semester</label>
-                  <Dropdown
-                      options={this.state.semester}
-                      name="semYr"
-                      value={this.state.student.semYr}
-                      onChange={this.__onSelect}
-                      placeholder="Fall 2022"
-                  />
-                   {this.validator.message('semester', this.state.student.semYr, 'required|numeric')}
-                </div>
+                <label htmlFor="semYr" className="form-label">Semester<span color='red'>*</span></label>
+                <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
+                    <option>Select a semester</option>
+                  {this.props.semesters.map((item, index) => (
+
+                      <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
+                  ))}
+                </select>
+              </div>
                 <div className="mb-3" onChange={this.onChangeValue}>
                   Select Student Type:
                   <input type="radio" name="studentType" value="GA" defaultChecked="true"/> GA
@@ -143,7 +149,7 @@ class Student extends Component {
                     {this.validator.message('studentName', this.state.student.studentName, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="hoursAvail" className="form-label">GA Hours</label>
+                  <label htmlFor="hoursAvail" className="form-label">GA Hours (10-20)</label>
                   <input
                       name='hoursAvail'
                       type={"number"}
@@ -152,7 +158,7 @@ class Student extends Component {
                       value={this.state.student.hoursAvail}
                       onChange={this.changeHandler}
                   />
-                    {this.validator.message('hoursAvail', this.state.student.hoursAvail, 'required|integer|min:10|max:20')}
+                    {this.validator.message('GA Hours', this.state.student.hoursAvail, 'required|numeric|min:10,num|max:20,num')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="officeHours" className="form-label">Office Hours Duration</label>
@@ -160,24 +166,23 @@ class Student extends Component {
                       name='officeHours'
                       type={"text"}
                       className="form-control"
-                      placeholder="1"
+                      placeholder="0"
                       defaultValue={this.state.student.officeHours}
                       onChange={this.changeHandler}
                   />
-                    {this.validator.message('officeHours', this.state.student.officeHours, 'required|numeric')}
+                    {this.validator.message('Office Hours', this.state.student.officeHours, 'required|numeric')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="officeHours" className="form-label">Class Times (Enter in this Format MW: 1:00PM -
-                    2:00PM) Separate multiple classes with comma</label>
+                  <label htmlFor="officeHours" className="form-label">Class Times (Enter in this Format MWF 13:00 -
+                    14:00;R 8:45 - 10:15) Separate multiple classes with comma</label>
                   <input
                       name='classTimes'
                       type={"text"}
                       className="form-control"
-                      placeholder="MW: 1:00PM - 2:00PM, TH: 1:00PM - 2:00PM"
-                      defaultValue={this.state.student.officeHours}
+                      placeholder="MW 13:00 - 14:00, TR: 15:30 - 17:00"
                       onChange={this.changeHandler}
                   />
-                     {this.validator.message('classTimes', this.state.student.classTimes, 'required|string')}
+                     {this.validator.message('classTimes', this.state.student.classTimes, 'required|classTimes')}
                 </div>
 
               </div>

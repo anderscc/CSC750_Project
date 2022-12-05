@@ -11,12 +11,12 @@ function RouterCustom({semesters}) {
     return (
         <>
             <Routes>
-                <Route path='/' exact element={<Home />} />
-                 <Route path='/home' exact element={<Home />} />
-                <Route path='/student' exact element={<Student />} />
+                <Route path='/' exact element={<Home semesters={semesters}/>} />
+                 <Route path='/home' exact element={<Home semesters={semesters} />} />
+                <Route path='/student' exact element={<Student semesters={semesters}/>} />
                 <Route path='/course' exact element={<Course semesters={semesters} />} />
                  <Route path='/lab' exact element={<Lab semesters={semesters} />} />
-                <Route path='/viewSchedule' exact element={<ViewSchedule />} />
+                <Route path='/viewSchedule' exact element={<ViewSchedule semesters={semesters} />} />
                 <Route path='/viewRecords' exact element={<ViewRecords />} />
             </Routes>
         </>

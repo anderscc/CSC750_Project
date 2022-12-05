@@ -61,7 +61,8 @@ MIDDLEWARE = [
     # For API
     'corsheaders.middleware.CorsMiddleware',
 ]
-
+ALLOWED_HOSTS=['*']
+CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = "src.urls"
 
 TEMPLATES = [

@@ -30,6 +30,7 @@ router.register(r'semYear', views.SemesterView, 'SemYear')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('generate_schedule',views.generate_schedules),
-    path('download_schedule',views.download_schedules)
+    path('generate_schedules',views.generate_schedules),
+    path('download_schedules',views.download_schedules),
+    path('download_schedule', views.download_schedule)
 ]

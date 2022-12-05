@@ -7,7 +7,7 @@ from rest_framework import viewsets
 import json
 
 from .GeneticAlgorithm import Data, Population, GeneticAlgorithm, POPULATION_SIZE
-from .sql import getSchedules, createSchedule, createAssignment, getGATA, getAssignments
+from .sql import getSchedules, createSchedule, createAssignment, getGATA, getAssignments, getAssignment
 
 from .serializers import GATASerializer,CoursesSerializer, SchedulesSerializer, AssignmentSerializer, LabsSerializer, SemesterSerializer
 from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
@@ -90,6 +90,40 @@ def download_schedules(request):
     with open(filepath, "rb") as excel:
         data = excel.read()
         mime_type, _ = mimetypes.guess_type(filepath)
+        # Set the return value of the HttpResponse
+        response = HttpResponse(data, content_type=mime_type)
+        # Set the HTTP header for sending to browser
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        # Return the response value
+
+    # Set the mime type
+
+    return response
+
+def download_schedule(request):
+    semYr = int(request.GET.get('semYr'))
+    schedule_id = int(request.GET.get('schedule_id'))
+    schedule = getAssignment(semYr, schedule_id)
+
+    excel_file_name = 'GAS_Schedules' + str(date.today()) + '.xlsx'
+    writer = pd.ExcelWriter(excel_file_name, engine='xlsxwriter')
+
+    data_name = "Schedule " + str(schedule_id)
+    df = pd.DataFrame(schedule)
+    df.to_excel(writer, sheet_name=data_name)
+    writer.save()
+
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # Define text file name
+    filename = excel_file_name
+    # Define the full file path
+    filepath = BASE_DIR  + "/" + filename
+    # Open the file for reading content
+    # path = open(filepath, 'r')
+    with open(filepath, "rb") as excel:
+        data = excel.read()
+        mime_type, _ = mimetypes.guess_type(filepath)
+        print("mime_type:  ", mime_type)
         # Set the return value of the HttpResponse
         response = HttpResponse(data, content_type=mime_type)
         # Set the HTTP header for sending to browser

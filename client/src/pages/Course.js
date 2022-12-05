@@ -23,7 +23,20 @@ class Course extends Component {
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
-    this.validator = new SimpleReactValidator();
+    this.validator = new SimpleReactValidator({
+      validators:{
+        classTimes:{
+          message:"Please input valid class times according to the instruction.",
+          rule:(val,params,validator)=>{
+            return validator.helpers.testRegex(val,/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/) && params.indexOf(val) === -1
+            
+          },
+          required:true
+
+        }
+
+      }
+    });
   }
 
   async componentDidMount() {
@@ -117,41 +130,41 @@ class Course extends Component {
           <form>
             <div className='course-form container'>
               <div className="mb-3">
-                <label htmlFor="semYr" className="form-label">Semester</label>
+                <label htmlFor="semYr" className="form-label">Semester<span color='red'>*</span></label>
                 <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
-                    <option>select</option>
+                    <option>Select a semester</option>
                   {this.props.semesters.map((item, index) => (
 
-                      <option value={item.id} key={index}>{item.Semester}</option>
+                      <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
                   ))}
                 </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="courseCode" className="form-label">Course Code</label>
+                <label htmlFor="courseCode" className="form-label">Course Code<span color='red'>*</span></label>
                 <input
                   type={"number"}
                   className="form-control"
                   name="courseCode"
-                  placeholder="0"
+                  placeholder="130"
                   value={this.state.course.courseCode}
                   onChange={this.changeHandler}
                 />
                 {this.validator.message('courseCode', this.state.course.courseCode, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseName" className="form-label">Course Name</label>
+                <label htmlFor="courseName" className="form-label">Course Name<span color='red'>*</span></label>
                 <input
                   type="text"
                   className="form-control"
                   name="courseName"
-                  placeholder="0"
+                  placeholder=""
                   defaultValue={this.state.course.courseName}
                   onChange={this.changeHandler}
                 />
                 {this.validator.message('courseName', this.state.course.courseName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseSection" className="form-label">Course Section</label>
+                <label htmlFor="courseSection" className="form-label">Course Section<span color='red'>*</span></label>
                 <input
                   type={"number"}
                   className="form-control"
@@ -163,19 +176,20 @@ class Course extends Component {
                 {this.validator.message('courseSection', this.state.course.courseSection, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times</label>
+                <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times (Enter in this Format MW 13:00 -
+                    14:00)<span color='red'>*</span></label>
                 <input
                   type="text"
                   className="form-control"
                   name="courseMeetTimes"
-                  placeholder="MWF 12:00 PM - 1:30 PM"
+                  placeholder="MWF 12:00 - 13:30 "
                   defaultValue={this.state.course.courseMeetTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required|alpha_num_space')}
+                {this.validator.message('courseMeetTimes', this.state.course.courseMeetTimes, 'required|classTimes')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseFaculty" className="form-label">Course Faculty</label>
+                <label htmlFor="courseFaculty" className="form-label">Course Faculty<span color='red'>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -187,28 +201,15 @@ class Course extends Component {
                 {this.validator.message('courseFaculty', this.state.course.courseFaculty, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="courseActivities" className="form-label">Course Activities</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="courseActivities"
-                  placeholder="Grading, preparation"
-                  defaultValue={this.state.course.courseActivities}
-                  onChange={this.changeHandler}
-                />
-                {this.validator.message('courseActivities', this.state.course.courseActivities, 'required|alpha_num_space')}
-              </div>
-              <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Activity Time in hours</label>
+                <label htmlFor="activityTimes" className="form-label">Activity Time in hours<span color='red'>*</span></label>
                 <input
                   type="float"
                   className="form-control"
                   name="activityTimes"
-                  placeholder="30"
                   defaultValue={this.state.course.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('activityTimes', this.state.course.activityTimes, 'required|numeric')}
+                {this.validator.message('activityTimes', this.state.course.activityTimes, 'required|numeric|min:0,num|max:10,num')}
               </div>
               <div className="mb-3">
                 <label htmlFor="gaPreference" className="form-label">GA Preference</label>
