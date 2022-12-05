@@ -7,6 +7,7 @@ import {getAllStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
 import { getAllLab } from "../services/labService";
 import { getAllSemester } from "../services/semesterService";
+import {generateSchedule} from "../services/scheduleService";
 
 
 const studentField = {
@@ -514,7 +515,7 @@ const ViewRecords = () => {
                         onChange: cancel,
                     }}
                 />
-               <Button  type="primary">Generate Schedule</Button>
+               <Button  type="primary" onClick={() => generateSchedule(semYr)}>Generate Schedule</Button>
             </Form>
         </>)
 }
