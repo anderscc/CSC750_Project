@@ -17,7 +17,7 @@ class Student extends Component {
         officeHours: 0,
         studentType: 'GA'
       },
-      /*semester: []*/
+      semester: []
 
     }
     this.onChangeValue = this.onChangeValue.bind(this)
