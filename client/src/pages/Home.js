@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import SimpleReactValidator from 'simple-react-validator';
-import {createSemester} from "../services/semesterService";
+import {createSemester, getAllSemester} from "../services/semesterService";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-dropdown/style.css';
 
@@ -59,35 +59,52 @@ else:
 */
     onSubmit = async (event) => {
     event.preventDefault()
+    var error = true
     if (this.validator.allValid()) {
-        this.props.semesters.forEach(element=>{
+        console.log(this.props.semesters)
+        this.props.semesters.every(async element=>{
             console.log(typeof this.state.semYr.year,typeof element.Year)
             console.log(typeof this.state.semYr.semester,typeof element.Semester)
             if(this.state.semYr.year===element.Year && this.state.semYr.semester===element.Semester)
             {
                 console.log("Hitting the part you want")
-                return;
+                error = false
+                return error;
             }
             else{
                 console.log("Hitting the part you don't want")
+                const response = await createSemester(this.state.semYr.year,this.state.semYr.semester).catch(error => {
+                    toast.error('An error occurred', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                        return "error"
+            
+                    });
+                    if(response != "error"){
+                        toast.success('Semester record created', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "light",
+                                })
+                        }
+                return;
             }
         })
-    const response = await createSemester(this.state.semYr.year,this.state.semYr.semester).catch(error => {
-        toast.error('An error occurred', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-            return "error"
-
-        });
-    if(response != "error"){
-        toast.success('Semester record created', {
+        if (this.props.semesters.length == 0){
+            const response = await createSemester(this.state.semYr.year,this.state.semYr.semester).catch(error => {
+                toast.error('An error occurred', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -96,7 +113,34 @@ else:
                     draggable: true,
                     progress: undefined,
                     theme: "light",
-                })
+                });
+                    return "error"
+        
+                });
+                if(response != "error"){
+                    toast.success('Semester record created', {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            })
+                    }
+        }
+        if (error == false){
+            toast.error('Semester Already Exists in Database, Please Try Again.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     }else {
     this.validator.showMessages();
