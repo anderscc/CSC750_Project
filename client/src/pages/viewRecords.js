@@ -40,7 +40,7 @@ const labFields =
         labMeetTimes: '',
         labFaculty: '',
         activityTimes: '',
-        prepTimes: '',
+        labprepTimes: '',
         GAPref: '',
         facultyTaught:''
 
@@ -173,6 +173,7 @@ const ViewRecords = () => {
         setColumns(courseColumns)
     }
     const displayLabs = () => {
+        console.log(labs)
         setfields(labFields)
         setData(labs)
         setColumns(labColumns)
@@ -403,8 +404,8 @@ const ViewRecords = () => {
         },
         {
             title: 'Preparation Times',
-            dataIndex: 'prepTimes',
-            key: 'prepTimes', editable: true
+            dataIndex: 'labPrepTime',
+            key: 'labPrepTime', editable: true
         },
         {
             title: 'GA Preference',
