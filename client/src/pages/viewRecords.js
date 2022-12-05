@@ -427,7 +427,7 @@ const ViewRecords = () => {
             key: 'labPrepTime', editable: true
         },
         {
-            title: 'GA Preference',
+            title: 'TA Preference',
             dataIndex: 'GAPref',
             key: 'GAPref', editable: true
         },
