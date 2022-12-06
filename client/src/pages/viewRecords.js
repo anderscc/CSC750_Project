@@ -134,7 +134,7 @@ const findValidateRule=(dataIndex,title)=>{
                 ]    
                     break
         } 
-    console.log(dataIndex,validateRule)
+    /*console.log(dataIndex,validateRule)*/
 
      
      return validateRule
@@ -207,9 +207,9 @@ const ViewRecords = () => {
         {value:item.id,
         key:{index},
         label:item.Semester+' '+item.Year,}))
-    console.log(data)
+    /*console.log(data)*/
 
-    const [editingKey, setEditingKey] = useState("");
+    const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.id === editingKey;
 
     const displayStudents = () => {
@@ -239,6 +239,7 @@ const ViewRecords = () => {
             fields,
             ...record,
         });
+        console.log("clicked edit",record.id,isEditing)
         setEditingKey(record.id);
         /*TODO: Need to be connect to the API*/
     };
@@ -324,6 +325,7 @@ const ViewRecords = () => {
             key: 'action',
             render: (_, record) => {
                 const editable = isEditing(record);
+                console.log("editable",editable)
                 return editable ? (
                     <Space size="middle">
                         <Typography.Link
@@ -509,7 +511,7 @@ const ViewRecords = () => {
     ];
 
     const [columns,setColumns] = useState(studentColumns)
-    console.log(columns)
+    /*console.log(columns)*/
 
     
 
