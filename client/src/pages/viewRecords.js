@@ -55,7 +55,11 @@ const findValidateRule=(dataIndex,title)=>{
     var validateRule;
     
     switch(dataIndex){
-        case "studentName"||"courseName"||"labName"||"courseFaculty"||"labFaculty":
+        case "studentName":
+        case "courseName":
+        case "labName":
+        case "courseFaculty": 
+        case "labFaculty":
             validateRule = [
                 {
                     required: true,
@@ -72,7 +76,8 @@ const findValidateRule=(dataIndex,title)=>{
                 },
             ]    
             break
-        case "courseMeetTimes"||"labMeetTimes":
+        case "courseMeetTimes":
+        case "labMeetTimes":
             validateRule = [
                 {
                     required: true,
@@ -86,7 +91,7 @@ const findValidateRule=(dataIndex,title)=>{
                 {
                     required: true,
                     pattern: new RegExp(/^([1][0-9])|[2][0]$/),
-                    message: `Please Input Valid ${title}!`,
+                    message: `Please Input (10-20) Available Hours}!`,
                 },
             ]    
                 break
@@ -94,11 +99,40 @@ const findValidateRule=(dataIndex,title)=>{
             validateRule = [
                 {
                     required: true,
-                    pattern: new RegExp(/^([T]|[G])|[A]$/),
-                    message: `Please Input Valid ${title}!`,
+                    pattern: new RegExp(/^(GA|TA)$/),
+                    message: `Please Input Valid Student Type!`,
                 },
             ]    
                 break
+        case "officeHours":
+            validateRule = [
+                {
+                    required: true,
+                    pattern: new RegExp(/^[0-5]$/),
+                    message: `Please Input Valid Office Hours(0-5)!`,
+                },
+            ]    
+                break
+
+        case "activityTimes":
+        case "labPrepTime":
+                validateRule = [
+                    {
+                        required: true,
+                        pattern: new RegExp(/^[0-10]$/),
+                        message: `Please Input Valid ${title}(0-10)!`,
+                    },
+                ]    
+                    break
+        case "facultyTaught":
+                validateRule = [
+                    {
+                        required: true,
+                        pattern: new RegExp(/^(true|false)$/),
+                        message: `Please Input Valid ${title}(true or false)!`,
+                    },
+                ]    
+                    break
         } 
     console.log(dataIndex,validateRule)
 
@@ -129,7 +163,7 @@ const EditableCell = ({
                      style={{
                          margin: 0,
                      }}
-                     rules={findValidateRule(dataIndex)}
+                     rules={findValidateRule(dataIndex,title)}
                  >
                      {inputNode}
                  </Form.Item>
@@ -274,6 +308,11 @@ const ViewRecords = () => {
             title: 'Hours Available',
             dataIndex: 'hoursAvailable',
             key: 'hoursAvailable', editable: true
+        },
+        {
+            title: 'Office Hours',
+            dataIndex: 'officeHours',
+            key: 'officeHours', editable: true
         },
         {
             title: 'Student Type',
@@ -435,7 +474,8 @@ const ViewRecords = () => {
         {
             title: 'Faculty Taught',
             dataIndex: 'facultyTaught',
-            key: 'facultyTaught', editable: true
+            key: 'facultyTaught', editable: true,
+            render : (text) => String(text),
         },
         {
             title: 'Action',
@@ -469,6 +509,7 @@ const ViewRecords = () => {
     ];
 
     const [columns,setColumns] = useState(studentColumns)
+    console.log(columns)
 
     
 
@@ -481,7 +522,9 @@ const ViewRecords = () => {
             onCell: (record) => ({
                 record,
                 /*Input type validation*/
-                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex ==="hoursAvailable"||col.dataIndex ==="officeHours"||col.dataIndex === 'activityTimes'||col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
+                inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex === 'labCode'||col.dataIndex === 'labSection'||
+                col.dataIndex ==="hoursAvailable"||col.dataIndex ==="officeHours"||col.dataIndex === 'labPrepTime'||
+                col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
