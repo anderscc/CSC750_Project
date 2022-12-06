@@ -4,8 +4,8 @@ import 'antd/dist/antd.css';
 
 import { Select, Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography, Dropdown } from 'antd';
 import {getAllStudent,deleteStudent} from "../services/studentService";
-import {getAllCourse} from "../services/courseService";
-import { getAllLab } from "../services/labService";
+import {getAllCourse, deleteCourse} from "../services/courseService";
+import { getAllLab, deleteLab } from "../services/labService";
 import { getAllSemester } from "../services/semesterService";
 import {generateSchedules} from "../services/scheduleService";
 
@@ -184,6 +184,7 @@ const ViewRecords = () => {
     const [data, setData] = useState(students);
     const [semYr, setSemYr] = useState([]);
     const [semYrData, setsemYrData] = useState([]);
+    const [tabTracker, setTabTracker] = useState('student');
 
     useEffect(() => {
         const getData = async () => {
@@ -195,7 +196,6 @@ const ViewRecords = () => {
             const labsData = await getAllLab()
             setlabs(labsData)
             const semData = await getAllSemester()
-
             setsemYrData(semData)
         }
         getData()
@@ -215,15 +215,14 @@ const ViewRecords = () => {
     const displayStudents = () => {
         setfields(studentField)
         setData(students)
-        setColumns(studentColumns)
+        setColumns(studentColumns)  
     }
     const displayCourses = () => {
         setfields(courseFields)
         setData(courses)
-        setColumns(courseColumns)
+        setColumns(courseColumns)    
     }
     const displayLabs = () => {
-        console.log(labs)
         setfields(labFields)
         setData(labs)
         setColumns(labColumns)
@@ -231,8 +230,6 @@ const ViewRecords = () => {
     const handleChange = (value)=>{
         setSemYr(value)
     }
-
-
 
     const edit = (record) => {
         form.setFieldsValue({
@@ -247,15 +244,35 @@ const ViewRecords = () => {
     const cancel = () => {
         setEditingKey('');
     };
-    const deleteRecord = async (record) => {
+    const deleteRecord = async (id) => {
         /*TODO: Need to be connect to the API*/
-        setEditingKey('record.id');
-        console.log("This is record: ", record)
-        // try{
-        //     const response = await deleteStudent(record.id,record)
-        // } catch(errInfo){
-        //     console.log("Could not delete the record.", errInfo)
-        // }
+        console.log("This is tab tracker: ", tabTracker)
+        switch(tabTracker){
+            default:
+                console.log("In the default case.")
+                return
+            case 'student':
+                try{
+                    const response = await deleteStudent(id)
+                }catch(errInfo){
+                    console.log("Could not delete the student record.", errInfo)
+                }
+                break;
+            case 'lab':
+                try{
+                    const response = await deleteLab(id)
+                }catch(errInfo){
+                    console.log("Could not delete the lab record.", errInfo)
+                }
+                break;
+                case 'course':
+                    try{
+                        const response = await deleteCourse(id)
+                    }catch(errInfo){
+                        console.log("Could not delete the course record.", errInfo)
+                    }
+                    break;
+        }
 
     };
     const save = async (key) => {
@@ -298,7 +315,8 @@ const ViewRecords = () => {
             title: 'Semester Year',
             dataIndex: 'semYr',
             key: 'semYr',
-            render: (text) => <a>{text}</a>,
+            render: (text) => tabTracker==='student'? <a>{text}</a> : (setTabTracker('student'),<a>{text}</a>),
+
             editable: true
         },
         {
@@ -332,6 +350,7 @@ const ViewRecords = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => {
+                setTabTracker('student')
                 console.log("isEditing",record.id,editingKey)
                 const editable = isEditing(record);
                 console.log("editable",editable,editingKey)
@@ -354,7 +373,7 @@ const ViewRecords = () => {
                         <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                             Edit
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={deleteRecord}>
+                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id)}>
                             <a>Delete</a>
                         </Popconfirm></Space>
                 )
@@ -366,7 +385,7 @@ const ViewRecords = () => {
             title: 'Semester Year',
             dataIndex: 'semYr',
             key: 'semYr',
-            render: (text) => <a>{text}</a>,
+            render: (text) => tabTracker==='course'? <a>{text}</a> : (setTabTracker('course'),<a>{text}</a>),
             editable: false
         },
         {
@@ -411,6 +430,7 @@ const ViewRecords = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => {
+                setTabTracker('course')
                 const editable = isEditing(record);
                 return editable ? (
                     <Space size="middle">
@@ -430,7 +450,7 @@ const ViewRecords = () => {
                     <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                         Edit
                     </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={deleteRecord}>
+                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id)}>
                             <a>Delete</a>
                         </Popconfirm></Space>
                 )
@@ -442,7 +462,7 @@ const ViewRecords = () => {
             title: 'Lab Code',
             dataIndex: 'labCode',
             key: 'labCode',
-            render: (text) => <a>{text}</a>,
+            render: (text) => tabTracker==='lab'? <a>{text}</a> : (setTabTracker('lab'),<a>{text}</a>),
             editable: false
         },
         {
@@ -492,6 +512,7 @@ const ViewRecords = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => {
+                setTabTracker('lab')
                 const editable = isEditing(record);
                 return editable ? (
                     <Space size="middle">
@@ -511,7 +532,7 @@ const ViewRecords = () => {
                     <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                         Edit
                     </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={deleteRecord}>
+                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id)}>
                             <a>Delete</a>
                         </Popconfirm></Space>
                 )

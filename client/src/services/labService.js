@@ -28,8 +28,14 @@ export const getAllLab = async ()=>{
 
 
 export const updateLab = async (id, data)=>{
-
     return await axios.put(BASEURL + `${id}/`, {...data})
+        .catch(error => {
+            throw error
+        })
+}
+
+export const deleteLab = async (id)=>{
+    return await axios.delete(BASEURL + `${id}/`)
         .catch(error => {
             throw error
         })
