@@ -241,6 +241,7 @@ const ViewRecords = () => {
         });
         console.log("clicked edit",record.id,isEditing)
         setEditingKey(record.id);
+        console.log(editingKey)
         /*TODO: Need to be connect to the API*/
     };
     const cancel = () => {
@@ -331,7 +332,9 @@ const ViewRecords = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => {
+                console.log("isEditing",record.id,editingKey)
                 const editable = isEditing(record);
+                console.log("editable",editable,editingKey)
                 return editable ? (
                     <Space size="middle">
                         <Typography.Link
