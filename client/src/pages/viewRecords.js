@@ -3,7 +3,7 @@ import { useState } from 'react';
 import 'antd/dist/antd.css';
 
 import { Select, Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography, Dropdown } from 'antd';
-import {getAllStudent} from "../services/studentService";
+import {getAllStudent,deleteStudent} from "../services/studentService";
 import {getAllCourse} from "../services/courseService";
 import { getAllLab } from "../services/labService";
 import { getAllSemester } from "../services/semesterService";
@@ -246,9 +246,16 @@ const ViewRecords = () => {
     const cancel = () => {
         setEditingKey('');
     };
-    const deleteRecord = () => {
+    const deleteRecord = async (record) => {
         /*TODO: Need to be connect to the API*/
-        setEditingKey('');
+        setEditingKey('record.id');
+        console.log("This is record: ", record)
+        // try{
+        //     const response = await deleteStudent(record.id,record)
+        // } catch(errInfo){
+        //     console.log("Could not delete the record.", errInfo)
+        // }
+
     };
     const save = async (key) => {
         try {
@@ -325,7 +332,6 @@ const ViewRecords = () => {
             key: 'action',
             render: (_, record) => {
                 const editable = isEditing(record);
-                console.log("editable",editable)
                 return editable ? (
                     <Space size="middle">
                         <Typography.Link
