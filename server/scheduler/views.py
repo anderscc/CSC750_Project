@@ -136,7 +136,7 @@ def download_schedule(request):
 
 def generate_schedules(request):
     generationNumber = 0
-    semYr = int(request.GET.get('semYr'))
+    semYr = request.GET.get('semYr')
     population = Population(POPULATION_SIZE, semYr)
     cur_schedules = population.get_schedules()
     cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
