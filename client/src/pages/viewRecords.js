@@ -1,11 +1,12 @@
 import React, {Component, useEffect} from "react";
 import { useState } from 'react';
 import 'antd/dist/antd.css';
+import { ToastContainer, toast } from 'react-toastify';
 
-import { Select, Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography, Dropdown } from 'antd';
-import {getAllStudent,deleteStudent} from "../services/studentService";
-import {getAllCourse, deleteCourse} from "../services/courseService";
-import { getAllLab, deleteLab } from "../services/labService";
+import { Select, Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import {getAllStudent,deleteStudent,updateStudent} from "../services/studentService";
+import {getAllCourse, deleteCourse,updateCourse} from "../services/courseService";
+import { getAllLab, deleteLab,updateLab } from "../services/labService";
 import { getAllSemester } from "../services/semesterService";
 import {generateSchedules} from "../services/scheduleService";
 
@@ -175,6 +176,7 @@ const EditableCell = ({
  };
 
 const ViewRecords = () => {
+    
     const [fields, setfields] = useState(studentField);
     
 
@@ -201,6 +203,35 @@ const ViewRecords = () => {
         getData()
     },[])
 
+    const message_toast = (result,message)=>{
+        if(result == 'success'){
+            toast.success(message, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+      }
+      else{
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+         });
+      }
+    
+    }
+
+
 
     const [form] = Form.useForm();
     const options = semYrData.map((item, index) => (
@@ -211,21 +242,30 @@ const ViewRecords = () => {
 
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.id === editingKey;
+    
+    useEffect(()=>{;
+        console.log('current editing key:',editingKey,isEditing);},
+        [editingKey])
+    
+    
 
     const displayStudents = () => {
         setfields(studentField)
         setData(students)
         setColumns(studentColumns)  
+        setTabTracker('student')
     }
     const displayCourses = () => {
         setfields(courseFields)
         setData(courses)
-        setColumns(courseColumns)    
+        setColumns(courseColumns)  
+        setTabTracker('course')  
     }
     const displayLabs = () => {
         setfields(labFields)
         setData(labs)
         setColumns(labColumns)
+        setTabTracker('lab')
     }
     const handleChange = (value)=>{
         setSemYr(value)
@@ -237,45 +277,57 @@ const ViewRecords = () => {
             ...record,
         });
         console.log("clicked edit",record.id,isEditing)
-        setEditingKey(record.id);
-        console.log(editingKey)
+        let new_editing_key = record.id
+        setEditingKey(new_editing_key)
+        
+        
         /*TODO: Need to be connect to the API*/
     };
     const cancel = () => {
         setEditingKey('');
     };
-    const deleteRecord = async (id) => {
+    
+    useEffect(()=>{;
+        console.log('current Tab:',tabTracker);},
+        [tabTracker])
+
+    const deleteRecord = async (id,tab) => {
         /*TODO: Need to be connect to the API*/
-        console.log("This is tab tracker: ", tabTracker)
-        switch(tabTracker){
+        switch(tab){
             default:
                 console.log("In the default case.")
                 return
             case 'student':
                 try{
                     const response = await deleteStudent(id)
+                    message_toast('success',"Record deleted successfully, please refresh.")
                 }catch(errInfo){
                     console.log("Could not delete the student record.", errInfo)
+                    message_toast('failed',"Deletion failed, try reclick on the tab")
                 }
                 break;
             case 'lab':
                 try{
                     const response = await deleteLab(id)
+                    message_toast('success',"Record deleted successfully, please refresh.")
                 }catch(errInfo){
                     console.log("Could not delete the lab record.", errInfo)
+                    message_toast('failed',"Deletion failed, try reclick on the tab")
                 }
                 break;
                 case 'course':
-                    try{
-                        const response = await deleteCourse(id)
-                    }catch(errInfo){
-                        console.log("Could not delete the course record.", errInfo)
+                    const response = await deleteCourse(id)
+                    if (response!=404)
+                        {message_toast('success',"Record deleted successfully, please refresh.")}
+                    else{
+                        console.log("Could not delete the course record.")
+                        message_toast('failed',"Deletion failed, try reclick on the tab")
                     }
                     break;
         }
 
     };
-    const save = async (key) => {
+    const save = async (key,tab) => {
         try {
             const row = await form.validateFields();
             const newData = [...data];
@@ -287,6 +339,26 @@ const ViewRecords = () => {
                     ...row,
                 });
                 setData(newData);
+                var response;
+                switch(tab){
+                    case 'student':
+                        response = await updateStudent(key,newData[index])
+                        break;
+                    case 'lab':
+                        response = await updateLab(key,newData)
+                        break;
+                    case 'course':
+                        response = await updateCourse(key,newData)
+                        break;
+                    }
+                if (response!= "error"){
+                    console.log(response)
+                    message_toast('success','The record is updated!')
+                }
+                else{
+                    message_toast('','Unable to update, please try again or contact developer.')
+                }
+                
                 setEditingKey('');
             } else {
                 newData.push(row);
@@ -294,9 +366,28 @@ const ViewRecords = () => {
                 setEditingKey('');
             }
         } catch (errInfo) {
+            console.log(tab, key, data)
             console.log('Validate Failed:', errInfo);
+            message_toast('','Unable to update, please try again or contact developer.')
         }
     };
+    const call_generateSchedule = async (semYr)=>{
+        console.log("calling..")
+        try{
+            const response = await generateSchedules(semYr)
+            if (response!= "error"){
+                console.log(response)
+                message_toast('success','The record is generated and dowloading!')
+            }
+            else{
+                console.log(response)
+                message_toast('','Unable to generate, please check semester year or contact developer.')
+            }
+        }
+        catch (errInfo) {
+            message_toast('','Unable to generate, please check semester year or contact developer.')}
+
+    }
 
 
     /*switch(fields){
@@ -315,7 +406,7 @@ const ViewRecords = () => {
             title: 'Semester Year',
             dataIndex: 'semYr',
             key: 'semYr',
-            render: (text) => tabTracker==='student'? <a>{text}</a> : (setTabTracker('student'),<a>{text}</a>),
+            render: (text) =>  <a>{text}</a>,
 
             editable: true
         },
@@ -350,14 +441,14 @@ const ViewRecords = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => {
-                setTabTracker('student')
-                console.log("isEditing",record.id,editingKey)
+                console.log('rendering...')
+                /*console.log("isEditing",record.id,editingKey)*/
                 const editable = isEditing(record);
-                console.log("editable",editable,editingKey)
+                /*console.log("editable",editable,editingKey)*/
                 return editable ? (
                     <Space size="middle">
                         <Typography.Link
-                            onClick={() => save(record.id)}
+                            onClick={() => save(record.id,'student')}
                             style={{
                                 marginRight: 8,
                             }}
@@ -373,7 +464,7 @@ const ViewRecords = () => {
                         <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                             Edit
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'student')}>
                             <a>Delete</a>
                         </Popconfirm></Space>
                 )
@@ -385,7 +476,7 @@ const ViewRecords = () => {
             title: 'Semester Year',
             dataIndex: 'semYr',
             key: 'semYr',
-            render: (text) => tabTracker==='course'? <a>{text}</a> : (setTabTracker('course'),<a>{text}</a>),
+            render: (text) => <a>{text}</a>,
             editable: false
         },
         {
@@ -430,12 +521,11 @@ const ViewRecords = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => {
-                setTabTracker('course')
                 const editable = isEditing(record);
                 return editable ? (
                     <Space size="middle">
                         <Typography.Link
-                            onClick={() => save(record.id)}
+                            onClick={() => save(record.id,'course')}
                             style={{
                                 marginRight: 8,
                             }}
@@ -447,10 +537,10 @@ const ViewRecords = () => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => {edit(record)}}>
                         Edit
                     </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'course')}>
                             <a>Delete</a>
                         </Popconfirm></Space>
                 )
@@ -462,7 +552,7 @@ const ViewRecords = () => {
             title: 'Lab Code',
             dataIndex: 'labCode',
             key: 'labCode',
-            render: (text) => tabTracker==='lab'? <a>{text}</a> : (setTabTracker('lab'),<a>{text}</a>),
+            render: (text) => <a>{text}</a>,
             editable: false
         },
         {
@@ -512,12 +602,11 @@ const ViewRecords = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => {
-                setTabTracker('lab')
                 const editable = isEditing(record);
                 return editable ? (
                     <Space size="middle">
                         <Typography.Link
-                            onClick={() => save(record.id)}
+                            onClick={() => save(record.id,'lab')}
                             style={{
                                 marginRight: 8,
                             }}
@@ -532,7 +621,7 @@ const ViewRecords = () => {
                     <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                         Edit
                     </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'lab')}>
                             <a>Delete</a>
                         </Popconfirm></Space>
                 )
@@ -568,12 +657,13 @@ const ViewRecords = () => {
 
     return (
         <>
-            <Space style={{ marginBottom: 16, }}>
-                <Button onClick={displayStudents}>Students</Button>
+            <Space style={{ marginBottom: 8, marginTop: 8,marginLeft:8, color:'red'}}>
+                Tabs:
+                <Button onClick={displayStudents}>GA/TA</Button>
                 <Button onClick={displayCourses}>Courses</Button>
                 <Button onClick={displayLabs}>Labs</Button>
-                <Select defaultValue={options[0]} style={{width: 120,}} onChange={handleChange} options={options}>
-                  </Select>
+                To show 'Save' button on Action Column, please press the Tab after click on "Edit".
+                
             </Space>
             <Form form={form} component={false}>
                 <Table
@@ -590,8 +680,23 @@ const ViewRecords = () => {
                         onChange: cancel,
                     }}
                 />
-               <Button  type="primary" onClick={() => generateSchedules(semYr)}>Generate Schedule</Button>
+                <Select  placeholder={'Select Semester'} style={{marginLeft:8,width: 150,}} onChange={handleChange} options={options}></Select>
+               <Button style={{marginLeft:8}} type="primary" onClick={() => call_generateSchedule(semYr)}>Generate Schedule</Button>
             </Form>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+          />
+          {/* Same as */}
+          <ToastContainer/>
         </>)
 }
 export default ViewRecords;
