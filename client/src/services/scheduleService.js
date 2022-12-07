@@ -71,8 +71,8 @@ export const downloadSchedule = async (semYr, schedule_id) => {
     URL.revokeObjectURL(href);
     }
 
-export const deleteSchedule = async (semYr, schedule_id) => {
-     const response = await axios.delete(BASEURL + `download_schedule?semYr=` + `${semYr}&schedule_id=${schedule_id}`, {responseType: 'blob'})
+export const deleteSchedule = async (schedule_id) => {
+     const response = await axios.delete(BASEURL + `api/schedules/` + `${schedule_id}`, {responseType: 'blob'})
         .catch(error => {
             throw error
         })}    
