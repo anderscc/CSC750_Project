@@ -130,16 +130,17 @@ class lab extends Component {
           <form>
             <div className='lab-form container'>
               <div className="mb-3">
-                <label htmlFor="semYr" className="form-label">Semester</label>
+                <label htmlFor="semYr" className="form-label">Semester<span style ={{color:'red'}}>*</span></label>
                 <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
-                    <option>Select a semester</option>
+                    <option>Select a semester<span style ={{color:'red'}}>*</span></option>
                   {this.props.semesters.map((item, index) => (
                       <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
                   ))}
                 </select>
+                {this.validator.message('Semester', this.state.lab.semYr, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labCode" className="form-label">Lab Code</label>
+                <label htmlFor="labCode" className="form-label">Lab Code<span style ={{color:'red'}}>*</span>(Number Only)</label>
                 <input
                   type={"number"}
                   className="form-control"
@@ -151,7 +152,7 @@ class lab extends Component {
                  {this.validator.message('labCode', this.state.lab.labCode, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labName" className="form-label">Lab Name</label>
+                <label htmlFor="labName" className="form-label">Lab Name<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -163,7 +164,7 @@ class lab extends Component {
                 {this.validator.message('labName', this.state.lab.labName, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labSection" className="form-label">Lab Section</label>
+                <label htmlFor="labSection" className="form-label">Lab Section<span style ={{color:'red'}}>*</span></label>
                 <input
                   type={"number"}
                   className="form-control"
@@ -175,12 +176,13 @@ class lab extends Component {
                 {this.validator.message('labSection', this.state.lab.labSection, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labMeetTimes" className="form-label">Lab Meet Times</label>
+                <label htmlFor="labMeetTimes" className="form-label">Lab Meet Times<span style ={{color:'red'}}>*</span>(Enter in this Format MW 13:00 -
+                    14:00)</label>
                 <input
                   type="text"
                   className="form-control"
                   name="labMeetTimes"
-                  placeholder="MWF 12:00- 13:30"
+                  placeholder="MWF 12:00 - 13:30"
                   defaultValue={this.state.lab.labMeetTimes}
                   onChange={this.changeHandler}
                 />
@@ -196,10 +198,10 @@ class lab extends Component {
                   defaultValue={this.state.lab.labFaculty}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labFaculty', this.state.lab.labFaculty, 'required|alpha_num_space')}
+                {this.validator.message('labFaculty', this.state.lab.labFaculty, 'alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Activity Time in hours</label>
+                <label htmlFor="activityTimes" className="form-label">Activity Time in hours<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="float"
                   className="form-control"
@@ -216,19 +218,19 @@ class lab extends Component {
                   type="float"
                   className="form-control"
                   name="LabPrepTime"
-                  placeholder="2"
+                  placeholder="0"
                   defaultValue={this.state.lab.LabPrepTime}
                   onChange={this.changeHandler}
                 />
                 {this.validator.message('Lab preparation time', this.state.lab.LabPrepTime, 'numeric|min:0,num|max:10,num')}
               </div>
               <div className="mb-3" onChange={this.onChangeValue}>
-                  Is this a Faculty taught lab?
+                  Is this a Faculty taught lab?<span style ={{color:'red'}}>*</span>
                   <input type="radio" name="facultyTaught" value="true" defaultChecked="true"/> True
                   <input type="radio" name="facultyTaught" value="false"/> False
                 </div>
               <div className="mb-3">
-                <label htmlFor="GAPref" className="form-label">GA Preference</label>
+                <label htmlFor="GAPref" className="form-label">TA Preference (the person selected must be a TA)</label>
                <select className="form-control" id="exampleFormControlSelect1" name={"GAPref"} onChange={this.onChangeValue}>
                     <option>select</option>
                   {this.state.students.map((item, index) => (
