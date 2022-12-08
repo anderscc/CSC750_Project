@@ -25,6 +25,7 @@ export const generateSchedules = async (semYr) => {
     const response = await axios.get(BASEURL + `generate_schedules?semYr=` +`${semYr}`, {responseType: 'blob'})
         .catch(error => {
             throw error
+            
         })
 
         const href = URL.createObjectURL(response.data);
@@ -88,3 +89,9 @@ export const downloadSchedule = async (semYr, schedule_id) => {
     document.body.removeChild(link);
     URL.revokeObjectURL(href);
     }
+
+export const deleteSchedule = async (schedule_id) => {
+     const response = await axios.delete(BASEURL + `api/schedules/` + `${schedule_id}`, {responseType: 'blob'})
+        .catch(error => {
+            throw error
+        })}    

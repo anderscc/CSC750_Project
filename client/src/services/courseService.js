@@ -53,3 +53,11 @@ export const updateCourse = async (id, data)=>{
             throw error
         })
 }
+
+export const deleteCourse = async (id)=>{
+
+    return await axios.delete(BASEURL + `${id}/`)
+        .catch(error => {
+            throw error
+        })
+}

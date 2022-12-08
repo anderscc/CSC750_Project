@@ -138,12 +138,12 @@ class Student extends Component {
   render() {
     return (
         <div className={'container-fluid'}>
-          <h1>Student Page</h1>
+          <h1>GA/TA Page</h1>
           <form>
             <div>
               <div className='studentForm container'>
                 <div className="mb-3">
-                <label htmlFor="semYr" className="form-label">Semester<span color='red'>*</span></label>
+                <label htmlFor="semYr" className="form-label">Semester</label><span style ={{color:'red'}}>*</span>
                 <select className="form-control" id="exampleFormControlSelect1" name={"semYr"} onChange={this.onChangeValue}>
                     <option>Select a semester</option>
                   {this.props.semesters.map((item, index) => (
@@ -151,14 +151,15 @@ class Student extends Component {
                       <option value={item.id} key={index}>{item.Semester+' '+item.Year}</option>
                   ))}
                 </select>
+                {this.validator.message('semester', this.state.student.semYr, 'required|numeric')}
               </div>
                 <div className="mb-3" onChange={this.onChangeValue}>
-                  Select Student Type:
+                  Select Student Type:<span style ={{color:'red'}}>*</span>
                   <input type="radio" name="studentType" value="GA" defaultChecked="true"/> GA
                   <input type="radio" name="studentType" value="TA"/> TA
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="studentName" className="form-label">Student Name</label>
+                  <label htmlFor="studentName" className="form-label">Student Name</label><span style ={{color:'red'}}>*</span>
                   <input
                       type="text"
                       className="form-control"
@@ -170,7 +171,7 @@ class Student extends Component {
                     {this.validator.message('studentName', this.state.student.studentName, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="hoursAvailable" className="form-label">GA Hours 10 or 20</label>
+                  <label htmlFor="hoursAvailable" className="form-label">GA Hours<span style ={{color:'red'}}>*</span> (10-20)</label>
                   <input
                       name='hoursAvailable'
                       type={"number"}
@@ -191,10 +192,10 @@ class Student extends Component {
                       defaultValue={this.state.student.officeHours}
                       onChange={this.changeHandler}
                   />
-                    {this.validator.message('Office Hours', this.state.student.officeHours, 'required|numeric')}
+                    {this.validator.message('Office Hours', this.state.student.officeHours, 'numeric')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="officeHours" className="form-label">Class Times (Enter in this Format MWF 13:00 -
+                  <label htmlFor="officeHours" className="form-label">Class Times<span style ={{color:'red'}}>*</span> (Enter in this Format MWF 13:00 -
                     14:00;R 8:45 - 10:15) Separate multiple classes with comma</label>
                   <input
                       name='classTimes'
@@ -213,7 +214,7 @@ class Student extends Component {
           <div className={"row"}>
             <div className={"col"}>
               {/* <button onClick={useNavigate('course')}>Next Page </button> */}
-              <button onClick={this.onSubmit}>Add Student</button>
+              <button onClick={this.onSubmit}>Add GA/TA</button>
 
             </div>
           </div>
