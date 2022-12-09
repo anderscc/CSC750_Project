@@ -1,3 +1,24 @@
+// Copyright (c) 2022 Caleb Bryant, Wenyu Zhao, Calvin Anderson, Godwin Ekuma, Oluwatobi Atolagbe
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE
+
+
 import React, { Component } from 'react';
 import 'react-dropdown/style.css';
 import {addStudent, getAllStudent} from "../services/studentService";
@@ -13,7 +34,7 @@ class Student extends Component {
         semYr: '',
         studentName: '',
         classTimes: '',
-        hoursAvail: 20,
+        hoursAvailable: 20,
         officeHours: 0,
         studentType: 'GA'
       },
@@ -150,16 +171,16 @@ class Student extends Component {
                     {this.validator.message('studentName', this.state.student.studentName, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="hoursAvail" className="form-label">GA Hours<span style ={{color:'red'}}>*</span> (10-20)</label>
+                  <label htmlFor="hoursAvailable" className="form-label">GA Hours<span style ={{color:'red'}}>*</span> (10-20)</label>
                   <input
-                      name='hoursAvail'
+                      name='hoursAvailable'
                       type={"number"}
                       className="form-control"
                       placeholder="E.g 10"
-                      value={this.state.student.hoursAvail}
+                      value={this.state.student.hoursAvailable}
                       onChange={this.changeHandler}
                   />
-                    {this.validator.message('GA Hours', this.state.student.hoursAvail, 'required|numeric|min:10,num|max:20,num')}
+                    {this.validator.message('GA Hours', this.state.student.hoursAvailable, 'required|numeric|min:10,num|max:20,num')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="officeHours" className="form-label">Office Hours Duration</label>
