@@ -429,7 +429,7 @@ const ViewRecords = () => {
             key: 'semYr',
             render: (text) =>  <a>{text}</a>,
 
-            editable: true
+            editable: false
         },
         {
             title: 'Name',
@@ -570,11 +570,18 @@ const ViewRecords = () => {
     ];
     const labColumns = [
         {
+            title: 'Semester Year',
+            dataIndex: 'semYr',
+            key: 'semYr',
+            render: (text) => <a>{text}</a>,
+            editable: false
+        },
+        {
             title: 'Lab Code',
             dataIndex: 'labCode',
             key: 'labCode',
             render: (text) => <a>{text}</a>,
-            editable: false
+            editable: true
         },
         {
             title: 'Section',
