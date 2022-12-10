@@ -52,10 +52,14 @@ class Student extends Component {
             
           },
           required:true
-
-        }
-
-      }
+        },
+        officeHours:{
+          message:"Office Hours must be less than GA Hours",
+          rule:(val,params)=>{
+            return val <= this.state.student.hoursAvailable
+          },
+        },
+      },
     });
   }
 
@@ -171,7 +175,7 @@ class Student extends Component {
                     {this.validator.message('studentName', this.state.student.studentName, 'required|alpha_num_space')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="hoursAvailable" className="form-label">GA Hours<span style ={{color:'red'}}>*</span> (10-20)</label>
+                  <label htmlFor="hoursAvailable" className="form-label">GA Hours<span style ={{color:'red'}}>*</span> (1-40)</label>
                   <input
                       name='hoursAvailable'
                       type={"number"}
@@ -180,10 +184,10 @@ class Student extends Component {
                       value={this.state.student.hoursAvailable}
                       onChange={this.changeHandler}
                   />
-                    {this.validator.message('GA Hours', this.state.student.hoursAvailable, 'required|numeric|min:10,num|max:20,num')}
+                    {this.validator.message('GA Hours', this.state.student.hoursAvailable, 'required|numeric|min:1,num|max:40,num')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="officeHours" className="form-label">Office Hours Duration</label>
+                  <label htmlFor="officeHours" className="form-label">Office Hours Duration (Must be Less Than GA Hours)</label>
                   <input
                       name='officeHours'
                       type={"text"}
@@ -192,7 +196,7 @@ class Student extends Component {
                       defaultValue={this.state.student.officeHours}
                       onChange={this.changeHandler}
                   />
-                    {this.validator.message('Office Hours', this.state.student.officeHours, 'numeric')}
+                    {this.validator.message('Office Hours', this.state.student.officeHours, 'numeric|officeHours')}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="officeHours" className="form-label">Class Times<span style ={{color:'red'}}>*</span> (Enter in this Format MWF 13:00 -
