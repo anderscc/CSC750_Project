@@ -50,7 +50,7 @@ const courseFields =
         courseMeetTimes: '',
         courseFaculty: '',
         courseActivities: '',
-        activityTimes: '',
+        totalGATAHours: '',
         GAPref: '',
 
 }
@@ -63,7 +63,7 @@ const labFields =
         labSection: '',
         labMeetTimes: '',
         labFaculty: '',
-        activityTimes: '',
+        totalGATAHours: '',
         labprepTimes: '',
         GAPref: '',
         facultyTaught:''
@@ -136,7 +136,7 @@ const findValidateRule=(dataIndex,title)=>{
             ]    
                 break
 
-        case "activityTimes":
+        case "totalGATAHours":
         case "labPrepTime":
                 validateRule = [
                     {
@@ -366,10 +366,10 @@ const ViewRecords = () => {
                         response = await updateStudent(key,newData[index])
                         break;
                     case 'lab':
-                        response = await updateLab(key,newData)
+                        response = await updateLab(key,newData[index])
                         break;
                     case 'course':
-                        response = await updateCourse(key,newData)
+                        response = await updateCourse(key,newData[index])
                         break;
                     }
                 if (response!= "error"){
@@ -529,9 +529,9 @@ const ViewRecords = () => {
             key: 'courseFaculty', editable: true
         },
         {
-            title: 'Activity Times',
-            dataIndex: 'activityTimes',
-            key: 'activityTimes', editable: true
+            title: 'Total GA/TA Hours',
+            dataIndex: 'totalGATAHours',
+            key: 'totalGATAHours', editable: true
         },
         {
             title: 'GA Preference',
@@ -605,9 +605,9 @@ const ViewRecords = () => {
             key: 'labFaculty', editable: true
         },
         {
-            title: 'Activity Times',
-            dataIndex: 'activityTimes',
-            key: 'activityTimes', editable: true
+            title: 'Total GA/TA Hours',
+            dataIndex: 'totalGATAHours',
+            key: 'totalGATAHours', editable: true
         },
         {
             title: 'Preparation Times',
@@ -673,7 +673,7 @@ const ViewRecords = () => {
                 /*Input type validation*/
                 inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex === 'labCode'||col.dataIndex === 'labSection'||
                 col.dataIndex ==="hoursAvailable"||col.dataIndex ==="officeHours"||col.dataIndex === 'labPrepTime'||
-                col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
+                col.dataIndex ==='semYr'||col.dataIndex === 'totalGATAHours'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),

@@ -193,7 +193,7 @@ class Student extends Component {
                       type={"text"}
                       className="form-control"
                       placeholder="0"
-                      defaultValue={this.state.student.officeHours}
+                      defaultValue="0"
                       onChange={this.changeHandler}
                   />
                     {this.validator.message('Office Hours', this.state.student.officeHours, 'numeric|officeHours')}
