@@ -141,8 +141,8 @@ const findValidateRule=(dataIndex,title)=>{
                 validateRule = [
                     {
                         required: true,
-                        pattern: new RegExp(/^[0-10]$/),
-                        message: `Please Input Valid ${title}(0-10)!`,
+                        pattern: new RegExp(/^[0-9]$|^1[0-9]$|^20$/),
+                        message: `Please Input Valid ${title}(0-20)!`,
                     },
                 ]    
                     break
