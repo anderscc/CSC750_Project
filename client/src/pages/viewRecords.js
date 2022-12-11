@@ -50,7 +50,7 @@ const courseFields =
         courseMeetTimes: '',
         courseFaculty: '',
         courseActivities: '',
-        activityTimes: '',
+        totalGATAHours: '',
         GAPref: '',
 
 }
@@ -63,7 +63,7 @@ const labFields =
         labSection: '',
         labMeetTimes: '',
         labFaculty: '',
-        activityTimes: '',
+        totalGATAHours: '',
         labprepTimes: '',
         GAPref: '',
         facultyTaught:''
@@ -136,13 +136,13 @@ const findValidateRule=(dataIndex,title)=>{
             ]    
                 break
 
-        case "activityTimes":
+        case "totalGATAHours":
         case "labPrepTime":
                 validateRule = [
                     {
                         required: true,
-                        pattern: new RegExp(/^[0-10]$/),
-                        message: `Please Input Valid ${title}(0-10)!`,
+                        pattern: new RegExp(/^[0-9]$|^1[0-9]$|^20$/),
+                        message: `Please Input Valid ${title}(0-20)!`,
                     },
                 ]    
                     break
@@ -366,10 +366,10 @@ const ViewRecords = () => {
                         response = await updateStudent(key,newData[index])
                         break;
                     case 'lab':
-                        response = await updateLab(key,newData)
+                        response = await updateLab(key,newData[index])
                         break;
                     case 'course':
-                        response = await updateCourse(key,newData)
+                        response = await updateCourse(key,newData[index])
                         break;
                     }
                 if (response!= "error"){
@@ -529,7 +529,7 @@ const ViewRecords = () => {
             key: 'courseFaculty', editable: true
         },
         {
-            title: 'Activity Times',
+            title: 'Total GA/TA Hours',
             dataIndex: 'activityTimes',
             key: 'activityTimes', editable: true
         },
@@ -558,7 +558,8 @@ const ViewRecords = () => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => {edit(record)}}>
+                    <Space size="middle">
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => {edit(record)}}>
                         Edit
                     </Typography.Link>
                         <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'course')}>
@@ -605,7 +606,7 @@ const ViewRecords = () => {
             key: 'labFaculty', editable: true
         },
         {
-            title: 'Activity Times',
+            title: 'Total GA/TA Hours',
             dataIndex: 'activityTimes',
             key: 'activityTimes', editable: true
         },
@@ -646,7 +647,8 @@ const ViewRecords = () => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                    <Space size="middle">
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                         Edit
                     </Typography.Link>
                         <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'lab')}>
@@ -673,7 +675,7 @@ const ViewRecords = () => {
                 /*Input type validation*/
                 inputType: col.dataIndex === 'courseCode'||col.dataIndex === 'courseSection'|| col.dataIndex === 'labCode'||col.dataIndex === 'labSection'||
                 col.dataIndex ==="hoursAvailable"||col.dataIndex ==="officeHours"||col.dataIndex === 'labPrepTime'||
-                col.dataIndex ==='semYr'||col.dataIndex === 'activityTimes'? 'number' : 'text',
+                col.dataIndex ==='semYr'||col.dataIndex === 'totalGATAHours'? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
@@ -690,7 +692,7 @@ const ViewRecords = () => {
                 <Button onClick={displayStudents}>GA/TA</Button>
                 <Button onClick={displayCourses}>Courses</Button>
                 <Button onClick={displayLabs}>Labs</Button>
-                To show 'Save' button on Action Column, please press the Tab after click on "Edit".
+                To show 'Save' button on Action Column, please press the approrpiate tab after clicking on "Edit" (i.e. Student/Course/Lab).
                 
             </Space>
             <Form form={form} component={false}>

@@ -38,7 +38,7 @@ class lab extends Component {
         labSection: '',
         labMeetTimes: '',
         labFaculty: '',
-        activityTimes: '',
+        totalGATAHours: '',
         facultyTaught: true,
         LabPrepTime: '',
         GAPref: '',
@@ -226,19 +226,19 @@ class lab extends Component {
                 {this.validator.message('labFaculty', this.state.lab.labFaculty, 'alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Total GA/TA Time<span style ={{color:'red'}}>*</span></label>
+                <label htmlFor="totalGATAHours" className="form-label">Total GA/TA Time<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="float"
                   className="form-control"
-                  name="activityTimes"
+                  name="totalGATAHours"
                   placeholder="2"
-                  defaultValue={this.state.lab.activityTimes}
+                  defaultValue={this.state.lab.totalGATAHours}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('ActivityTimes', this.state.lab.activityTimes, 'required|numeric|totalGATAHours')}
+                {this.validator.message('totalGATAHours', this.state.lab.totalGATAHours, 'required|numeric|totalGATAHours')}
               </div>
               <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Lab Prep Time in hours</label>
+                <label htmlFor="totalGATAHours" className="form-label">Lab Prep Time in hours</label>
                 <input
                   type="float"
                   className="form-control"
