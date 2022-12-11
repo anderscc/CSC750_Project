@@ -12,41 +12,41 @@ This project has two folders
 ## Pre-requisites
 - You need to have [Nodejs and NPM](https://nodejs.org/en/download/) installed
 - You need to have [Python](https://www.digitalocean.com/community/tutorials/install-python-windows-10) installed
-- You need to have a host for a SQl Database - for this project we chose to download XAMPP and install MySql through XAMPP.
+- You need to have a host for a SQL Database - for this project we chose to download XAMPP and install MySql through XAMPP.
 
-## Getting Started with Create React App
+## TO START FRONT-END:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Once the project is opened in a code editor (e.g.VS code):
+1. Create a new terminal
+2. Open the client folder in the terminal. This can be done by entering the command: "cd client" from the root folder
+3. User should install NPM -  "npm install"
+4. In the terminal, run the command: npm install
+5. After run the following command: "npm run start" or "npm start" - to start the front-end of the project
 
-## Available Scripts
-
-In the project directory, you can run:
-
+## TO START BACK-END/SERVER:
+1. The user should open the host for SQL Database, we use XAMPP as an example. 
+2. Click on start for both Apache and MySQL.
+3. Ensure that the port numbers for MySQL is 3306. The port numbers for Apache should be 80 and 443.
+4. Create your database ‘Scheduler’(Case-Sensitive) in mysql admin
+5. Ensure you have created a user that has full permissions to the database. Keep the username and password handy.
+6. Create .env  file to store your database information according to .env example file in server folder
+7. User should change directories to the server folder: This can be done in the terminal in the root folder using the command: 
 ```bash
-    cd /path/client
-    npm install
+    cd server
 ```
+8. Use following command to install mysqlclient:
+```bash
+    pip install mysqlclient
+```
+9. Run the following commands:
+```bash
+    pip install -r ../requirements.txt
+    python manage.py makemigrations
+    python manage.py migrate scheduler
+    python manage.py runserver
+```
+10. Confirm in MySQL that 7 tables were created.
+11. Confirm at http://127.0.0.1:8000/api that you can successfully post information to the database.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
+###Now, the project should be available at http://127.0.0.1:3000!
