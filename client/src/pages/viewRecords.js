@@ -558,7 +558,8 @@ const ViewRecords = () => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => {edit(record)}}>
+                    <Space size="middle">
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => {edit(record)}}>
                         Edit
                     </Typography.Link>
                         <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'course')}>
@@ -646,7 +647,8 @@ const ViewRecords = () => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                    <Space size="middle">
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                         Edit
                     </Typography.Link>
                         <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'lab')}>
