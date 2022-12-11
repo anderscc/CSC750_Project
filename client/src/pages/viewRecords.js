@@ -530,8 +530,8 @@ const ViewRecords = () => {
         },
         {
             title: 'Total GA/TA Hours',
-            dataIndex: 'totalGATAHours',
-            key: 'totalGATAHours', editable: true
+            dataIndex: 'activityTimes',
+            key: 'activityTimes', editable: true
         },
         {
             title: 'GA Preference',
@@ -607,8 +607,8 @@ const ViewRecords = () => {
         },
         {
             title: 'Total GA/TA Hours',
-            dataIndex: 'totalGATAHours',
-            key: 'totalGATAHours', editable: true
+            dataIndex: 'activityTimes',
+            key: 'activityTimes', editable: true
         },
         {
             title: 'Preparation Times',
