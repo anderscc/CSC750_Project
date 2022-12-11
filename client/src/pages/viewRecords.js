@@ -692,7 +692,7 @@ const ViewRecords = () => {
                 <Button onClick={displayStudents}>GA/TA</Button>
                 <Button onClick={displayCourses}>Courses</Button>
                 <Button onClick={displayLabs}>Labs</Button>
-                To show 'Save' button on Action Column, please press the Tab after click on "Edit".
+                To show 'Save' button on Action Column, please press the approrpiate tab after clicking on "Edit" (i.e. Student/Course/Lab).
                 
             </Space>
             <Form form={form} component={false}>
