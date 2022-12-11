@@ -83,7 +83,11 @@ def get_schedules(request):
 
 def download_schedules(request):
     semYr = int(request.GET.get('semYr'))
-    assignment_records = getAssignments(semYr)
+    query_sets = getAssignments(semYr)
+    assignment_records = query_sets.values()
+    for index, _ in enumerate(assignment_records):
+        assignment_records[index]['conflicts'] = query_sets[index].scheduleNum.conflicts
+
 
     assignment_groups = {}
     for item in assignment_records:
@@ -123,7 +127,12 @@ def download_schedules(request):
 def download_schedule(request):
     semYr = int(request.GET.get('semYr'))
     schedule_id = int(request.GET.get('schedule_id'))
-    schedule = getAssignment(semYr, schedule_id)
+    query_sets = getAssignment(semYr, schedule_id)
+    schedule = query_sets.values()
+
+    for index, _ in enumerate(schedule):
+        schedule[index]['conflicts'] = query_sets[index].scheduleNum.conflicts
+
 
     excel_file_name = 'GAS_Schedules' + str(date.today()) + '.xlsx'
     writer = pd.ExcelWriter(excel_file_name, engine='xlsxwriter')
