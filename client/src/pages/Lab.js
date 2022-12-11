@@ -53,12 +53,15 @@ class lab extends Component {
           message:"Please input valid class times according to the instruction.",
           rule:(val,params,validator)=>{
             return validator.helpers.testRegex(val,/^(M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}))$/) && params.indexOf(val) === -1
-            
           },
           required:true
-
-        }
-
+        },
+        totalGATAHours:{
+          message:"*Total GA/TA Hours requested must be between 1-20*",
+          rule:(val,params)=>{
+            return val >0 && val <= 20
+          },
+        },
       }
     });
   }
@@ -223,7 +226,7 @@ class lab extends Component {
                 {this.validator.message('labFaculty', this.state.lab.labFaculty, 'alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Activity Time in hours<span style ={{color:'red'}}>*</span></label>
+                <label htmlFor="activityTimes" className="form-label">Total GA/TA Time<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="float"
                   className="form-control"
@@ -232,7 +235,7 @@ class lab extends Component {
                   defaultValue={this.state.lab.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('ActivityTimes', this.state.lab.activityTimes, 'required|numeric|min:0,num|max:10,num')}
+                {this.validator.message('ActivityTimes', this.state.lab.activityTimes, 'required|numeric|totalGATAHours')}
               </div>
               <div className="mb-3">
                 <label htmlFor="activityTimes" className="form-label">Lab Prep Time in hours</label>

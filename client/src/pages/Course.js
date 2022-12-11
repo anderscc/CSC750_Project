@@ -53,8 +53,13 @@ class Course extends Component {
             
           },
           required:true
-
-        }
+        },
+        totalGATAHours:{
+          message:"*Total GA/TA Hours requested must be between 1-20*",
+          rule:(val,params)=>{
+            return val >0 && val <= 20
+          },
+        },
 
       }
     });
@@ -219,7 +224,7 @@ class Course extends Component {
                 {this.validator.message('courseFaculty', this.state.course.courseFaculty, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="activityTimes" className="form-label">Activity Time in Hours<span style ={{color:'red'}}>*</span></label>
+                <label htmlFor="activityTimes" className="form-label">Total GA/TA Time<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="float"
                   className="form-control"
@@ -227,7 +232,7 @@ class Course extends Component {
                   defaultValue={this.state.course.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('activityTimes', this.state.course.activityTimes, 'required|numeric|min:0,num|max:10,num')}
+                {this.validator.message('activityTimes', this.state.course.activityTimes, 'required|numeric|totalGATAHours')}
               </div>
               <div className="mb-3">
                 <label htmlFor="gaPreference" className="form-label">GA Preference</label>
