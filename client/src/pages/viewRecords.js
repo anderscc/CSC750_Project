@@ -366,10 +366,10 @@ const ViewRecords = () => {
                         response = await updateStudent(key,newData[index])
                         break;
                     case 'lab':
-                        response = await updateLab(key,newData)
+                        response = await updateLab(key,newData[index])
                         break;
                     case 'course':
-                        response = await updateCourse(key,newData)
+                        response = await updateCourse(key,newData[index])
                         break;
                     }
                 if (response!= "error"){
@@ -558,7 +558,8 @@ const ViewRecords = () => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => {edit(record)}}>
+                    <Space size="middle">
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => {edit(record)}}>
                         Edit
                     </Typography.Link>
                         <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'course')}>
@@ -646,7 +647,8 @@ const ViewRecords = () => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Space size="middle"><Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                    <Space size="middle">
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                         Edit
                     </Typography.Link>
                         <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'lab')}>
