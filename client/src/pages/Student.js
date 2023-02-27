@@ -208,6 +208,7 @@ class Student extends Component {
                       placeholder="MW 13:00 - 14:00, TR: 15:30 - 17:00"
                       onChange={this.changeHandler}
                   />
+                  {/* Make this field not required. */}
                      {this.validator.message('classTimes', this.state.student.classTimes, 'required|classTimes')}
                 </div>
 
