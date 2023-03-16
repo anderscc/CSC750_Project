@@ -414,7 +414,7 @@ class Schedule:
             newCourseAssignment.set_hoursUsedTA(int(cur_lab.get_activityTimes()) + cur_lab.get_prepTime())
             newCourseAssignment.set_hoursUsedGA(cur_lab.get_activityTimes())
             TAHours = TA.get_hoursAvailable() - newCourseAssignment.get_hoursUsedTA()
-            GAHours = GA.get_hoursAvailable() - int(newCourseAssignment.get_hoursUsedGA())
+            GAHours = GA.get_hoursAvailable() - int(cur_lab.get_activityTimes())
             GA.set_hoursAvailable(GAHours)
             TA.set_hoursAvailable(TAHours)
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
@@ -442,8 +442,8 @@ class Schedule:
             # Setting Hours Used for each GA and TA assigned to this course.
             newCourseAssignment.set_hoursUsedTA(cur_lab.get_activityTimes())
             newCourseAssignment.set_hoursUsedGA(cur_lab.get_activityTimes())
-            TAHours = TA.get_hoursAvailable() - int(newCourseAssignment.get_hoursUsedTA())
-            GAHours = GA.get_hoursAvailable() - int(newCourseAssignment.get_hoursUsedGA())
+            TAHours = TA.get_hoursAvailable() - int(cur_lab.get_activityTimes())
+            GAHours = GA.get_hoursAvailable() - int(cur_lab.get_activityTimes())
             GA.set_hoursAvailable(GAHours)
             TA.set_hoursAvailable(TAHours)
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
@@ -463,13 +463,13 @@ class Schedule:
             newCourseAssignment.set_semYr(cur_lab.get_semYr())
             # Setting Hours Used for the TA assigned to this course.
             newCourseAssignment.set_hoursUsedTA(cur_lab.get_activityTimes())
-            TAHours = TA.get_hoursAvailable() - int(newCourseAssignment.get_hoursUsedTA())
+            TAHours = TA.get_hoursAvailable() - int(cur_lab.get_activityTimes())
             TA.set_hoursAvailable(TAHours)
             newCourseAssignment.set_hoursAvailTA(TA.get_hoursAvailable())
             cur_lab.set_GAPref(None)
 
             self._assignments.append(newCourseAssignment)
-        # Assigning Labs that don't have a TA preference to when no TA is needed and are faculty taught.
+        # Assigning Labs that don't have a TA preference when no TA is needed and are faculty taught.
         for cur_lab in LabFacultyTaughtNoTA:
             # Assign TA to observe lab and grade lab.
             if randomGAStart > len(GAList)-1:
@@ -483,9 +483,8 @@ class Schedule:
             newCourseAssignment.set_course(cur_lab)
             newCourseAssignment.set_meetingTime(cur_lab.get_meetTimes())
             newCourseAssignment.set_semYr(cur_lab.get_semYr())
-            # Setting Hours Used for the TA assigned to this course.
             newCourseAssignment.set_hoursUsedGA(cur_lab.get_activityTimes())
-            GAHours = GA.get_hoursAvailable() - int(newCourseAssignment.get_hoursUsedGA())
+            GAHours = GA.get_hoursAvailable() - int(cur_lab.get_activityTimes())
             GA.set_hoursAvailable(GAHours)
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
 
@@ -500,12 +499,13 @@ class Schedule:
             # Setting the course, meeting time, and semester year and append it to newClass.
             newCourseAssignment.set_course(cur_course)
             newCourseAssignment.set_meetingTime(cur_course.get_meetTimes())
+            newCourseAssignment.set_semYr(cur_course.get_semYr())
             # Setting Hours Used for the GA assigned to this course.
             newCourseAssignment.set_hoursUsedGA(cur_course.get_activityTimes())
-            GAHours = GA.get_hoursAvailable() - int(newCourseAssignment.get_hoursUsedGA())
+            GAHours = GA.get_hoursAvailable() - int(cur_course.get_activityTimes())
             GA.set_hoursAvailable(GAHours)
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
-            newCourseAssignment.set_semYr(cur_course.get_semYr())
+            
             self._assignments.append(newCourseAssignment)
         # Assigning courses that have no GA preferences.
         for cur_course in CourseNonGAPref:
@@ -521,7 +521,7 @@ class Schedule:
             newCourseAssignment.set_semYr(cur_course.get_semYr())
             # Setting Hours Used for the GA assigned to this course.
             newCourseAssignment.set_hoursUsedGA(cur_course.get_activityTimes())
-            GAHours = GA.get_hoursAvailable() - int(newCourseAssignment.get_hoursUsedGA())
+            GAHours = GA.get_hoursAvailable() - int(cur_course.get_activityTimes())
             GA.set_hoursAvailable(GAHours)
             newCourseAssignment.set_hoursAvailGA(GA.get_hoursAvailable())
 
@@ -728,20 +728,28 @@ class GeneticAlgorithm:
                     Assignments[i].get_ga().set_hoursAvailable(OriginalHours[j][0])       
                 if GAsTAsAssigned[1] == OriginalHours[j][1]:
                     Assignments[i].get_ta().set_hoursAvailable(OriginalHours[j][0])
+            if Assignments[i].get_ta() != "None":
+                Assignments[i].set_hoursAvailTA(Assignments[i].get_ga().get_hoursAvailable())
+            Assignments[i].set_hoursAvailGA(Assignments[i].get_ga().get_hoursAvailable())
         for k in range(0, len(Assignments)):  
             if Assignments[k].get_hoursUsedGA() is None:
+                # print("First If Before: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
                 # TA is assigned as GA because it's a faculty taught lab where the TA is teaching another section of the same lab.
                 Assignments[k].set_hoursAvailTA(Assignments[k].get_ga().get_hoursAvailable() - Assignments[k].get_hoursUsedTA())
-                # poc
                 Assignments[k].get_ga().set_hoursAvailable(Assignments[k].get_hoursAvailTA())
+                # print("First If After: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
             else:
+                # print("First else Before: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
                 Assignments[k].set_hoursAvailGA(Assignments[k].get_ga().get_hoursAvailable() - int(Assignments[k].get_hoursUsedGA()))
                 Assignments[k].get_ga().set_hoursAvailable(Assignments[k].get_hoursAvailGA())
+                # print("First else After: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
             if Assignments[k].get_ta() == "None":
                 pass
             else:
+                # print("Second else Before: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
                 Assignments[k].set_hoursAvailTA(Assignments[k].get_ta().get_hoursAvailable() - int(Assignments[k].get_hoursUsedTA()))
                 Assignments[k].get_ta().set_hoursAvailable(Assignments[k].get_hoursAvailTA())
+                # print("Second else After: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
         # print(Schedule)
         return Schedule
 
@@ -784,13 +792,10 @@ class GeneticAlgorithm:
     # Crossover Schedule where we take 2 parent schedules and generate children schedules.
     def _crossover_schedule(self, schedule1, schedule2, semYr):
         # Initialize crossover schedule
-        # test = Data(semYr)
-        # print(test.get_courses().get, test.get_gata(), test.get_labs())
         crossoverSchedule = Schedule(Data(semYr)).initialize()
         # Iterate from 0 to length of classes in crossoverSchedule
         for i in range(0, len(crossoverSchedule.get_assignments())):
             cross = crossoverSchedule.get_assignments()
-            # print("FIND ME", cross[i].get_course().get_Name())
             first = schedule1.get_assignments()
             second = schedule2.get_assignments()
             # Given a random value check if greater than .5, if so we set classes of schedule 1 to crossover schedule.
@@ -802,8 +807,8 @@ class GeneticAlgorithm:
                 # Getting course assignment of crossoverSchedule and exchanging with course assignment from schedule2
                 cross[i].set_ga(second[i].get_ga())
         # Return crossoverSchedule.
-        crossoverSchedule = self._Fix_Scheduling_Hours(crossoverSchedule)
-        return crossoverSchedule
+        crossoverScheduleFixed = self._Fix_Scheduling_Hours(crossoverSchedule)
+        return crossoverScheduleFixed
 
     # Mutate schedule function.
     def _mutate_schedule(self, mutateSchedule, semYr):
@@ -813,13 +818,12 @@ class GeneticAlgorithm:
         # Iterate from 0 to number of classes in mutateSchedule
         for i in range(0, len(mutateSchedule.get_assignments())):
             # If the mutation rate, 0.1, is greater than the random value, we assign GAs from the initialized schedule to mutateSchedule
-            # Investigate this section of code here TODO:
             mutate = mutateSchedule.get_assignments()
             if MUTATION_RATE > rnd.random():
                 mutate[i].set_ga(ga[i].get_ga())
-        mutateSchedule = self._Fix_Scheduling_Hours(mutateSchedule)
+        mutateScheduleFixed = self._Fix_Scheduling_Hours(mutateSchedule)
         # Return the mutated schedule.
-        return mutateSchedule
+        return mutateScheduleFixed
 
     # Tournament selection function.
     def _select_tournament_population(self, pop, semYr):

@@ -25,9 +25,10 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 import json
+import ast
 
 from .GeneticAlgorithm import Data, Population, GeneticAlgorithm, POPULATION_SIZE
-from .sql import getSchedules, createSchedule, createAssignment, getGATA, getAssignments, getAssignment
+from .sql import getSchedules, createSchedule, createAssignment, getGATA, getAssignments, getAssignment, getGATAHours, getGATAs
 
 from .serializers import GATASerializer,CoursesSerializer, SchedulesSerializer, AssignmentSerializer, LabsSerializer, SemesterSerializer
 from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
@@ -184,35 +185,72 @@ def generate_schedules(request):
     schedules = population.get_schedules()
 
     semester = SemesterYear.objects.filter(id=semYr)
+    # Getting hours for GAs and TAs
+    hoursForGAs = getGATAs(semYr)
+    hoursByID = {}
+    # Grouping them all by id and student type.
+    for i in range(0, len(hoursForGAs)):
+        hoursByID[hoursForGAs[i]['id']] = (hoursForGAs[i]['hoursAvailable'] - hoursForGAs[i]['officeHours'], hoursForGAs[i]['studentType'])
+    
+    f = open("dict.txt", "w")
+    f.write(str(hoursByID))
+    f.close()
+
     for schedule in schedules:
+        with open('dict.txt') as r:
+            backup = r.read()
+        convertToDict = ast.literal_eval(backup)
+        hoursByID = convertToDict
+        r.close()
+
+        # Group all assignments by id.
         assignments = schedule.get_assignments()
-        # print(assignments)
+        asnGAHours = {}
+        asnTAHours = {}
         new_schedule = createSchedule(semester[0], schedule.get_numbOfConflicts())
-        for assignment in assignments:
+        for i in range(0, len(assignments)):
+            asnGAHours[assignments[i].get_ga().get_id()] = (assignments[i].get_hoursUsedGA())
+            if assignments[i].get_ta() != "None":
+                asnTAHours[assignments[i].get_ta().get_id()] = (assignments[i].get_hoursUsedTA())
             if (new_schedule):
-                if assignment.get_ga() is not 'None':
-                    hoursUsed = assignment.get_hoursUsedGA() if assignment.get_hoursUsedGA() is not None else assignment.get_hoursUsedTA()
-                    hoursRem = assignment.get_hoursAvailGA() if assignment.get_hoursAvailGA() is not None else assignment.get_hoursAvailTA()
-                    ga = getGATA(assignment.get_ga().get_id())
+                hoursRem = 0
+                hoursUsed = 0
+                if assignments[i].get_ga() != "None":
+                    if list(asnGAHours.keys())[0] in list(hoursByID.keys()):
+                        hoursRem = hoursByID[list(asnGAHours.keys())[0]][0]
+                        hoursUsed = asnGAHours[list(asnGAHours.keys())[0]]
+                        hoursRem = hoursRem - int(hoursUsed)
+                        hoursByID[list(asnGAHours.keys())[0]] = (hoursRem, 'GA')
+                        asnGAHours.pop(list(asnGAHours.keys())[0])
+
+
+                    ga = getGATA(assignments[i].get_ga().get_id())
                     createAssignment(
                         semester[0],
                         ga[0],
-                        assignment.get_meetingTime(),
+                        assignments[i].get_meetingTime(),
                         hoursUsed,
                         hoursRem,
-                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_code()) + "." + str(assignment.get_course().get_section()),
+                        assignments[i].get_course().get_Name() + " " + str(assignments[i].get_course().get_code()) + "." + str(assignments[i].get_course().get_section()),
                         new_schedule
                     )
 
-                if assignment.get_ta() is not 'None':
-                    ta = getGATA(assignment.get_ta().get_id())
+                if assignments[i].get_ta() != "None":
+                    if list(asnTAHours.keys())[0] in list(hoursByID.keys()):
+                        hoursRem = hoursByID[list(asnTAHours.keys())[0]][0]
+                        hoursUsed = asnTAHours[list(asnTAHours.keys())[0]]
+                        hoursRem = hoursRem - int(hoursUsed)
+                        hoursByID[list(asnTAHours.keys())[0]] = (hoursRem, 'GA')
+                        asnTAHours.pop(list(asnTAHours.keys())[0])
+
+                    ta = getGATA(assignments[i].get_ta().get_id())
                     createAssignment(
                         semester[0],
                         ta[0],
-                        assignment.get_meetingTime(),
-                        assignment.get_hoursUsedTA(),
-                        assignment.get_hoursAvailTA(),
-                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_section()),
+                        assignments[i].get_meetingTime(),
+                        assignments[i].get_hoursUsedTA(),
+                        assignments[i].get_hoursAvailTA(),
+                        assignments[i].get_course().get_Name() + " " + str(assignments[i].get_course().get_section()),
                         new_schedule
                     )
     return  download_schedules(request, oldScheduleID)
