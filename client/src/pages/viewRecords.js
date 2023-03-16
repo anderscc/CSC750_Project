@@ -33,6 +33,7 @@ import {generateSchedules} from "../services/scheduleService";
 
 
 const studentField = {
+        id: '',
         semYr: '',
         studentName: '',
         classTimes: '',
@@ -424,6 +425,14 @@ const ViewRecords = () => {
 
     const studentColumns = [
         {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+            render: (text) => <a>{text}</a>,
+
+            editable: false
+        },
+        {
             title: 'Semester Year',
             dataIndex: 'semYr',
             key: 'semYr',
@@ -476,7 +485,7 @@ const ViewRecords = () => {
                         >
                             Save
                         </Typography.Link>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                        <Popconfirm title="Are you sure you want to cancel?" onConfirm={cancel}>
                             <a>Cancel</a>
                         </Popconfirm>
                     </Space>
@@ -485,7 +494,7 @@ const ViewRecords = () => {
                         <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                             Edit
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={()=>deleteRecord(record.id,'student')}>
+                        <Popconfirm title="Are you sure you want to delete?" onConfirm={()=>deleteRecord(record.id,'student')}>
                             <a>Delete</a>
                         </Popconfirm></Space>
                 )

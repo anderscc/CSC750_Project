@@ -22,9 +22,11 @@ import axios from 'axios'
 const BASEURL = 'http://127.0.0.1:8000/api/labs/'
 
 export const addLab = async (data)=>{
-
+    console.log(data)
     return await axios.post(BASEURL, {...data})
         .catch(error => {
+            console.log(error)
+            console.log(error.request.response)
             throw error
         })
 }

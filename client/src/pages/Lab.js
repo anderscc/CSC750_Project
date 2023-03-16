@@ -32,15 +32,15 @@ class lab extends Component {
     super(args);
     this.state = {
       lab: {
-        SemYr: "",
+        semYr: "",
         labCode: '',
         labName: '',
         labSection: '',
         labMeetTimes: '',
         labFaculty: '',
-        totalGATAHours: '',
+        activityTimes: '',
         facultyTaught: true,
-        LabPrepTime: '',
+        labPrepTime: '',
         GAPref: '',
       },
       students: []
@@ -56,7 +56,7 @@ class lab extends Component {
           },
           required:true
         },
-        totalGATAHours:{
+        activityTimes:{
           message:"*Total GA/TA Hours requested must be between 1-20*",
           rule:(val,params)=>{
             return val >0 && val <= 20
@@ -165,7 +165,7 @@ class lab extends Component {
                 {this.validator.message('Semester', this.state.lab.semYr, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labCode" className="form-label">Lab Code<span style ={{color:'red'}}>*</span>(Number Only)</label>
+                <label htmlFor="labCode" className="form-label">Lab Code (Number Only)<span style ={{color:'red'}}>*</span></label>
                 <input
                   type={"number"}
                   className="form-control"
@@ -201,8 +201,8 @@ class lab extends Component {
                 {this.validator.message('labSection', this.state.lab.labSection, 'required|numeric')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labMeetTimes" className="form-label">Lab Meet Times<span style ={{color:'red'}}>*</span>(Enter in this Format MW 13:00 -
-                    14:00)</label>
+                <label htmlFor="labMeetTimes" className="form-label">Lab Meet Times (Enter in this Format MW 13:00 -
+                    14:00)<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -214,7 +214,7 @@ class lab extends Component {
                 {this.validator.message('labMeetTimes', this.state.lab.labMeetTimes, 'required|classTimes')}
               </div>
               <div className="mb-3">
-                <label htmlFor="labFaculty" className="form-label">Lab Faculty</label>
+                <label htmlFor="labFaculty" className="form-label">Lab Faculty (If There is no Faculty, Type "None")<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -226,33 +226,33 @@ class lab extends Component {
                 {this.validator.message('labFaculty', this.state.lab.labFaculty, 'alpha_num_space')}
               </div>
               <div className="mb-3">
-                <label htmlFor="totalGATAHours" className="form-label">Total GA/TA Time<span style ={{color:'red'}}>*</span></label>
+                <label htmlFor="activityTimes" className="form-label">Total GA/TA Time<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="float"
                   className="form-control"
-                  name="totalGATAHours"
+                  name="activityTimes"
                   placeholder="2"
-                  defaultValue={this.state.lab.totalGATAHours}
+                  defaultValue={this.state.lab.activityTimes}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('totalGATAHours', this.state.lab.totalGATAHours, 'required|numeric|totalGATAHours')}
+                {this.validator.message('activityTimes', this.state.lab.activityTimes, 'required|numeric|activityTimes')}
               </div>
               <div className="mb-3">
-                <label htmlFor="totalGATAHours" className="form-label">Lab Prep Time in hours</label>
+                <label htmlFor="totalGATAHours" className="form-label">Lab Prep Time in Hours (If The Lab is Faculty Taught, Type "0")<span style ={{color:'red'}}>*</span></label>
                 <input
                   type="float"
                   className="form-control"
-                  name="LabPrepTime"
+                  name="labPrepTime"
                   placeholder="0"
-                  defaultValue={this.state.lab.LabPrepTime}
+                  defaultValue={this.state.lab.labPrepTime}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('Lab preparation time', this.state.lab.LabPrepTime, 'numeric|min:0,num|max:10,num')}
+                {this.validator.message('Lab preparation time', this.state.lab.labPrepTime, 'numeric|min:0,num|max:10,num')}
               </div>
               <div className="mb-3" onChange={this.onChangeValue}>
                   Is this a Faculty taught lab?<span style ={{color:'red'}}>*</span>
-                  <input type="radio" name="facultyTaught" value="true" defaultChecked="true"/> True
-                  <input type="radio" name="facultyTaught" value="false"/> False
+                  <input type="radio" name="facultyTaught" value="true"/> True
+                  <input type="radio" name="facultyTaught" value="false" defaultChecked="true"/> False
                 </div>
               <div className="mb-3">
                 <label htmlFor="GAPref" className="form-label">TA Preference (the person selected must be a TA)</label>

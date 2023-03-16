@@ -48,8 +48,8 @@ def getAssignment(semYr, schedule_id):
     assignment = Assignment.objects.filter(semYr=semYr, scheduleNum_id=schedule_id)
     return assignment
 
-def getAssignments(semYr):
-    assignments = Assignment.objects.filter(semYr=semYr).select_related('scheduleNum')
+def getAssignments(semYr, oldScheduleID):
+    assignments = Assignment.objects.filter(semYr=semYr, scheduleNum_id__gt = oldScheduleID).select_related('scheduleNum')
     return assignments
 
 def getCourses(semYr):

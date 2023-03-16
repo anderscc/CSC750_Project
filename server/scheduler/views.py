@@ -81,9 +81,9 @@ def get_schedules(request):
     data = serializers.serialize('json', list(objectQuerySet))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
-def download_schedules(request):
+def download_schedules(request, oldScheduleID):
     semYr = int(request.GET.get('semYr'))
-    query_sets = getAssignments(semYr)
+    query_sets = getAssignments(semYr, oldScheduleID)
     assignment_records = query_sets.values()
     for index, _ in enumerate(assignment_records):
         assignment_records[index]['conflicts'] = query_sets[index].scheduleNum.conflicts
@@ -166,20 +166,27 @@ def download_schedule(request):
 def generate_schedules(request):
     generationNumber = 0
     semYr = request.GET.get('semYr')
+    if(getSchedules(semYr).count() != 0):
+        oldScheduleID = getSchedules(semYr).latest('id')['id']
+    else:
+        oldScheduleID = 0
     population = Population(POPULATION_SIZE, semYr)
     cur_schedules = population.get_schedules()
     cur_schedules.sort(key=lambda x: x.get_fitness(), reverse=True)
     geneticAlgorithm = GeneticAlgorithm()
 
-    while (population.get_schedules()[0].get_fitness() != 1.0):
+    while (population.get_schedules()[0].get_fitness() != 1.0 and generationNumber < 1000):
         generationNumber += 1
-        population = geneticAlgorithm.evolve(population)
+        population = geneticAlgorithm.evolve(population, semYr)
         population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
+        if (generationNumber % 100 == 0):
+            print(generationNumber)
     schedules = population.get_schedules()
 
     semester = SemesterYear.objects.filter(id=semYr)
     for schedule in schedules:
         assignments = schedule.get_assignments()
+        # print(assignments)
         new_schedule = createSchedule(semester[0], schedule.get_numbOfConflicts())
         for assignment in assignments:
             if (new_schedule):
@@ -193,7 +200,7 @@ def generate_schedules(request):
                         assignment.get_meetingTime(),
                         hoursUsed,
                         hoursRem,
-                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_section()),
+                        assignment.get_course().get_Name() + " " + str(assignment.get_course().get_code()) + "." + str(assignment.get_course().get_section()),
                         new_schedule
                     )
 
@@ -208,5 +215,5 @@ def generate_schedules(request):
                         assignment.get_course().get_Name() + " " + str(assignment.get_course().get_section()),
                         new_schedule
                     )
-    return  download_schedules(request)
+    return  download_schedules(request, oldScheduleID)
 
