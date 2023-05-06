@@ -63,9 +63,3 @@ def getGATAs(semYr):
 
 def getGATA(id):
     return GATA.objects.filter(id=id)
-
-def getGATAHours(id):
-    hours = GATA.objects.filter(id=id).values()
-    return hours
-
-

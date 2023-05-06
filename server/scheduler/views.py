@@ -27,8 +27,8 @@ from rest_framework import viewsets
 import json
 import ast
 
-from .GeneticAlgorithm import Data, Population, GeneticAlgorithm, POPULATION_SIZE
-from .sql import getSchedules, createSchedule, createAssignment, getGATA, getAssignments, getAssignment, getGATAHours, getGATAs
+from .GeneticAlgorithm import Data, Population, GeneticAlgorithm, POPULATION_SIZE, Schedule
+from .sql import getSchedules, createSchedule, createAssignment, getGATA, getAssignments, getAssignment, getGATAs
 
 from .serializers import GATASerializer,CoursesSerializer, SchedulesSerializer, AssignmentSerializer, LabsSerializer, SemesterSerializer
 from .models import GATA, Courses, Labs, Assignment, Schedules, SemesterYear
@@ -164,6 +164,148 @@ def download_schedule(request):
 
     return response
 
+    
+def _optimize(schedule, semYr):
+    # Fix the scheduling hours on the schedule.
+    assignments = schedule.get_assignments()
+    # Getting hours for GAs and TAs
+    hoursForGAs = getGATAs(semYr)
+    hoursByID = {}
+    GAObjects = {}
+    for assignment in assignments:  
+        # print("GAOBJECTS", assignment.get_ga())
+        if assignment.get_ga().get_id() not in GAObjects:
+            GAObjects[assignment.get_ga().get_id()] = (assignment.get_ga(), 1)
+        else:
+            GAObjects[assignment.get_ga().get_id()] = (assignment.get_ga(), GAObjects[assignment.get_ga().get_id()][1] + 1)
+        if assignment.get_ta() != "None":
+            if assignment.get_ta().get_id() not in GAObjects:
+                GAObjects[assignment.get_ta().get_id()] = (assignment.get_ta(), 1)
+            else:
+                GAObjects[assignment.get_ta().get_id()] = (assignment.get_ta(), GAObjects[assignment.get_ta().get_id()][1] + 1)
+    # Grouping them all by id and student type.
+    for i in range(0, len(hoursForGAs)):
+        if hoursForGAs[i]['id'] not in GAObjects:
+            tempObject = GATA(hoursForGAs[i]['id'], 
+                              hoursForGAs[i]['semYr_id'], 
+                              hoursForGAs[i]['studentName'], 
+                              hoursForGAs[i]['hoursAvailable']-hoursForGAs[i]['officeHours'],
+                              hoursForGAs[i]['officeHours'],
+                              hoursForGAs[i]['classTimes'],
+                              hoursForGAs[i]['studentType'])
+            GAObjects[hoursForGAs[i]['id']] = (tempObject, 0)
+        hoursByID[hoursForGAs[i]['id']] = (hoursForGAs[i]['hoursAvailable'] - hoursForGAs[i]['officeHours'], hoursForGAs[i]['studentType'], GAObjects[hoursForGAs[i]['id']][0], GAObjects[hoursForGAs[i]['id']][1])
+    asnGAHours = {}
+    asnTAHours = {}
+    for k in range(0, len(assignments)):
+        asnGAHours[assignments[k].get_ga().get_id()] = (assignments[k].get_hoursUsedGA())
+        if assignments[k].get_ta() != "None":
+            asnTAHours[assignments[k].get_ta().get_id()] = (assignments[k].get_hoursUsedTA())
+
+        if assignments[k].get_ga() != "None":
+            if list(asnGAHours.keys())[0] in list(hoursByID.keys()):
+                GAObject = hoursByID[list(asnGAHours.keys())[0]][2]
+                hoursRem = hoursByID[list(asnGAHours.keys())[0]][0]
+                hoursUsed = asnGAHours[list(asnGAHours.keys())[0]]
+                hoursRem = hoursRem - int(hoursUsed)
+                assignments[k].set_hoursAvailGA(hoursRem)
+                hoursByID[list(asnGAHours.keys())[0]] = (hoursRem, 'GA', GAObject, hoursByID[list(asnGAHours.keys())[0]][3])
+                asnGAHours.pop(list(asnGAHours.keys())[0])
+        if assignments[k].get_ta() != "None":
+            if list(asnTAHours.keys())[0] in list(hoursByID.keys()):
+                TAObject = hoursByID[list(asnTAHours.keys())[0]][2]
+                hoursRem = hoursByID[list(asnTAHours.keys())[0]][0]
+                hoursUsed = asnTAHours[list(asnTAHours.keys())[0]]
+                hoursRem = hoursRem - int(hoursUsed)
+                assignments[k].set_hoursAvailTA(hoursRem)
+                hoursByID[list(asnTAHours.keys())[0]] = (hoursRem, 'TA', TAObject, hoursByID[list(asnTAHours.keys())[0]][3])
+                asnTAHours.pop(list(asnTAHours.keys())[0])
+
+    sorted_hoursByID = sorted(hoursByID.items(), key=lambda x:x[1][3])
+
+    # Check and make a list of GAs/TAs that have hours left over and a list of over-utilized GAs/TAs.
+    underUtilized = {}
+    overUtilized = {}
+    for l in sorted_hoursByID:
+        if l[1][0] > 0:
+            underUtilized[l[0]] = l[1]
+        elif l[1][0] < 0:
+            overUtilized[l[0]] = l[1]
+    # For the over-utilized GAs/TAs, check and see if another GA/TA can use leftover hours to take the course, or if a combination of 2 GAs/TAs can take the course.
+    negativeAssignments = {}
+    for m in range(0, len(assignments)):
+        if assignments[m].get_hoursAvailGA() < 0 or (assignments[m].get_ta() != "None" and assignments[m].get_hoursAvailTA() < 0):
+            negativeAssignments[m] = assignments[m]
+    for n in negativeAssignments:
+        for j in underUtilized:
+            GAOver = negativeAssignments[n].get_ga().get_id()
+            if GAOver not in overUtilized:
+                break
+            else:
+                if negativeAssignments[n].get_hoursAvailGA() < 0:
+                    if underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedGA()) >= 0:
+                        negativeAssignments[n].set_ga(hoursByID[j][2])
+                        negativeAssignments[n].set_hoursAvailGA(underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedGA()))
+                        assignments[n] = negativeAssignments[n]
+                        hoursByID[j] = (underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedGA()), hoursByID[j][1], hoursByID[j][2], hoursByID[j][3])
+                        underUtilized[j] = (underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedGA()), underUtilized[j][1], underUtilized[j][2], underUtilized[j][3]+1)
+                        if len(overUtilized) > 0:
+                            overUtilized[GAOver] = (overUtilized[GAOver][0] + int(negativeAssignments[n].get_hoursUsedGA()), overUtilized[GAOver][1], overUtilized[GAOver][2], overUtilized[GAOver][3]-1)
+                        if underUtilized[j][3] > 3 or underUtilized[j][0] < 0:
+                            del(underUtilized[j])
+                        if overUtilized[GAOver][3] < 4 or overUtilized[GAOver][0] > 0:
+                            del(overUtilized[GAOver])
+                        break
+                if negativeAssignments[n].get_ta() != "None" and negativeAssignments[n].get_hoursAvailTA() < 0:
+                    if underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedTA()) >= 0:
+                        negativeAssignments[n].set_ga(hoursByID[j][2])
+                        negativeAssignments[n].set_hoursAvailTA(underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedTA()))
+                        assignments[n] = negativeAssignments[n]
+                        hoursByID[j] = (underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedTA()), hoursByID[j][1], hoursByID[j][2], hoursByID[j][3])
+                        underUtilized[j] = (underUtilized[j][0] - int(negativeAssignments[n].get_hoursUsedTA()), underUtilized[j][1], underUtilized[j][2], underUtilized[j][3])
+                        overUtilized[GAOver] = (overUtilized[GAOver][0] + int(negativeAssignments[n].get_hoursUsedTA()), overUtilized[GAOver][1], overUtilized[GAOver][2], overUtilized[GAOver][3])
+                        if underUtilized[j][3] >= 3 or underUtilized[j][0] < 0:
+                            del(underUtilized[j])
+                        if overUtilized[GAOver][3] <= 4 or overUtilized[GAOver][0] > 0:
+                            del(overUtilized[GAOver])
+                        break
+    for o in range(0, len(hoursForGAs)):
+        if hoursForGAs[o]['id'] not in GAObjects:
+            GAObjects[hoursForGAs[o]['id']] = ("None", 0)
+        hoursByID[hoursForGAs[o]['id']] = (hoursForGAs[o]['hoursAvailable'] - hoursForGAs[o]['officeHours'], hoursForGAs[o]['studentType'], GAObjects[hoursForGAs[o]['id']][0], GAObjects[hoursForGAs[o]['id']][1])
+
+    asnGAHours = {}
+    asnTAHours = {}
+    for u in range(0, len(assignments)):
+        if type(assignments[u].get_ga()) == GATA:
+            asnGAHours[assignments[u].get_ga().id] = (assignments[u].get_hoursUsedGA())
+        else:
+            asnGAHours[assignments[u].get_ga().get_id()] = (assignments[u].get_hoursUsedGA())
+        if assignments[u].get_ta() != "None":
+            asnTAHours[assignments[u].get_ta().get_id()] = (assignments[u].get_hoursUsedTA())
+        
+
+        if assignments[u].get_ga() != "None":
+            if list(asnGAHours.keys())[0] in list(hoursByID.keys()):
+                GAObject = hoursByID[list(asnGAHours.keys())[0]][2]
+                hoursRem = hoursByID[list(asnGAHours.keys())[0]][0]
+                hoursUsed = asnGAHours[list(asnGAHours.keys())[0]]
+                hoursRem = hoursRem - int(hoursUsed)
+                assignments[u].set_hoursAvailGA(hoursRem)
+                hoursByID[list(asnGAHours.keys())[0]] = (hoursRem, 'GA', GAObject, hoursByID[list(asnGAHours.keys())[0]][3])
+                asnGAHours.pop(list(asnGAHours.keys())[0])
+        if assignments[u].get_ta() != "None":
+            if list(asnTAHours.keys())[0] in list(hoursByID.keys()):
+                TAObject = hoursByID[list(asnTAHours.keys())[0]][2]
+                hoursRem = hoursByID[list(asnTAHours.keys())[0]][0]
+                hoursUsed = asnTAHours[list(asnTAHours.keys())[0]]
+                hoursRem = hoursRem - int(hoursUsed)
+                assignments[u].set_hoursAvailTA(hoursRem)
+                hoursByID[list(asnTAHours.keys())[0]] = (hoursRem, 'TA', TAObject, hoursByID[list(asnTAHours.keys())[0]][3])
+                asnTAHours.pop(list(asnTAHours.keys())[0])
+    
+    return schedule
+
 def generate_schedules(request):
     generationNumber = 0
     semYr = request.GET.get('semYr')
@@ -185,64 +327,31 @@ def generate_schedules(request):
     schedules = population.get_schedules()
 
     semester = SemesterYear.objects.filter(id=semYr)
-    # Getting hours for GAs and TAs
-    hoursForGAs = getGATAs(semYr)
-    hoursByID = {}
-    # Grouping them all by id and student type.
-    for i in range(0, len(hoursForGAs)):
-        hoursByID[hoursForGAs[i]['id']] = (hoursForGAs[i]['hoursAvailable'] - hoursForGAs[i]['officeHours'], hoursForGAs[i]['studentType'])
-    
-    f = open("dict.txt", "w")
-    f.write(str(hoursByID))
-    f.close()
 
     for schedule in schedules:
-        with open('dict.txt') as r:
-            backup = r.read()
-        convertToDict = ast.literal_eval(backup)
-        hoursByID = convertToDict
-        r.close()
-
-        # Group all assignments by id.
+        schedule = _optimize(schedule, semYr)
         assignments = schedule.get_assignments()
-        asnGAHours = {}
-        asnTAHours = {}
         new_schedule = createSchedule(semester[0], schedule.get_numbOfConflicts())
         for i in range(0, len(assignments)):
-            asnGAHours[assignments[i].get_ga().get_id()] = (assignments[i].get_hoursUsedGA())
-            if assignments[i].get_ta() != "None":
-                asnTAHours[assignments[i].get_ta().get_id()] = (assignments[i].get_hoursUsedTA())
             if (new_schedule):
-                hoursRem = 0
-                hoursUsed = 0
                 if assignments[i].get_ga() != "None":
-                    if list(asnGAHours.keys())[0] in list(hoursByID.keys()):
-                        hoursRem = hoursByID[list(asnGAHours.keys())[0]][0]
-                        hoursUsed = asnGAHours[list(asnGAHours.keys())[0]]
-                        hoursRem = hoursRem - int(hoursUsed)
-                        hoursByID[list(asnGAHours.keys())[0]] = (hoursRem, 'GA')
-                        asnGAHours.pop(list(asnGAHours.keys())[0])
-
-
-                    ga = getGATA(assignments[i].get_ga().get_id())
+                    # hoursUsed = assignments[i].get_hoursUsedGA() if assignments[i].get_hoursUsedGA() is not None else assignments[i].get_hoursUsedTA()
+                    # hoursRem = assignments[i].get_hoursAvailGA() if assignments[i].get_hoursAvailGA() is not None else assignments[i].get_hoursAvailTA()
+                    if type(assignments[i].get_ga()) == GATA:
+                        ga = getGATA(assignments[i].get_ga().id)
+                    else:
+                        ga = getGATA(assignments[i].get_ga().get_id())
                     createAssignment(
                         semester[0],
                         ga[0],
                         assignments[i].get_meetingTime(),
-                        hoursUsed,
-                        hoursRem,
+                        assignments[i].get_hoursUsedGA(),
+                        assignments[i].get_hoursAvailGA(),
                         assignments[i].get_course().get_Name() + " " + str(assignments[i].get_course().get_code()) + "." + str(assignments[i].get_course().get_section()),
                         new_schedule
                     )
 
                 if assignments[i].get_ta() != "None":
-                    if list(asnTAHours.keys())[0] in list(hoursByID.keys()):
-                        hoursRem = hoursByID[list(asnTAHours.keys())[0]][0]
-                        hoursUsed = asnTAHours[list(asnTAHours.keys())[0]]
-                        hoursRem = hoursRem - int(hoursUsed)
-                        hoursByID[list(asnTAHours.keys())[0]] = (hoursRem, 'GA')
-                        asnTAHours.pop(list(asnTAHours.keys())[0])
-
                     ta = getGATA(assignments[i].get_ta().get_id())
                     createAssignment(
                         semester[0],

@@ -43,6 +43,20 @@ export const getAllStudent = async ()=>{
         })
     return students.data
 }
+export const getAllStudentBySemYrID = async (semYr)=>{
+    const students = await axios.get(BASEURL)
+       .catch(error => {
+           throw error
+       })
+    var len = students.data.length
+    var newStudents = []
+    for (let i = 0; i < len; i++){
+        if (students.data[i]['semYr'] == semYr){
+            newStudents.push(students.data[i]);
+        }
+    }
+   return newStudents
+}
 
 
 export const updateStudent = async (id, data)=>{

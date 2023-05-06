@@ -139,9 +139,7 @@ class Course extends Component {
     // rerender to show messages for the first time
     // you can use the autoForceUpdate option to do this automatically`
     this.forceUpdate();
-  }
-
-
+    }
   }
   render() {
 
@@ -190,14 +188,14 @@ class Course extends Component {
               <div className="mb-3">
                 <label htmlFor="courseSection" className="form-label">Course Section<span style ={{color:'red'}}>*</span></label>
                 <input
-                  type={"number"}
+                  type={"text"}
                   className="form-control"
                   name="courseSection"
                   placeholder="0"
                   defaultValue={this.state.course.courseSection}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('courseSection', this.state.course.courseSection, 'required|numeric')}
+                {this.validator.message('courseSection', this.state.course.courseSection, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="courseMeetTimes" className="form-label">Course Meet Times<span style ={{color:'red'}}>*</span> (Enter in this Format MW 13:00 -
@@ -250,8 +248,6 @@ class Course extends Component {
           </form>
           <div className={"row"}>
             <div className={"col"}>
-              {/* <button onClick={this.previousStep.bind(this)}>Previous Page</button>
-              <button onClick={this.nextStep.bind(this)}>Next Page</button> */}
               <button onClick={this.onSubmit}>Submit</button>
             </div>
           </div>

@@ -33,13 +33,12 @@ class Student extends Component {
       student: {
         semYr: '',
         studentName: '',
-        classTimes: '',
+        classTimes: 'None',
         hoursAvailable: 20,
         officeHours: 0,
         studentType: 'GA'
       },
       semester: []
-
     }
     this.onChangeValue = this.onChangeValue.bind(this)
     this.__onSelect = this.__onSelect.bind(this)
@@ -51,7 +50,7 @@ class Student extends Component {
             return validator.helpers.testRegex(val,/^((M|T|W|R|F){1,5}\s([1]?(\d{1})|([1-2][1-4])):(([0-5](\d{1}))|(\d{1}))\s-\s([1]?(\d{1})|[1-2][1-4]):(([0-5](\d{1}))|(\d{1}));?)*(?<!;)$/) && params.indexOf(val) === -1
             
           },
-          required:true
+          required:false
         },
         officeHours:{
           message:"Office Hours must be less than GA Hours",
@@ -62,6 +61,10 @@ class Student extends Component {
       },
     });
   }
+
+  radioHandler = (status) =>{
+    this.setState({status});
+  };
 
   onChangeValue(event) {
     const name = event.target.name
@@ -83,6 +86,9 @@ class Student extends Component {
         semYr: value
       },
     });
+  }
+  drawYesContent(){
+    
   }
 
   changeHandler = e => {
@@ -109,6 +115,7 @@ class Student extends Component {
           progress: undefined,
           theme: "light",
        });
+            console.log(error)
             return "error"
 
         });
@@ -140,6 +147,7 @@ class Student extends Component {
 
 
   render() {
+    const { status } = this.state;
     return (
         <div className={'container-fluid'}>
           <h1>GA/TA Page</h1>
@@ -199,19 +207,19 @@ class Student extends Component {
                     {this.validator.message('Office Hours', this.state.student.officeHours, 'numeric|officeHours')}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="officeHours" className="form-label">Class Times<span style ={{color:'red'}}>*</span> (Enter in this Format MWF 13:00 -
-                    14:00;R 8:45 - 10:15) Separate multiple classes with comma</label>
-                  <input
-                      name='classTimes'
-                      type={"text"}
-                      className="form-control"
-                      placeholder="MW 13:00 - 14:00, TR: 15:30 - 17:00"
-                      onChange={this.changeHandler}
-                  />
-                  {/* Make this field not required. */}
-                     {this.validator.message('classTimes', this.state.student.classTimes, 'required|classTimes')}
+                  {/* Finish Radio Button Implementation here TODO */}
+                  <label htmlFor="officeHours" className="form-label">Is the student currently taking courses?</label>
+                  <input type="radio" name="release" defaultChecked checked={status === 1} onClick={(e) => this.radioHandler(1)}/> Yes
+                  <input type="radio" name="release" checked={status === 2} onClick={(e) => this.radioHandler(2)}/> No
+                  {status === 1 &&   <div className="mb-3">
+                    <label htmlFor="officeHours" className="form-label">Class Times (Enter in this Format MWF 13:00 - 14:00;R 8:45 - 10:15) Separate multiple classes with comma *</label>
+                    <input name='classTimes' type={"text"} className="form-control" placeholder="MW 13:00 - 14:00, TR: 15:30 - 17:00" onChange={this.changeHandler}/>
+                    {/* Make this field not required. */}
+                       {this.validator.message('classTimes', this.state.student.classTimes, 'classTimes')}
+                       <label htmlFor="officeHours" className="form-label">*If the student has no class times, leave this field blank.</label>
+                  </div>}
+                  {status === 2 && <div className="mb-3"></div>}
                 </div>
-
               </div>
             </div>
           </form>
