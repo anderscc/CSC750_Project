@@ -37,13 +37,27 @@ export const getCourse = async (id)=>{
 }
 
 export const getAllCourse = async ()=>{
-     const Courses = await axios.get(BASEURL)
+    const Courses = await axios.get(BASEURL)
         .catch(error => {
             throw error
         })
     return Courses.data
 }
 
+export const getAllCourseBySemYrID = async (semYr)=>{
+    var Courses = await axios.get(BASEURL)
+       .catch(error => {
+           throw error
+       })
+       var len = Courses.data.length
+       var newCourses = []
+           for (let i = 0; i < len; i++){
+               if (Courses.data[i]['semYr'] == semYr){
+                   newCourses.push(Courses.data[i]);
+               }
+              }
+   return newCourses
+}
 
 export const updateCourse = async (id, data)=>{
 

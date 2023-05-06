@@ -291,7 +291,8 @@ class Schedule:
             ";"
         )  # get ["MWF 09:00 - 10:00","MWF 10:00 - 11:00","W 15:00 - 17:00"]
         result = []
-
+        if classes_times[0] == 'None':
+            return result
         for each_time in classes_times:
             list_of_each_time = each_time.split()  # get ["MWF","09:00","-","10:00"]
             days = [*list_of_each_time[0]]  # ["M","W","F]"
@@ -349,6 +350,8 @@ class Schedule:
         GAList = []
         # List of TAs.
         TAList = []
+        # Both lists above, combined.
+        GATAList = []
         # List of courses with a GA Preference.
         CourseGAPref = []
         # List of courses without a GA Preference.
@@ -367,9 +370,11 @@ class Schedule:
         for i in gatas:
             if(i.get_studentType() == 'GA'): 
                 GAList.append(i)
+                GATAList.append(i)
                 # OriginalHours.append((i.get_hoursAvailable(), i.get_id()))
             elif(i.get_studentType() == 'TA'): 
                 TAList.append(i)
+                GATAList.append(i)
             elif(i.get_studentType() == ''): 
                 print("This student does not have a student Type.")
             else: 
@@ -401,7 +406,27 @@ class Schedule:
             # Assign TA to teach the lab.
             TA = self.compare_GAPref(cur_lab, TAList)
             # Assign GA to grade the lab.
+            # This needs to be a for loop to ensure we aren't overutilizing GAs. TODO
             GA = GAList[randomGAStart]
+            if GA.get_hoursAvailable() < 0 or GA.get_hoursAvailable() - int(cur_lab.get_activityTimes()) < 0:
+               
+               GA = TAList[randomTAStart]
+
+               for i in range(0, len(TAList)):
+                if GA.get_hoursAvailable() - int(cur_lab.get_activityTimes()) < 0 or GA.get_hoursAvailable() < 0:
+                    randomTAStart += 1
+                    if randomTAStart > len(TAList)-1:
+                        randomTAStart = 0
+                    GA = TAList[randomTAStart]
+                else: break
+               if GA.get_id() == TA.get_id():
+                   if randomTAStart + 1 > len(TAList)-1:
+                       randomTAStart = 0
+                       GA = TAList[randomTAStart]
+                   else:
+                       randomTAStart += 1
+                       GA = TAList[randomTAStart]
+                   randomTAStart+=1
             randomGAStart +=1
             newCourseAssignment = CourseAssignment(self._classNumb, GA)
             newCourseAssignment.set_ta(TA)
@@ -431,6 +456,24 @@ class Schedule:
             TA = TAList[randomTAStart]
             randomTAStart += 1
             GA = GAList[randomGAStart]
+            if GA.get_hoursAvailable() < 0 or GA.get_hoursAvailable() - int(cur_lab.get_activityTimes()) < 0:
+               GA = TAList[randomTAStart]
+
+               for i in range(0, len(TAList)):
+                if GA.get_hoursAvailable() - int(cur_lab.get_activityTimes()) < 0 or GA.get_hoursAvailable() < 0:
+                    randomTAStart += 1
+                    if randomTAStart > len(TAList)-1:
+                        randomTAStart = 0
+                    GA = TAList[randomTAStart]
+                else: break
+               if GA.get_id() == TA.get_id():
+                   if randomTAStart + 1 > len(TAList)-1:
+                       randomTAStart = 0
+                       GA = TAList[randomTAStart]
+                   else:
+                       randomTAStart += 1
+                       GA = TAList[randomTAStart]
+                   randomTAStart+=1
             randomGAStart += 1
             newCourseAssignment = CourseAssignment(self._classNumb, GA)
             newCourseAssignment.set_ta(TA)
@@ -474,7 +517,27 @@ class Schedule:
             # Assign TA to observe lab and grade lab.
             if randomGAStart > len(GAList)-1:
                 randomGAStart = 0
+            if randomTAStart > len(TAList)-1:
+                randomTAStart = 0
             GA = GAList[randomGAStart]
+            if GA.get_hoursAvailable() < 0 or GA.get_hoursAvailable() - int(cur_lab.get_activityTimes()) < 0:
+               GA = TAList[randomTAStart]
+
+               for i in range(0, len(TAList)):
+                if GA.get_hoursAvailable() - int(cur_lab.get_activityTimes()) < 0 or GA.get_hoursAvailable() < 0:
+                    randomTAStart += 1
+                    if randomTAStart > len(TAList)-1:
+                        randomTAStart = 0
+                    GA = TAList[randomTAStart]
+                else: break
+               if GA.get_id() == TA.get_id():
+                   if randomTAStart + 1 > len(TAList)-1:
+                       randomTAStart = 0
+                       GA = TAList[randomTAStart]
+                   else:
+                       randomTAStart += 1
+                       GA = TAList[randomTAStart]
+                   randomTAStart+=1
             randomGAStart += 1
 
             newCourseAssignment = CourseAssignment(self._classNumb, GA)
@@ -509,10 +572,18 @@ class Schedule:
             self._assignments.append(newCourseAssignment)
         # Assigning courses that have no GA preferences.
         for cur_course in CourseNonGAPref:
-            if randomGAStart > len(GAList)-1:
+            if randomGAStart > len(GATAList)-1:
                 randomGAStart = 0
-            GA = GAList[randomGAStart]
+            GA = GATAList[randomGAStart]
+            for i in range(0, len(GATAList)):
+                if GA.get_hoursAvailable() - int(cur_course.get_activityTimes()) < 0 or GA.get_hoursAvailable() < 0:
+                    randomGAStart += 1
+                    if randomGAStart > len(GATAList)-1:
+                        randomGAStart = 0
+                    GA = GATAList[randomGAStart]
+                else: break
             randomGAStart += 1
+
             newCourseAssignment = CourseAssignment(self._classNumb, GA)
             self._classNumb += 1
             # Setting the course, meeting time, and semester year and append it to newClass.
@@ -710,11 +781,9 @@ class DisplayMgr:
 
 class GeneticAlgorithm:
     def _Fix_Scheduling_Hours(self, Schedule):
-        # Investigate this function to ensure it is doing the correct work TODO:
         Assignments = Schedule.get_assignments()
         GAsTAsAssigned = []
         for i in range(0, len(Assignments)):
-            # GAsTAsHoursUsed = (Assignments[k].get_hoursUsedGA(), Assignments[k].get_hoursUsedTA())
             if Assignments[i].get_ta() == "None":
                 GAsTAsAssigned = (Assignments[i].get_ga().get_id(), "None")
             elif Assignments[i].get_ga() == "None":
@@ -733,24 +802,17 @@ class GeneticAlgorithm:
             Assignments[i].set_hoursAvailGA(Assignments[i].get_ga().get_hoursAvailable())
         for k in range(0, len(Assignments)):  
             if Assignments[k].get_hoursUsedGA() is None:
-                # print("First If Before: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
                 # TA is assigned as GA because it's a faculty taught lab where the TA is teaching another section of the same lab.
                 Assignments[k].set_hoursAvailTA(Assignments[k].get_ga().get_hoursAvailable() - Assignments[k].get_hoursUsedTA())
                 Assignments[k].get_ga().set_hoursAvailable(Assignments[k].get_hoursAvailTA())
-                # print("First If After: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
             else:
-                # print("First else Before: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
                 Assignments[k].set_hoursAvailGA(Assignments[k].get_ga().get_hoursAvailable() - int(Assignments[k].get_hoursUsedGA()))
                 Assignments[k].get_ga().set_hoursAvailable(Assignments[k].get_hoursAvailGA())
-                # print("First else After: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
             if Assignments[k].get_ta() == "None":
                 pass
             else:
-                # print("Second else Before: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
                 Assignments[k].set_hoursAvailTA(Assignments[k].get_ta().get_hoursAvailable() - int(Assignments[k].get_hoursUsedTA()))
                 Assignments[k].get_ta().set_hoursAvailable(Assignments[k].get_hoursAvailTA())
-                # print("Second else After: ", Assignments[k].get_hoursAvailGA(), Assignments[k].get_ga().get_hoursAvailable(), Assignments[k].get_hoursUsedGA())
-        # print(Schedule)
         return Schedule
 
     # Evolve function calls mutate population which calls crossover population.
@@ -799,11 +861,11 @@ class GeneticAlgorithm:
             first = schedule1.get_assignments()
             second = schedule2.get_assignments()
             # Given a random value check if greater than .5, if so we set classes of schedule 1 to crossover schedule.
-            if rnd.random() > 0.5:
+            if rnd.random() > 0.5 and first[i].get_ga().get_hoursAvailable() - int(first[i].get_hoursUsedGA()) >= 0:
                 # Getting course assignment of crossoverSchedule and exchanging with course assignment from schedule1
                 cross[i].set_ga(first[i].get_ga())
             # If not we set classes of schedule 2 to crossover schedule.
-            else:
+            elif second[i].get_ga().get_hoursAvailable() - int(second[i].get_hoursUsedGA()) >= 0:
                 # Getting course assignment of crossoverSchedule and exchanging with course assignment from schedule2
                 cross[i].set_ga(second[i].get_ga())
         # Return crossoverSchedule.
@@ -819,7 +881,7 @@ class GeneticAlgorithm:
         for i in range(0, len(mutateSchedule.get_assignments())):
             # If the mutation rate, 0.1, is greater than the random value, we assign GAs from the initialized schedule to mutateSchedule
             mutate = mutateSchedule.get_assignments()
-            if MUTATION_RATE > rnd.random():
+            if MUTATION_RATE > rnd.random() and ga[i].get_ga().get_hoursAvailable() - int(mutate[i].get_hoursUsedGA()) >= 0:
                 mutate[i].set_ga(ga[i].get_ga())
         mutateScheduleFixed = self._Fix_Scheduling_Hours(mutateSchedule)
         # Return the mutated schedule.

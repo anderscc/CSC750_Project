@@ -47,6 +47,21 @@ export const getAllLab = async ()=>{
     return Labs.data
 }
 
+export const getAllLabBySemYrID = async (semYr)=>{
+    const Labs = await axios.get(BASEURL)
+       .catch(error => {
+           throw error
+       })
+    var len = Labs.data.length
+    var newLabs = []
+    for (let i =0; i < len; i++){
+        if(Labs.data[i]['semYr'] == semYr){
+            newLabs.push(Labs.data[i]);
+        }
+    }
+   return newLabs
+}
+
 
 export const updateLab = async (id, data)=>{
     return await axios.put(BASEURL + `${id}/`, {...data})

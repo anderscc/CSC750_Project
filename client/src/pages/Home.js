@@ -78,22 +78,24 @@ if semYr in this.props.semester:
 else:
     submit()
 */
+timeout(delay){
+    return new Promise(res => setTimeout(res, delay));
+}
     onSubmit = async (event) => {
     event.preventDefault()
     var error = true
     if (this.validator.allValid()) {
-        console.log(this.props.semesters)
+        console.log("PROPS SEMESTERS", this.props.semesters)
         this.props.semesters.every(async element=>{
-            console.log(typeof this.state.semYr.year,typeof element.Year)
-            console.log(typeof this.state.semYr.semester,typeof element.Semester)
             if(this.state.semYr.year===element.Year && this.state.semYr.semester===element.Semester)
             {
                 console.log("Hitting the part you want")
                 error = false
                 return error;
-            }
-            else{
+            }})
+            if (error == true || this.props.semesters.length == 0){
                 console.log("Hitting the part you don't want")
+                console.log("Semester 1 Created?", this.props.semester)
                 const response = await createSemester(this.state.semYr.year,this.state.semYr.semester).catch(error => {
                     toast.error('An error occurred', {
                         position: "top-right",
@@ -109,9 +111,9 @@ else:
             
                     });
                     if(response != "error"){
-                        toast.success('Semester record created', {
+                        toast.success('Semester record created. This page will auto refresh...', {
                                     position: "top-right",
-                                    autoClose: 5000,
+                                    autoClose: 4000,
                                     hideProgressBar: false,
                                     closeOnClick: true,
                                     pauseOnHover: true,
@@ -119,38 +121,11 @@ else:
                                     progress: undefined,
                                     theme: "light",
                                 })
+                                await this.timeout(4500);
+                                window.location.reload(false);
                         }
                 return;
             }
-        })
-        if (this.props.semesters.length == 0){
-            const response = await createSemester(this.state.semYr.year,this.state.semYr.semester).catch(error => {
-                toast.error('An error occurred', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-                    return "error"
-        
-                });
-                if(response != "error"){
-                    toast.success('Semester record created', {
-                                position: "top-right",
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                            })
-                    }
-        }
         if (error == false){
             toast.error('Semester Already Exists in Database, Please Try Again.', {
                 position: "top-right",

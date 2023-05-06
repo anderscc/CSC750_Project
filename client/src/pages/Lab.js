@@ -191,14 +191,14 @@ class lab extends Component {
               <div className="mb-3">
                 <label htmlFor="labSection" className="form-label">Lab Section<span style ={{color:'red'}}>*</span></label>
                 <input
-                  type={"number"}
+                  type={"text"}
                   className="form-control"
                   name="labSection"
                   placeholder="0"
                   defaultValue={this.state.lab.labSection}
                   onChange={this.changeHandler}
                 />
-                {this.validator.message('labSection', this.state.lab.labSection, 'required|numeric')}
+                {this.validator.message('labSection', this.state.lab.labSection, 'required|alpha_num_space')}
               </div>
               <div className="mb-3">
                 <label htmlFor="labMeetTimes" className="form-label">Lab Meet Times (Enter in this Format MW 13:00 -

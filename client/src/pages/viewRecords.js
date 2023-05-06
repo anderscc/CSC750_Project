@@ -25,9 +25,9 @@ import 'antd/dist/antd.css';
 import { ToastContainer, toast } from 'react-toastify';
 
 import { Select, Space, Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import {getAllStudent,deleteStudent,updateStudent} from "../services/studentService";
-import {getAllCourse, deleteCourse,updateCourse} from "../services/courseService";
-import { getAllLab, deleteLab,updateLab } from "../services/labService";
+import {getAllStudent,deleteStudent,updateStudent, getAllStudentBySemYrID} from "../services/studentService";
+import {getAllCourse, deleteCourse,updateCourse, getAllCourseBySemYrID} from "../services/courseService";
+import { getAllLab, deleteLab,updateLab, getAllLabBySemYrID } from "../services/labService";
 import { getAllSemester } from "../services/semesterService";
 import {generateSchedules} from "../services/scheduleService";
 
@@ -260,6 +260,18 @@ const ViewRecords = () => {
         {value:item.id,
         key:{index},
         label:item.Semester+' '+item.Year,}))
+    // Attempted to find a way to have a default value which would allow a user to view all years via the dropdown menu.
+    // const options2 = semYrData.map((item, index) => (
+    //     {
+    //         value:"All Years",
+    //         key:-1,
+    //         label:"All Years",
+    //     }, 
+    //     {
+    //         value:item.id,
+    //         key:{index},
+    //         label:item.Semester+' '+item.Year,
+    //     }))
     /*console.log(data)*/
 
     const [editingKey, setEditingKey] = useState('');
@@ -291,6 +303,21 @@ const ViewRecords = () => {
     }
     const handleChange = (value)=>{
         setSemYr(value)
+    }
+    const handleDataChange = (value)=>{
+        const getDataBySemYr = async () => {
+            const studentsData = await getAllStudentBySemYrID(value)
+            setStudents(studentsData)
+            setData(studentsData)
+            const coursesData = await getAllCourseBySemYrID(value)
+            setCourses(coursesData)
+            const labsData = await getAllLabBySemYrID(value)
+            setlabs(labsData)
+            const semData = await getAllSemester()
+            setsemYrData(semData)
+        }
+        
+        console.log(getDataBySemYr())
     }
 
     const edit = (record) => {
@@ -721,6 +748,12 @@ const ViewRecords = () => {
                 />
                 <Select  placeholder={'Select Semester'} style={{marginLeft:8,width: 150,}} onChange={handleChange} options={options}></Select>
                <Button style={{marginLeft:8}} type="primary" onClick={() => call_generateSchedule(semYr)}>Generate Schedule</Button>
+
+               <Space style={{ marginBottom: 8, marginTop: 8,marginLeft:8}}>
+               <Select placeholder={'Select Semester'} style={{marginLeft:8,width: 150,}} onChange={handleDataChange} options={options}></Select>
+               <label>View Data By Semester</label> 
+               </Space>
+               
             </Form>
             <ToastContainer
               position="top-right"
