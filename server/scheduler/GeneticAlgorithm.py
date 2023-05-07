@@ -269,6 +269,9 @@ class Schedule:
     # Getting fitness and number of conflicts.
     def get_numbOfConflicts(self):
         return self._numbOfConflicts
+    
+    # A function to set number of conflicts on a schedule
+    def set_numbOfConflicts(self, conflicts): self._numbOfConflicts = conflicts
 
     def get_fitness(self):
         if self._isFitnessChanged == True:
@@ -655,18 +658,22 @@ class Schedule:
             for unavail_time in gata_hours_time[cur_assigned_ga_name]["unavail_time"]:
                 if self.find_time_conflicts(cur_class_time, unavail_time):
                     self._numbOfConflicts += 1
+                    cur_course_assignment.set_Conflict(True)
             if cur_assigned_ta != "None":
                 for unavail_time in gata_hours_time[cur_assigned_ta_name]["unavail_time"]:
                     if self.find_time_conflicts(cur_class_time, unavail_time):
                         self._numbOfConflicts += 1
+                        cur_course_assignment.set_Conflict(True)
 
             if cur_ga_hours < 0:
                 self._numbOfConflicts += 1
+                cur_course_assignment.set_Conflict(True)
             gata_hours_time[cur_assigned_ga_name]["unavail_time"].append(cur_class_time)
 
             if cur_assigned_ta != "None":
                 if cur_ta_hours < 0:
                     self._numbOfConflicts += 1
+                    cur_course_assignment.set_Conflict(True)
                 gata_hours_time[cur_assigned_ta_name]["unavail_time"].append(cur_class_time)
         return 1 / ((1.0 * self._numbOfConflicts + 1))
 
@@ -949,6 +956,7 @@ class CourseAssignment:
         # this value would be 2.
         self._hoursUsedGA = None
         self._hoursUsedTA = None
+        self._Conflict = False
 
     # Getters
     def get_id(self): return self._id
@@ -961,6 +969,7 @@ class CourseAssignment:
     def get_hoursUsedGA(self): return self._hoursUsedGA
     def get_hoursUsedTA(self): return self._hoursUsedTA
     def get_ta(self): return self._ta
+    def get_Conflict(self): return self._Conflict
 
     # Setters
     def set_hoursUsedGA(self, hoursUsedGA): self._hoursUsedGA = hoursUsedGA
@@ -972,6 +981,7 @@ class CourseAssignment:
     def set_meetingTime(self, meetingTime): self._meetingTime = meetingTime
     def set_ga(self, ga): self._ga = ga
     def set_ta(self, ta): self._ta = ta
+    def set_Conflict(self, conflict): self._Conflict = conflict
     def __str__(self):
         return str(self.get_ga()) + "," + str(self.get_ta()) + "," +  str(self.get_course().get_code()) + "." +  str(self.get_course().get_section())  + "," + str(self.get_meetingTime()) + "," + \
             str(self.get_hoursAvailGA()) + "," + str(self.get_hoursUsedGA()) + "," + str(self.get_hoursAvailTA()) + "," + str(self.get_hoursUsedTA())+" // "

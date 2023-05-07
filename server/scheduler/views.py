@@ -303,6 +303,17 @@ def _optimize(schedule, semYr):
                 assignments[u].set_hoursAvailTA(hoursRem)
                 hoursByID[list(asnTAHours.keys())[0]] = (hoursRem, 'TA', TAObject, hoursByID[list(asnTAHours.keys())[0]][3])
                 asnTAHours.pop(list(asnTAHours.keys())[0])
+    count = 0
+    for z in assignments:
+        # print("Course meet time", z.get_meetingTime(), "GA Class Times", z.get_ga().get_classTimes())
+        if z.get_hoursAvailGA() < 0:
+            z.set_Conflict(True)
+        elif z.get_ta() != "None" and z.get_hoursAvailTA() < 0:
+            z.set_Conflict(True)
+        if z.get_Conflict() == True:
+            count+=1
+    schedule.set_numbOfConflicts(count)
+    # print("Current fitness number?", schedule.calculate_fitness())
     
     return schedule
 
@@ -348,6 +359,7 @@ def generate_schedules(request):
                         assignments[i].get_hoursUsedGA(),
                         assignments[i].get_hoursAvailGA(),
                         assignments[i].get_course().get_Name() + " " + str(assignments[i].get_course().get_code()) + "." + str(assignments[i].get_course().get_section()),
+                        assignments[i].get_Conflict(),
                         new_schedule
                     )
 
@@ -360,6 +372,7 @@ def generate_schedules(request):
                         assignments[i].get_hoursUsedTA(),
                         assignments[i].get_hoursAvailTA(),
                         assignments[i].get_course().get_Name() + " " + str(assignments[i].get_course().get_section()),
+                        assignments[i].get_Conflict(),
                         new_schedule
                     )
     return  download_schedules(request, oldScheduleID)
