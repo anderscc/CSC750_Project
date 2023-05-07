@@ -21,9 +21,9 @@
 from .models import Assignment, Schedules, Courses, Labs, GATA
 
 
-def createAssignment( semYr, studentName, MeetTimes, GATAhrsused, GATAHrsRem, coursesAsn, scheduleNum):
+def createAssignment( semYr, studentName, MeetTimes, GATAhrsused, GATAHrsRem, coursesAsn, Conflict, scheduleNum):
     try:
-        assign = Assignment(semYr=semYr, studentName=studentName, MeetTimes=MeetTimes, GATAhrsused=GATAhrsused, GATAHrsRem=GATAHrsRem, coursesAsn=coursesAsn, scheduleNum=scheduleNum)
+        assign = Assignment(semYr=semYr, studentName=studentName, MeetTimes=MeetTimes, GATAhrsused=GATAhrsused, GATAHrsRem=GATAHrsRem, coursesAsn=coursesAsn, Conflict=Conflict, scheduleNum=scheduleNum)
         assign.save()
     except Exception as e:
         print(e)

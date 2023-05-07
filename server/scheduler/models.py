@@ -65,6 +65,7 @@ class Assignment(models.Model):
     GATAHrsRem = models.FloatField(default = 0.0)
     coursesAsn = models.CharField(max_length = 255)
     scheduleNum = models.ForeignKey('Schedules', on_delete=models.CASCADE)
+    Conflict = models.BooleanField(default = False)
 # Schedules Table
 class Schedules(models.Model):
     id = models.AutoField(primary_key = True, editable = False, unique = True)
